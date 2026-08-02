@@ -55,6 +55,8 @@ The P1 go/no-go gate passed with the following repository evidence:
 
 Selected P1 work may now proceed in the documented order. Manual ordering remains blocked until deletion, search, and deterministic sorting are stable; Motion remains blocked until target interactions are final.
 
+Reversible deletion is now complete. Evidence includes owner-scoped soft-delete/restore API tests, frontend confirmation and failure/Undo component tests, preservation of the latest draft before deletion, and the complete Playwright journey with Axe scans at desktop, tablet, and mobile breakpoints. Search and deterministic sorting are the next active P1 slice; therefore the manual-order gate remains closed.
+
 ## Demonstration plan
 
 The final video should spend most of its five minutes on evidence:

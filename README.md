@@ -1,23 +1,24 @@
 # Turbo Notes
 
-Turbo Notes is a private notes-taking hiring challenge built as a local-first monorepo with Next.js, Django REST Framework, and PostgreSQL. It includes session authentication, category-based organization, a responsive notes dashboard, and an autosaving editor.
+Turbo Notes is a private notes-taking hiring challenge built as a local-first monorepo with Next.js, Django REST Framework, and PostgreSQL. It includes session authentication, category-based organization, a responsive notes dashboard, an autosaving editor, and reversible note deletion.
 
 ## Current status
 
 The complete P0 product journey and its documented quality gate are complete:
 
 - Email/password registration, login, session persistence, route protection, and logout with Django sessions and CSRF protection.
-- Private user-scoped note creation, retrieval, updates, deterministic ordering, and four seeded categories with scoped counts.
+- Private user-scoped note creation, retrieval, updates, deterministic ordering, reversible soft deletion, and four seeded categories with scoped counts.
 - Responsive empty/populated dashboards, URL-backed category filters, semantic category colors, loading/error states, and accessible note cards.
 - Plain-text editor with category changes, serialized debounced autosave, saving/error/retry states, last-edited metadata, and close-time flush.
-- Next.js 16.2.12, React 19, Tailwind CSS 4, and customized source-owned shadcn/ui `Button` and `Input` components.
+- Accessible delete confirmation and an eight-second Undo action that restores the complete note without losing its category or latest draft.
+- Next.js 16.2.12, React 19, Tailwind CSS 4, and customized source-owned shadcn/ui `Button`, `Input`, and `AlertDialog` components.
 - Django 6.0.7 and Django REST Framework 3.17.1 with a database-aware health endpoint and a consistent JSON error contract.
 - PostgreSQL 17, Django, and Next.js orchestrated through Docker Compose.
 - Ruff, pytest with enforced backend coverage, ESLint, TypeScript, Vitest with enforced frontend coverage, Playwright E2E plus Axe accessibility scans at three breakpoints, production builds, and npm security auditing.
 - A GitHub Actions quality gate that reuses the same Dockerized checks as local development.
 - Product requirements, architecture, delivery/evaluation priorities, quality strategy, and provisional design tokens in `docs/`.
 
-Selected P1 enhancements are now eligible in the documented order: reversible deletion, search/sorting, then the public landing page. Manual ordering and Motion retain their separate conditional gate.
+The first selected P1 enhancement, reversible deletion, is complete across persistence, API, responsive UI, failure handling, unit tests, E2E, and accessibility checks. Search/sorting is next, followed by the public landing page. Manual ordering and Motion retain their separate conditional gate.
 
 ## Repository structure
 
@@ -96,7 +97,7 @@ The implementation order is intentionally tied to Turbo AI's four assessment cri
 
 The planned time allocation is 55% P0 slices, 25% quality work performed alongside them, 10% selected P1 enhancements, and 10% submission verification and presentation. These percentages are prioritization guardrails, not retrospective time claims.
 
-Selected P1 work is currently ordered as deletion with undo, search and sorting, a minimal landing, then conditional manual ordering and motion. Pinning, keyboard shortcuts, and a complete trash screen remain P2. See the [evaluation strategy](docs/evaluation-strategy.md) for scoring and go/no-go conditions.
+Selected P1 work is ordered as deletion with undo (complete), search and sorting (next), a minimal landing, then conditional manual ordering and motion. Pinning, keyboard shortcuts, and a complete trash screen remain P2. See the [evaluation strategy](docs/evaluation-strategy.md) for scoring and go/no-go conditions.
 
 ## Environment variables
 
@@ -163,7 +164,7 @@ OpenAI Codex was used as an implementation and review assistant to:
 - identify and replace vulnerable transitive PostCSS and Sharp versions with audited overrides;
 - validate the local UI at desktop, tablet, and mobile viewports and smoke-test the Dockerized web, API, and database services;
 - detect and fix a server/client timestamp hydration mismatch through live browser diagnostics;
-- exercise the real registration, note creation, autosave, reload persistence, filtering, category change, logout, route protection, and automated accessibility scans in Playwright.
+- exercise the real registration, note creation, autosave, reload persistence, filtering, category change, reversible deletion, logout, route protection, and automated accessibility scans in Playwright.
 
 AI accelerated source comparison, scaffolding, implementation, documentation, dependency review, and repetitive verification. It was not used to invent unavailable Figma values, replace provided design assets, or justify unverified completion claims.
 

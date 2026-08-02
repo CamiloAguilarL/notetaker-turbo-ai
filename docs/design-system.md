@@ -69,8 +69,9 @@ shadcn/ui is a source-code supplier, not a fixed theme or runtime dependency cat
 - Add a component only when a current product slice uses it.
 - Review generated code and adapt its tokens, radius, focus, size, and interaction states to Figma.
 - Keep ownership in `src/components/ui` and product composition outside that folder.
-- The installed source-owned UI components are `Button` and `Input`; both were added with authentication and adapted to the notebook theme.
-- The note editor uses a styled native `select` because it provides the required single-value category interaction without adding a larger primitive. An accessible dialog/sheet must be added only with a feature that needs it.
+- The installed source-owned UI components are `Button`, `Input`, and `AlertDialog`; each was added with the slice that first needed it and adapted to the notebook theme.
+- `AlertDialog` was added for destructive note confirmation. Its content scales without an opacity fade so text meets contrast requirements from the first animation frame, and its destructive action uses the semantic high-contrast token on every category surface.
+- The note editor uses a styled native `select` because it provides the required single-value category interaction without adding a larger primitive. A sheet or other primitive must be added only with a feature that needs it.
 - Prefer Lucide icons only when the glyph faithfully matches Figma; export and commit the exact Figma asset otherwise.
 
 ## Responsive behavior

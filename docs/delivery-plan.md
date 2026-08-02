@@ -71,7 +71,7 @@ P1 work is blocked until the gate in `evaluation-strategy.md` passes.
 
 Implement in this order and stop when the protected submission buffer would be affected:
 
-1. Soft deletion with accessible undo.
+1. Soft deletion with accessible undo. **Complete:** owner-scoped persistence/API, latest-draft flush, confirmation, temporary Undo, recoverable errors, component coverage, and three-breakpoint E2E/Axe evidence.
 2. Search plus recently edited, oldest edited, and category sorting.
 3. Minimal public landing using real product visuals and authentication actions.
 4. Manual ordering with accessible drag-and-drop, only if the conditional gate passes.
