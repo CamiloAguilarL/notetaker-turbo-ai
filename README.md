@@ -10,6 +10,7 @@ The initial setup is complete:
 - Django 6.0.7 and Django REST Framework 3.17.1 with a database-aware health endpoint.
 - PostgreSQL 17, Django, and Next.js orchestrated through Docker Compose.
 - Ruff, pytest with coverage, ESLint, TypeScript checks, production builds, and npm security auditing.
+- A GitHub Actions quality gate that reuses the same Dockerized checks as local development.
 - Product requirements, architecture, delivery priorities, and provisional design tokens in `docs/`.
 
 Application features such as authentication, note persistence, filters, and the editor are intentionally not implemented in this foundation milestone.
