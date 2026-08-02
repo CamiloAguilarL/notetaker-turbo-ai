@@ -82,6 +82,7 @@ The API container applies pending Django migrations before starting the developm
 | `make down` | Stop the stack while preserving local database data. |
 | `make logs` | Follow logs from all services. |
 | `make ps` | Show container and health status. |
+| `make seed-demo` | Prompt for a password and seed an idempotent local walkthrough account. |
 | `make audit` | Audit production frontend dependencies. |
 | `make lint` | Run ESLint, TypeScript, and Ruff checks. |
 | `make test` | Run frontend and backend tests with enforced coverage. |
@@ -90,6 +91,8 @@ The API container applies pending Django migrations before starting the developm
 | `make check` | Run the local quality gate. |
 
 The Make targets run their checks inside the project containers, so they use the same dependency and database environment on every machine. The applications can also be run independently from `apps/web` with npm and `apps/api` with uv, but Docker Compose remains the supported local integration path because it supplies PostgreSQL and the correct service-to-service URLs.
+
+For a prepared walkthrough, start the stack and run `make seed-demo DEMO_EMAIL=demo@example.com`. The command prompts for a password without storing it, creates six representative notes across all categories, restores any deleted seed note, and is safe to run repeatedly. See the [five-minute demo script](docs/demo-script.md) and [submission checklist](docs/submission-checklist.md).
 
 ## Evaluation-driven delivery
 
@@ -145,6 +148,8 @@ No deployment environment is defined yet. Before any non-local use, secrets, deb
 - [Delivery plan](docs/delivery-plan.md): priority order for the challenge timebox.
 - [Evaluation strategy](docs/evaluation-strategy.md): criteria mapping, enhancement scoring, gates, and demo evidence.
 - [Quality strategy](docs/quality-strategy.md): KISS/SOLID boundaries, test matrix, coverage policy, and review gate.
+- [Demo script](docs/demo-script.md): timed English walkthrough and recording preparation.
+- [Submission checklist](docs/submission-checklist.md): repository, GitHub, video, and form preflight.
 - [Engineering rules](AGENTS.md): coding, testing, Git, security, frontend, backend, and AI rules.
 
 ## Source material
@@ -175,5 +180,12 @@ OpenAI Codex was used as an implementation and review assistant to:
 - generate two original transparent colored-pencil/watercolor stationery illustrations for authentication and the empty state, remove their chroma backgrounds, and inspect the resulting RGBA assets at desktop and mobile sizes.
 
 AI accelerated source comparison, scaffolding, implementation, documentation, dependency review, original illustration creation, and repetitive verification. It was not used to invent unavailable Figma values, present generated illustrations as Figma exports, or justify unverified completion claims.
+
+| AI-assisted activity | Concrete output | Independent verification |
+| --- | --- | --- |
+| Source and product analysis | Traceable requirements, priorities, provisional token map, and scope gates. | Revisited the complete video and public prototype; marked inaccessible Figma variables as provisional. |
+| Architecture and implementation | Docker monorepo, typed API/UI slices, tests, and focused documentation updates. | Reviewed diffs, exercised owner boundaries and failures, and committed only after the relevant gate passed. |
+| Visual and browser QA | Responsive source comparison, original decorative assets, hydration diagnosis, and interaction refinements. | Inspected real browser output, ran three-breakpoint Playwright/Axe checks, and rejected transient low-contrast opacity motion. |
+| Delivery support | Seeded demo workflow, timed script, and submission preflight. | Kept secrets interactive, tested seed idempotence, and reserved external publication/recording for the candidate. |
 
 Generated work was checked with ESLint, TypeScript, Vitest and enforced coverage, Playwright, a Next.js production build, Ruff, pytest and enforced coverage, `npm audit`, Docker health checks, HTTP smoke tests, and visual browser inspection. AI output is not treated as authoritative: the repository owner remains responsible for reviewing, understanding, and presenting every decision. Material AI-assisted changes must record the inspected source, the decision influenced, and the independent validation performed.

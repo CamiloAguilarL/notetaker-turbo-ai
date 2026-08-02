@@ -81,8 +81,8 @@ Each enhancement is a complete vertical slice: persistence and API contract, res
 
 ### M7 — Submission package
 
-- README process/decisions update, demo seed data, and five-minute English walkthrough script.
-- Final AI-use and scope-decision record with only verified claims.
+- README process/decisions update, demo seed data, and five-minute English walkthrough script. **Complete.**
+- Final AI-use and scope-decision record with only verified claims. **Complete.**
 - Clean-clone Docker setup test and production build.
 - Clean public GitHub history and working links.
 

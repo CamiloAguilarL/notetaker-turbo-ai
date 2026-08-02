@@ -1,6 +1,8 @@
 .DEFAULT_GOAL := help
 
-.PHONY: audit bootstrap build check down e2e format help lint logs ps test up
+DEMO_EMAIL ?= demo@example.com
+
+.PHONY: audit bootstrap build check down e2e format help lint logs ps seed-demo test up
 
 help: ## Show available commands.
 	@awk 'BEGIN {FS = ":.*## "; printf "Usage: make <target>\n\n"} /^[a-zA-Z_-]+:.*?## / {printf "  %-12s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -24,6 +26,9 @@ logs: ## Follow service logs.
 
 ps: ## Show local service health.
 	docker compose ps
+
+seed-demo: ## Seed an idempotent account for the local walkthrough.
+	docker compose exec api python manage.py seed_demo --email "$(DEMO_EMAIL)"
 
 lint: ## Run frontend and backend static checks.
 	docker compose run --rm --no-deps web npm run format:check
