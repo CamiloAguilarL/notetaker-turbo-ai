@@ -9,12 +9,14 @@ Evidence labels:
 - **Brief**: stated in the written Turbo AI challenge.
 - **Video**: directly visible in the reference walkthrough.
 - **Prototype**: directly visible or interactive in the public Figma prototype.
+- **Owner**: explicitly selected by the repository owner after the source review.
+- **Recommendation**: proposed enhancement supported by product research and challenge value.
 - **Decision**: necessary implementation choice, not explicitly shown.
 - **Open**: source material is inconsistent or insufficient.
 
 ## Product goal
 
-An authenticated user can capture personal notes, assign each note to a visual category, browse all notes or one category, and return to edit existing content in a focused interface.
+An authenticated user can capture personal notes, assign each note to a visual category, quickly find and organize their work, and return to edit existing content in a focused interface.
 
 ## Users
 
@@ -61,15 +63,33 @@ The repeatedly visible categories are **Random Thoughts**, **School**, and **Per
 | NOTE-06 | P0 | Save edits without a dedicated save button. | Video, Prototype, Decision | Changes are autosaved with a short debounce; the UI communicates saving, saved, and recoverable failure states; closing waits for or safely flushes pending changes. |
 | NOTE-07 | P0 | Close the editor and return to the previous dashboard context. | Video, Prototype | Closing returns to the same active category filter and the card grid reflects persisted edits. |
 
-Deleting, archiving, pinning, rich text, Markdown, attachments, search, tags, sharing, collaboration, and offline synchronization are not shown and are out of MVP scope.
+### Prioritized product enhancements
+
+These requirements are deliberately sequenced after the complete P0 workflow. They may not displace authorization, persistence, autosave reliability, accessibility, or tests.
+
+| ID | Priority | Requirement | Evidence | Acceptance criteria |
+| --- | --- | --- | --- | --- |
+| NOTE-08 | P1 | Delete a note with a reversible grace period. | Owner, Recommendation | The action requires clear intent, removes the note from normal views, offers an accessible undo action, and can restore the note without losing content or category. |
+| SEARCH-01 | P1 | Search the authenticated user's notes. | Recommendation | A debounced, case-insensitive query matches title and content, composes with category filters and sort order, exposes a clear button, and has an explicit no-results state. |
+| SORT-01 | P1 | Sort notes by last edited, oldest edited, category, or manual order. | Owner | The selected order is visible, stable across reloads through URL state, and uses deterministic tie-breakers. Category ordering is unavailable when it would be redundant. |
+| LAND-01 | P1 | Present a minimal public landing page. | Owner | Visitors understand the product in one viewport and can register or sign in; authenticated users can continue to their notes; the page adds no product-only dependency. |
+| ORDER-01 | P1 conditional | Reorder notes manually with drag-and-drop. | Owner | Manual mode works with pointer, touch, and keyboard; announces position changes; persists atomically; rolls back optimistic state after failure; and is enabled only in the unfiltered “All Categories” view. |
+| MOTION-01 | P1 conditional | Use purposeful interface motion. | Owner, Recommendation | One restrained motion language communicates editor transitions, card reordering, and successful state changes; it never delays input and respects reduced-motion preferences. |
+| SHORT-01 | P2 | Offer discoverable keyboard shortcuts. | Recommendation | At minimum, shortcuts can create a note, focus search, and close the editor without overriding browser or assistive-technology conventions. |
+| PIN-01 | P2 | Pin important notes. | Recommendation | Pinned state is explicit, persists, composes predictably with every sort mode, and remains distinct from manual ordering. |
+| TRASH-01 | P2 | Browse and restore recently deleted notes. | Recommendation | A separate trash view preserves ownership rules and supports restore or permanent deletion with clear consequences. |
+
+The P1 conditional items have explicit go/no-go gates in `delivery-plan.md`. Rich text, Markdown, attachments, tags, sharing, collaboration, and offline synchronization remain out of challenge scope.
 
 ## Screen inventory
 
-1. Registration: greeting, email, password, submit, link to login, decorative illustration.
-2. Login: greeting, email, password, submit, link to registration, decorative illustration.
-3. Empty dashboard: categories, “New Note”, centered empty-state illustration and guidance.
-4. Populated dashboard: categories with counts, filter state, responsive note grid, “New Note”.
-5. Note editor: category selector, close action, editable title and body, last-edited value, autosave status.
+1. Public landing: concise value proposition, representative note composition, registration and login actions.
+2. Registration: greeting, email, password, submit, link to login, decorative illustration.
+3. Login: greeting, email, password, submit, link to registration, decorative illustration.
+4. Empty dashboard: categories, “New Note”, centered empty-state illustration and guidance.
+5. Populated dashboard: search, sorting, categories with counts, filter state, responsive note grid, “New Note”.
+6. Note editor: category selector, close and delete actions, editable title and body, last-edited value, autosave status.
+7. Optional trash: deleted-note list with restore and permanent-delete actions; P2 only.
 
 ## API and persistence requirements
 
@@ -82,10 +102,13 @@ Deleting, archiving, pinning, rich text, Markdown, attachments, search, tags, sh
 - Store timestamps in UTC and expose ISO 8601 values through the API.
 - Keep note-list responses sufficient for cards and detail responses sufficient for editing.
 - Prevent avoidable N+1 queries for category and owner relationships.
+- Allowlist search and ordering parameters; never interpolate request values into raw SQL.
+- Apply reorder operations in a transaction and reject identifiers not owned by the current user.
+- Exclude soft-deleted notes from normal querysets by default.
 
 ## UX and quality requirements
 
-- Match the Figma composition and visual hierarchy while adapting it for mobile and intermediate widths.
+- Match the Figma composition and visual hierarchy while adapting it for mobile and intermediate widths; responsive behavior is P0, not an optional enhancement.
 - Support keyboard-only use, visible focus, semantic controls, labeled fields, announced form errors, and WCAG AA contrast.
 - Respect `prefers-reduced-motion`; motion should communicate state rather than decorate every interaction.
 - Provide explicit loading, empty, success, and recoverable error states.
@@ -99,9 +122,10 @@ Deleting, archiving, pinning, rich text, Markdown, attachments, search, tags, sh
 - Password recovery and email delivery.
 - Account settings or avatar management.
 - User-defined category creation unless Turbo confirms it.
-- Note deletion or archive unless Turbo confirms it.
 - AI features, summarization, embeddings, or LLM integrations.
 - Real-time collaboration, sharing, and offline-first conflict resolution.
+- Rich text, Markdown, attachments, and tags.
+- P2 enhancements while any P0 or selected P1 acceptance criterion is incomplete.
 
 These are valid future extensions, but implementing them before the P0 workflow would reduce challenge time available for correctness and polish.
 
@@ -109,6 +133,5 @@ These are valid future extensions, but implementing them before the P0 workflow 
 
 1. The brief says **7 days** and later says **72 hours**. Which deadline governs the submission?
 2. Is **Drama** a real fourth category, a prototype-only state, or should users create categories?
-3. Is note deletion expected even though no delete action appears in the reviewed sources?
-4. Does Turbo expect exact Figma tokens? The connected Figma MCP currently requires edit access to read variables and design context.
-5. Should the decorative authentication/empty-state illustrations be exported from Figma, or may equivalent licensed assets be used?
+3. Does Turbo expect exact Figma tokens? The connected Figma MCP currently requires edit access to read variables and design context.
+4. Should the decorative authentication/empty-state illustrations be exported from Figma, or may equivalent licensed assets be used?
