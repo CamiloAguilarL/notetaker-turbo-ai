@@ -10,7 +10,11 @@ export function AuthShell({ children, mode }: AuthShellProps) {
   const isLogin = mode === "login";
 
   return (
-    <main className="relative flex min-h-dvh justify-center overflow-hidden px-6 pt-[11dvh] pb-52 sm:px-10 sm:pt-[14dvh] sm:pb-60">
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="relative flex min-h-dvh justify-center overflow-hidden px-6 pt-[11dvh] pb-52 sm:px-10 sm:pt-[14dvh] sm:pb-60"
+    >
       <section className="relative z-10 w-full max-w-sm">
         <Link
           href="/"
@@ -19,7 +23,7 @@ export function AuthShell({ children, mode }: AuthShellProps) {
           Turbo Notes
         </Link>
         <div className="text-center">
-          <h1 className="font-serif text-4xl leading-none font-semibold tracking-[-0.03em] sm:text-5xl">
+          <h1 className="font-serif text-4xl leading-none font-semibold tracking-[-0.03em] text-balance sm:text-5xl">
             {isLogin ? "Yay, You’re Back!" : "Yay, New Friend!"}
           </h1>
           <div className="mt-8 text-left">{children}</div>

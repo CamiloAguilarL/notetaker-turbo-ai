@@ -20,6 +20,11 @@ test("a user can capture, organize, and reopen a private note", async ({
   await expect(
     page.getByRole("heading", { name: "Your thoughts, in a softer place." }),
   ).toBeVisible();
+  const skipLink = page.getByRole("link", { name: "Skip to main content" });
+  await skipLink.focus();
+  await expect(skipLink).toBeVisible();
+  await skipLink.press("Enter");
+  await expect(page.locator("#main-content")).toBeFocused();
   await expectNoAccessibilityViolations(page);
   await page.getByRole("link", { name: "Get started" }).click();
   await expect(page).toHaveURL(/\/register$/);

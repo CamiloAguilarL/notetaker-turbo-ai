@@ -103,7 +103,9 @@ export function NotesToolbar({
           />
           <Input
             id="note-search"
+            name="note-search"
             type="search"
+            autoComplete="off"
             value={search}
             onChange={(event) => setSearch(event.currentTarget.value)}
             maxLength={MAX_SEARCH_LENGTH}
@@ -134,10 +136,11 @@ export function NotesToolbar({
         <label className="flex items-center gap-2 text-sm font-medium">
           <span className="sr-only sm:not-sr-only">Sort by</span>
           <select
+            name="note-ordering"
             aria-label="Sort notes"
             value={ordering}
             onChange={(event) => changeOrdering(event.currentTarget.value)}
-            className="border-primary/35 focus-visible:ring-ring/40 min-h-10 rounded-full border bg-transparent px-4 outline-none focus-visible:ring-3"
+            className="border-primary/35 text-foreground focus-visible:ring-ring/40 [&>option]:bg-background [&>option]:text-foreground min-h-10 rounded-full border bg-transparent px-4 outline-none focus-visible:ring-3"
           >
             {availableOrderings.map((option) => (
               <option key={option.value} value={option.value}>

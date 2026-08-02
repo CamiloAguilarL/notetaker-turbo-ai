@@ -68,6 +68,7 @@ describe("AuthForm", () => {
       "aria-invalid",
       "true",
     );
+    expect(screen.getByLabelText("Email")).toHaveFocus();
   });
 
   it("shows a recoverable message when the service is unavailable", async () => {

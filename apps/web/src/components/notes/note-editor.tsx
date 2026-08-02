@@ -171,7 +171,11 @@ export function NoteEditor({
   const theme = categoryThemes[selectedCategory?.color_key ?? "random"];
 
   return (
-    <main className="mx-auto w-full max-w-[82rem] px-4 pt-1 pb-5 sm:px-8 lg:px-10">
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="mx-auto w-full max-w-[82rem] px-4 pt-1 pb-5 sm:px-8 lg:px-10"
+    >
       <h1 className="sr-only">Edit note</h1>
       <div className="flex min-h-14 items-center justify-between gap-4 pb-3">
         <label className="flex items-center gap-2 text-sm font-medium">
@@ -181,11 +185,12 @@ export function NoteEditor({
           />
           <span className="sr-only">Category</span>
           <select
+            name="category"
             value={draft.category}
             onChange={(event) =>
               changeDraft({ category: event.currentTarget.value })
             }
-            className="border-primary/35 focus-visible:ring-ring/40 min-h-10 rounded-full border bg-transparent px-4 outline-none focus-visible:ring-3"
+            className="border-primary/35 text-foreground focus-visible:ring-ring/40 [&>option]:bg-background [&>option]:text-foreground min-h-10 rounded-full border bg-transparent px-4 outline-none focus-visible:ring-3"
           >
             {categories.map((category) => (
               <option key={category.id} value={category.slug}>
@@ -315,6 +320,8 @@ export function NoteEditor({
           </label>
           <input
             id="note-title"
+            name="note-title"
+            autoComplete="off"
             value={draft.title}
             onChange={(event) =>
               changeDraft({ title: event.currentTarget.value })
@@ -329,6 +336,8 @@ export function NoteEditor({
           </label>
           <textarea
             id="note-content"
+            name="note-content"
+            autoComplete="off"
             value={draft.content}
             onChange={(event) =>
               changeDraft({ content: event.currentTarget.value })

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { LoaderCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -24,6 +24,8 @@ export function AuthForm({ mode }: AuthFormProps) {
   const [isPending, setIsPending] = useState(false);
   const [formError, setFormError] = useState<string>();
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
   const isLogin = mode === "login";
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -45,11 +47,14 @@ export function AuthForm({ mode }: AuthFormProps) {
       router.refresh();
     } catch (error) {
       if (error instanceof ApiError) {
-        setFieldErrors({
+        const nextFieldErrors = {
           email: error.fieldMessage("email"),
           password: error.fieldMessage("password"),
-        });
+        };
+        setFieldErrors(nextFieldErrors);
         setFormError(error.fieldMessage("non_field_errors") ?? error.message);
+        if (nextFieldErrors.email) emailRef.current?.focus();
+        else if (nextFieldErrors.password) passwordRef.current?.focus();
       } else {
         setFormError("The service is unavailable. Please try again.");
       }
@@ -65,11 +70,13 @@ export function AuthForm({ mode }: AuthFormProps) {
           Email
         </label>
         <Input
+          ref={emailRef}
           id="email"
           name="email"
           type="email"
           inputMode="email"
           autoComplete="email"
+          spellCheck={false}
           required
           aria-invalid={Boolean(fieldErrors.email)}
           aria-describedby={fieldErrors.email ? "email-error" : undefined}
@@ -88,6 +95,7 @@ export function AuthForm({ mode }: AuthFormProps) {
           Password
         </label>
         <Input
+          ref={passwordRef}
           id="password"
           name="password"
           type="password"
@@ -96,7 +104,7 @@ export function AuthForm({ mode }: AuthFormProps) {
           minLength={8}
           aria-invalid={Boolean(fieldErrors.password)}
           aria-describedby={fieldErrors.password ? "password-error" : undefined}
-          placeholder="At least 8 characters"
+          placeholder="At least 8 characters…"
           className="border-primary/45 bg-card/20 focus-visible:border-primary h-11 rounded-lg"
         />
         {fieldErrors.password ? (

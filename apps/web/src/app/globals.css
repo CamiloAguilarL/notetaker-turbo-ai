@@ -90,6 +90,19 @@
     cursor: pointer;
   }
 
+  a,
+  button,
+  input,
+  select,
+  textarea {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: color-mix(
+      in srgb,
+      var(--primary) 14%,
+      transparent
+    );
+  }
+
   ::selection {
     background: var(--note-school);
     color: var(--foreground);

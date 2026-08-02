@@ -46,7 +46,11 @@ export default async function Home() {
   const primaryLabel = user ? "Continue to your notes" : "Start your notebook";
 
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-[82rem] flex-col px-5 pb-10 sm:px-8 lg:px-10">
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="mx-auto flex min-h-dvh w-full max-w-[82rem] flex-col px-5 pb-10 sm:px-8 lg:px-10"
+    >
       <header className="flex min-h-16 items-center justify-between gap-4 py-2">
         <Link
           href="/"
@@ -79,7 +83,7 @@ export default async function Home() {
           <p className="text-primary text-sm font-semibold">
             A private notebook for everyday thoughts
           </p>
-          <h1 className="mt-5 max-w-xl font-serif text-5xl leading-[0.96] font-semibold tracking-[-0.04em] sm:text-7xl lg:text-[5.25rem]">
+          <h1 className="mt-5 max-w-xl font-serif text-5xl leading-[0.96] font-semibold tracking-[-0.04em] text-balance sm:text-7xl lg:text-[5.25rem]">
             Your thoughts, in a softer place.
           </h1>
           <p className="text-muted-foreground mt-7 max-w-lg text-base leading-7 sm:text-lg sm:leading-8">

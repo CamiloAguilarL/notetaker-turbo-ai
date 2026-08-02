@@ -75,7 +75,11 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
   });
 
   return (
-    <main className="mx-auto w-full max-w-[82rem] px-5 pt-2 pb-10 sm:px-8 lg:px-10 lg:pb-14">
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="mx-auto w-full max-w-[82rem] px-5 pt-2 pb-10 sm:px-8 lg:px-10 lg:pb-14"
+    >
       <h1 className="sr-only">{activeName ?? "All Notes"}</h1>
       <div className="flex min-h-14 items-start justify-end">
         <NewNoteButton
@@ -127,7 +131,7 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
                   height={1254}
                   className="mx-auto h-auto w-44 sm:w-52"
                 />
-                <h2 className="mt-3 font-serif text-2xl leading-snug font-semibold sm:text-3xl">
+                <h2 className="mt-3 font-serif text-2xl leading-snug font-semibold text-balance sm:text-3xl">
                   {searchQuery
                     ? `No notes match “${searchQuery}”`
                     : activeName

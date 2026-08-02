@@ -98,6 +98,8 @@ The source primarily shows a laptop-width frame. Implementation must add intenti
 - Category cannot be communicated by color alone; always include its label.
 - Selected filters expose `aria-current` or equivalent state.
 - Form errors are associated with their fields and announced.
+- A keyboard-only skip link targets the single main landmark on every product, loading, error, and authentication screen.
+- Authentication moves focus to the first invalid field after an API validation response; general failures remain in a polite live region.
 - Focus rings use the semantic ring token and must remain visible on category colors.
 - Autosave status uses text and an appropriate live region, not animation alone.
 - Any card entrance or editor transition is removed for `prefers-reduced-motion`.
