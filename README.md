@@ -1,6 +1,6 @@
 # Turbo Notes
 
-Turbo Notes is a private notes-taking hiring challenge built as a local-first monorepo with Next.js, Django REST Framework, and PostgreSQL. It includes session authentication, category-based organization, a responsive notes dashboard, an autosaving editor, and reversible note deletion.
+Turbo Notes is a private notes-taking hiring challenge built as a local-first monorepo with Next.js, Django REST Framework, and PostgreSQL. It includes session authentication, category-based organization, search and sorting, a responsive notes dashboard, an autosaving editor, reversible note deletion, and a minimal public landing.
 
 ## Current status
 
@@ -9,6 +9,7 @@ The complete P0 product journey and its documented quality gate are complete:
 - Email/password registration, login, session persistence, route protection, and logout with Django sessions and CSRF protection.
 - Private user-scoped note creation, retrieval, updates, deterministic ordering, reversible soft deletion, and four seeded categories with scoped counts.
 - Responsive empty/populated dashboards, URL-backed category filters, semantic category colors, loading/error states, and accessible note cards.
+- Debounced full-text note search plus recently edited, oldest edited, and category ordering; every view composes through durable URL state and deterministic API ordering.
 - Plain-text editor with category changes, serialized debounced autosave, saving/error/retry states, last-edited metadata, and close-time flush.
 - Accessible delete confirmation and an eight-second Undo action that restores the complete note without losing its category or latest draft.
 - Next.js 16.2.12, React 19, Tailwind CSS 4, and customized source-owned shadcn/ui `Button`, `Input`, and `AlertDialog` components.
@@ -17,8 +18,10 @@ The complete P0 product journey and its documented quality gate are complete:
 - Ruff, pytest with enforced backend coverage, ESLint, TypeScript, Vitest with enforced frontend coverage, Playwright E2E plus Axe accessibility scans at three breakpoints, production builds, and npm security auditing.
 - A GitHub Actions quality gate that reuses the same Dockerized checks as local development.
 - Product requirements, architecture, delivery/evaluation priorities, quality strategy, and provisional design tokens in `docs/`.
+- A source-aligned visual fidelity pass covering authentication, empty/populated dashboards, cards, controls, responsive editor composition, and original transparent stationery illustrations.
+- A public Server Component landing page with visitor registration/login actions and a personalized return-to-notes action for authenticated users.
 
-The first selected P1 enhancement, reversible deletion, is complete across persistence, API, responsive UI, failure handling, unit tests, E2E, and accessibility checks. Search/sorting is next, followed by the public landing page. Manual ordering and Motion retain their separate conditional gate.
+The low-risk P1 enhancements—reversible deletion, search/deterministic sorting, and the public landing—are complete across their relevant API, responsive UI, failure handling, unit tests, E2E, and accessibility checks. The documented manual-order gate is now open; Motion remains sequenced after the target interactions stabilize.
 
 ## Repository structure
 
@@ -97,7 +100,7 @@ The implementation order is intentionally tied to Turbo AI's four assessment cri
 
 The planned time allocation is 55% P0 slices, 25% quality work performed alongside them, 10% selected P1 enhancements, and 10% submission verification and presentation. These percentages are prioritization guardrails, not retrospective time claims.
 
-Selected P1 work is ordered as deletion with undo (complete), search and sorting (next), a minimal landing, then conditional manual ordering and motion. Pinning, keyboard shortcuts, and a complete trash screen remain P2. See the [evaluation strategy](docs/evaluation-strategy.md) for scoring and go/no-go conditions.
+Selected P1 work is ordered as deletion with undo (complete), search and sorting (complete), a minimal landing (complete), then conditional manual ordering and motion. Pinning, keyboard shortcuts, and a complete trash screen remain P2. See the [evaluation strategy](docs/evaluation-strategy.md) for scoring and go/no-go conditions.
 
 ## Environment variables
 
@@ -157,6 +160,7 @@ OpenAI Codex was used as an implementation and review assistant to:
 - translate the written brief into traceable functional and non-functional requirements;
 - inspect the public Figma prototype interactively through browser control, including empty, populated, filtered, editor, and category-selector states;
 - review the full 3:52 Google Drive walkthrough through browser control to capture registration, login, empty dashboard, creation, category switching, filtering, and editing behavior;
+- revisit source frames for a dedicated visual-fidelity pass that removed unnecessary dashboard chrome, corrected rounded note geometry, softened controls, and moved editor controls outside its colored writing surface;
 - attempt structured Figma design-context and variable extraction through the Figma MCP integration, document the edit-access limitation, and keep visually estimated tokens explicitly provisional;
 - scaffold and configure the Next.js and Django workspaces;
 - define Docker, environment, testing, linting, and documentation contracts;
@@ -164,8 +168,9 @@ OpenAI Codex was used as an implementation and review assistant to:
 - identify and replace vulnerable transitive PostCSS and Sharp versions with audited overrides;
 - validate the local UI at desktop, tablet, and mobile viewports and smoke-test the Dockerized web, API, and database services;
 - detect and fix a server/client timestamp hydration mismatch through live browser diagnostics;
-- exercise the real registration, note creation, autosave, reload persistence, filtering, category change, reversible deletion, logout, route protection, and automated accessibility scans in Playwright.
+- exercise the real landing, registration, note creation, autosave, reload persistence, filtering, search, sorting, category change, reversible deletion, logout, route protection, and automated accessibility scans in Playwright.
+- generate two original transparent colored-pencil/watercolor stationery illustrations for authentication and the empty state, remove their chroma backgrounds, and inspect the resulting RGBA assets at desktop and mobile sizes.
 
-AI accelerated source comparison, scaffolding, implementation, documentation, dependency review, and repetitive verification. It was not used to invent unavailable Figma values, replace provided design assets, or justify unverified completion claims.
+AI accelerated source comparison, scaffolding, implementation, documentation, dependency review, original illustration creation, and repetitive verification. It was not used to invent unavailable Figma values, present generated illustrations as Figma exports, or justify unverified completion claims.
 
 Generated work was checked with ESLint, TypeScript, Vitest and enforced coverage, Playwright, a Next.js production build, Ruff, pytest and enforced coverage, `npm audit`, Docker health checks, HTTP smoke tests, and visual browser inspection. AI output is not treated as authoritative: the repository owner remains responsible for reviewing, understanding, and presenting every decision. Material AI-assisted changes must record the inspected source, the decision influenced, and the independent validation performed.

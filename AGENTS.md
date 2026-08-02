@@ -87,4 +87,4 @@ Run `make check` before a milestone commit. Use `docker compose config` and a lo
 - Review AI output for correctness, security, accessibility, maintainability, and license implications.
 - Record material AI use and validation in the README's “AI-assisted development” section.
 - Record which source or tool AI inspected, what decision or artifact it influenced, and how the result was independently verified.
-- Do not use AI-generated screenshots or assets as substitutes for provided Figma assets.
+- Never present AI-generated screenshots or assets as Figma exports. When a decorative source asset cannot be exported, an original generated replacement is allowed only if its provenance and prompt intent are documented, license implications are reviewed, it contains no copied interface text or branding, and the result is visually and responsively verified.

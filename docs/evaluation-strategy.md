@@ -53,9 +53,11 @@ The P1 go/no-go gate passed with the following repository evidence:
 4. The Playwright journey and Axe scans pass at 390px, 820px, and 1440px; editor fields have visible focus treatment and global reduced-motion fallback.
 5. The Figma prototype and walkthrough were compared manually. Exact Figma token extraction remains unavailable because the connected MCP requires edit access, so provisional semantic values remain explicitly labeled rather than blocking functional work.
 
-Selected P1 work may now proceed in the documented order. Manual ordering remains blocked until deletion, search, and deterministic sorting are stable; Motion remains blocked until target interactions are final.
+Selected P1 work may proceed in the documented order. Manual ordering was initially blocked until deletion, search, and deterministic sorting became stable; Motion remains blocked until target interactions are final.
 
-Reversible deletion is now complete. Evidence includes owner-scoped soft-delete/restore API tests, frontend confirmation and failure/Undo component tests, preservation of the latest draft before deletion, and the complete Playwright journey with Axe scans at desktop, tablet, and mobile breakpoints. Search and deterministic sorting are the next active P1 slice; therefore the manual-order gate remains closed.
+Reversible deletion, search, deterministic sorting, and the public landing are now complete. Evidence includes owner-scoped soft-delete/restore and search/order API tests, frontend confirmation/failure/Undo and query-state component tests, preservation of the latest draft before deletion, visitor/authenticated landing actions, production builds, and the complete Playwright journey with Axe scans at desktop, tablet, and mobile breakpoints.
+
+The manual-order gate is now open: deletion, search, and deterministic sorting are stable and independently committed. Manual ordering remains a conditional slice and must still satisfy transactional persistence, rollback, touch, keyboard, announcement, responsive, and testing criteria before Motion begins.
 
 ## Demonstration plan
 

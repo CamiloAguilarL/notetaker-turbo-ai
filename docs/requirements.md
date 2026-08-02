@@ -133,4 +133,3 @@ These are valid future extensions, but implementing them before the P0 workflow 
 
 1. The brief says **7 days** and later says **72 hours**. Which deadline governs the submission?
 2. Does Turbo expect exact Figma tokens? The connected Figma MCP currently requires edit access to read variables and design context.
-3. Should the decorative authentication/empty-state illustrations be exported from Figma, or may equivalent licensed assets be used?

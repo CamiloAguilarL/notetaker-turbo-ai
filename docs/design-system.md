@@ -2,11 +2,11 @@
 
 ## Source status
 
-The public Figma prototype and walkthrough video were visually inspected. The connected Figma account can open the public prototype but the design-context and variable APIs respond that edit access is required. As a result:
+The public Figma prototype and walkthrough video were visually inspected twice: first for product behavior and later frame-by-frame for the authentication, empty dashboard, populated dashboard, and editor compositions. The connected Figma account can open the public prototype but the design-context and variable APIs respond that edit access is required. As a result:
 
 - token **names and roles** below are the stable implementation contract;
 - current hex values are **provisional visual estimates**, not claimed Figma exports;
-- exact typography, spacing, border, shadow, and illustration assets remain pending edit access or a design-token export;
+- exact typography and token measurements remain pending edit access or a design-token export;
 - components must use semantic tokens so replacing estimates does not require rewriting JSX.
 
 Figma source: [Notes-Taking App Challenge](https://www.figma.com/design/nIqpRyEWKPYqYsW7RMfi3S/Notes-Taking-App-Challenge)
@@ -15,9 +15,9 @@ Figma source: [Notes-Taking App Challenge](https://www.figma.com/design/nIqpRyEW
 
 The product feels like a quiet physical notebook: warm paper canvas, serif note headings, restrained sans-serif controls, and category-colored cards with visible outlines. The memorable element is the category system itself; unrelated gradients, glass effects, and decorative dashboard chrome would dilute that identity.
 
-The initial developer landing page uses slightly rotated note cards as a temporary signature. Product screens should follow the actual Figma layout rather than copy the checkpoint page.
+Product screens now follow the inspected source hierarchy: flat cream canvas, quiet account utilities, category list without a heavy selected pill, thin outlined controls, rounded cards with three-pixel category borders, and one large rounded editor surface. Decorative dividers, generic dashboard panels, hard black shadows, and oversized dashboard titles are intentionally absent.
 
-The public product landing should reuse real dashboard materials—category color, note edges, handwritten spatial rhythm, and actual product copy—rather than introduce generic SaaS gradients, metric cards, or unrelated illustrations.
+The public product landing reuses real dashboard materials—category color, note edges, serif titles, and the actual interaction vocabulary—rather than introducing generic SaaS gradients, metric cards, or unrelated product claims.
 
 ## Tailwind CSS v4 token contract
 
@@ -39,7 +39,7 @@ Tokens live in `apps/web/src/app/globals.css` and are exposed to Tailwind throug
 | `--note-personal-border` | `#6caaa2` | Personal emphasis. |
 | `--note-drama` | `#c9b8d9` | Drama surface. |
 | `--note-drama-border` | `#9779b3` | Drama emphasis. |
-| `--destructive` | `#b7443e` | Destructive actions and errors. |
+| `--destructive` | `#7f2926` | Destructive actions and errors. |
 | `--ring` | `#8e5d36` | Visible keyboard focus. |
 
 Do not use raw color values in React components. A category returned by the API maps to an approved semantic token key; it must not inject arbitrary CSS from stored user data.
@@ -56,8 +56,8 @@ The serif family visible in the source cannot be identified reliably without des
 
 ## Shape, spacing, and elevation
 
-- Category cards use a category border rather than a generic shadow-only container.
-- The product UI should follow Figma radii; the current foundation uses `--radius: 0.75rem` provisionally.
+- Category cards use a three-pixel category border and a large radius rather than a generic shadow-only container. These dimensions were visually matched to the public prototype and remain tokenized estimates.
+- The product UI uses `--radius: 0.75rem` as its provisional base; note cards and the editor intentionally compose larger semantic radii from it.
 - Touch targets must be at least 44 by 44 CSS pixels even when the visual glyph is smaller.
 - Use a small spacing vocabulary derived from Tailwind's scale; avoid one-off arbitrary values unless an inspected Figma measurement requires them.
 - Keep the note editor visually dominant and quiet. Status text and the category selector are supporting controls.
@@ -73,6 +73,15 @@ shadcn/ui is a source-code supplier, not a fixed theme or runtime dependency cat
 - `AlertDialog` was added for destructive note confirmation. Its content scales without an opacity fade so text meets contrast requirements from the first animation frame, and its destructive action uses the semantic high-contrast token on every category surface.
 - The note editor uses a styled native `select` because it provides the required single-value category interaction without adding a larger primitive. A sheet or other primitive must be added only with a feature that needs it.
 - Prefer Lucide icons only when the glyph faithfully matches Figma; export and commit the exact Figma asset otherwise.
+
+## Original illustration provenance
+
+The Figma integration could not export the decorative source assets because the connected account lacks edit access. Two original, non-source illustrations were therefore generated for this challenge and are clearly treated as replacements rather than Figma exports:
+
+- `apps/web/public/illustrations/auth-friends.png`: transparent colored-pencil/watercolor cactus and sleeping cat composition for authentication.
+- `apps/web/public/illustrations/empty-boba.png`: transparent smiling boba illustration for the empty dashboard.
+
+Both were generated with OpenAI image generation from prompts requesting a warm hand-drawn stationery style, rendered against a chroma background, converted to transparent RGBA assets, and visually checked at desktop and mobile sizes. They contain no logos, source screenshots, or copied interface text. If Turbo supplies exportable source assets, replace these files without changing the component layout contract.
 
 ## Responsive behavior
 

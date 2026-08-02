@@ -72,8 +72,8 @@ P1 work is blocked until the gate in `evaluation-strategy.md` passes.
 Implement in this order and stop when the protected submission buffer would be affected:
 
 1. Soft deletion with accessible undo. **Complete:** owner-scoped persistence/API, latest-draft flush, confirmation, temporary Undo, recoverable errors, component coverage, and three-breakpoint E2E/Axe evidence.
-2. Search plus recently edited, oldest edited, and category sorting.
-3. Minimal public landing using real product visuals and authentication actions.
+2. Search plus recently edited, oldest edited, and category sorting. **Complete:** allowlisted API queries, URL-composed filters, explicit no-results behavior, deterministic tie-breakers, API/component coverage, and three-breakpoint E2E/Axe evidence.
+3. Minimal public landing using real product visuals and authentication actions. **Complete:** visitor and authenticated CTAs, source-aligned product composition, responsive layout, production build, and E2E/Axe coverage.
 4. Manual ordering with accessible drag-and-drop, only if the conditional gate passes.
 5. One restrained Motion-based interaction language, only after target layouts are stable.
 
@@ -98,7 +98,7 @@ Each enhancement is a complete vertical slice: persistence and API contract, res
 | Day 6 | Core hardening, then deletion/search/sorting/landing if the P0 gate passes. |
 | Day 7 | Conditional drag/motion only with surplus; README, demo data, video, final audit, submission. |
 
-For a 72-hour interpretation, combine M1/M2 on the first implementation day, M3/M4 on the second, and reserve the final day for reliability, accessibility, documentation, and the demo. Only deletion, search/sorting, or the low-cost landing may enter that shorter plan after the P0 gate; drag-and-drop and Motion are first to be cut.
+For a 72-hour interpretation, combine M1/M2 on the first implementation day, M3/M4 on the second, and reserve the final day for reliability, accessibility, documentation, and the demo. Only deletion, search/sorting, or the low-cost landing may enter that shorter plan after the P0 gate; drag-and-drop and Motion are first to be cut. In the current implementation all three low-risk P1 slices are complete; manual ordering is the next conditional slice.
 
 ## Commit strategy
 
