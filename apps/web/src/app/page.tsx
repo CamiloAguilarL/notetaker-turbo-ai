@@ -1,86 +1,134 @@
-import { ArrowUpRight, Boxes, Database, PanelsTopLeft } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import { Check, NotebookPen, Palette, Search } from "lucide-react";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
+import { getCurrentUser } from "@/lib/api/server";
+import { cn } from "@/lib/utils";
 
-const services = [
+const benefits: Array<{ label: string; icon: LucideIcon }> = [
+  { label: "Autosaved", icon: Check },
+  { label: "Color organized", icon: Palette },
+  { label: "Easy to find", icon: Search },
+];
+
+const previewNotes = [
   {
-    name: "Next.js",
-    detail: "Web · :3000",
-    icon: PanelsTopLeft,
-    tone: "bg-note-random border-note-random-border",
-    rotation: "-rotate-2",
+    category: "Random Thoughts",
+    date: "Today",
+    title: "Tiny ideas worth keeping",
+    body: "The best thoughts rarely arrive with a warning.",
+    className:
+      "bg-note-random border-note-random-border top-2 right-1 w-[76%] rotate-2 sm:right-5 sm:w-[68%]",
   },
   {
-    name: "Django REST",
-    detail: "API · :8000",
-    icon: Boxes,
-    tone: "bg-note-school border-note-school-border",
-    rotation: "rotate-1",
+    category: "School",
+    date: "Yesterday",
+    title: "Things I want to learn",
+    body: "A reading list, a question, and one brave first step.",
+    className:
+      "bg-note-school border-note-school-border top-32 left-0 w-[78%] -rotate-2 sm:left-5 sm:w-[70%]",
   },
   {
-    name: "PostgreSQL",
-    detail: "Data · :5432",
-    icon: Database,
-    tone: "bg-note-personal border-note-personal-border",
-    rotation: "-rotate-1",
+    category: "Personal",
+    date: "Aug 2",
+    title: "A gentle reminder",
+    body: "Make room for the moments you want to return to.",
+    className:
+      "bg-note-personal border-note-personal-border right-3 bottom-1 w-[78%] rotate-1 sm:right-9 sm:w-[70%]",
   },
 ] as const;
 
-export default function Home() {
-  const apiUrl =
-    process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1";
+export default async function Home() {
+  const user = await getCurrentUser().catch(() => null);
+  const primaryHref = user ? "/notes" : "/register";
+  const primaryLabel = user ? "Continue to your notes" : "Start your notebook";
 
   return (
-    <main className="mx-auto grid min-h-dvh w-full max-w-6xl items-center gap-14 px-6 py-16 lg:grid-cols-[0.9fr_1.1fr] lg:px-10">
-      <section className="max-w-xl">
-        <p className="text-muted-foreground mb-5 font-mono text-xs font-semibold tracking-[0.18em] uppercase">
-          Foundation checkpoint
-        </p>
-        <h1 className="max-w-lg font-serif text-5xl leading-[0.96] font-semibold tracking-[-0.035em] sm:text-7xl">
-          The notebook is open.
-        </h1>
-        <p className="text-muted-foreground mt-7 max-w-lg text-base leading-7 sm:text-lg">
-          Next.js, Django REST Framework, and PostgreSQL now share one local
-          workflow. Product slices can start from a reproducible, tested base.
-        </p>
-        <Button asChild variant="outline" size="lg" className="mt-8">
-          <a href={`${apiUrl}/health/`}>
-            Check the API
-            <ArrowUpRight aria-hidden="true" />
-          </a>
-        </Button>
-      </section>
-
-      <section
-        aria-label="Local services"
-        className="relative mx-auto w-full max-w-xl"
-      >
-        <div className="grid gap-5 sm:grid-cols-2">
-          {services.map(
-            ({ name, detail, icon: Icon, tone, rotation }, index) => (
-              <article
-                key={name}
-                className={`min-h-48 border-2 p-6 shadow-[4px_5px_0_var(--foreground)] ${tone} ${rotation} ${index === 2 ? "sm:col-span-2 sm:mx-auto sm:w-[calc(50%-0.625rem)]" : ""}`}
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <Icon
-                    aria-hidden="true"
-                    className="size-5"
-                    strokeWidth={1.75}
-                  />
-                  <span className="text-foreground/70 font-mono text-xs">
-                    0{index + 1}
-                  </span>
-                </div>
-                <h2 className="mt-12 font-serif text-2xl font-semibold">
-                  {name}
-                </h2>
-                <p className="text-foreground/70 mt-1 text-sm">{detail}</p>
-              </article>
-            ),
-          )}
+    <main className="mx-auto flex min-h-dvh w-full max-w-[82rem] flex-col px-5 pb-10 sm:px-8 lg:px-10">
+      <header className="flex min-h-16 items-center justify-between gap-4 py-2">
+        <Link
+          href="/"
+          className="focus-visible:ring-ring/40 inline-flex items-center gap-2 rounded-full text-sm font-semibold outline-none focus-visible:ring-3"
+        >
+          <NotebookPen aria-hidden="true" className="text-primary size-4" />
+          Turbo Notes
+        </Link>
+        <div className="flex items-center gap-1 sm:gap-2">
+          {!user ? (
+            <Button asChild variant="ghost" size="sm">
+              <Link href="/login">Sign in</Link>
+            </Button>
+          ) : null}
+          <Button asChild size="sm" className="sm:h-10 sm:px-4">
+            <Link href={primaryHref}>
+              {user ? "Open notebook" : "Get started"}
+            </Link>
+          </Button>
         </div>
-      </section>
+      </header>
+
+      <div className="grid flex-1 items-center gap-10 py-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16 lg:py-14">
+        <section className="max-w-2xl">
+          <p className="text-primary text-sm font-semibold">
+            A private notebook for everyday thoughts
+          </p>
+          <h1 className="mt-5 max-w-xl font-serif text-5xl leading-[0.96] font-semibold tracking-[-0.04em] sm:text-7xl lg:text-[5.25rem]">
+            Your thoughts, in a softer place.
+          </h1>
+          <p className="text-muted-foreground mt-7 max-w-lg text-base leading-7 sm:text-lg sm:leading-8">
+            Capture what matters, sort it by the parts of life it belongs to,
+            and find it again without breaking your train of thought.
+          </p>
+
+          <Button asChild size="lg" className="mt-8">
+            <Link href={primaryHref}>{primaryLabel}</Link>
+          </Button>
+
+          <ul
+            aria-label="Product benefits"
+            className="text-muted-foreground mt-8 flex flex-wrap gap-x-5 gap-y-3 text-sm"
+          >
+            {benefits.map(({ label, icon: Icon }) => (
+              <li key={label} className="flex items-center gap-1.5">
+                <Icon aria-hidden="true" className="text-primary size-3.5" />
+                {label}
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section
+          aria-label="A preview of organized notes"
+          className="relative mx-auto h-[29rem] w-full max-w-xl sm:h-[33rem]"
+        >
+          <div
+            aria-hidden="true"
+            className="border-primary/15 bg-card/20 absolute inset-5 rounded-[2rem] border sm:inset-8"
+          />
+          {previewNotes.map((note) => (
+            <article
+              key={note.category}
+              className={cn(
+                "absolute min-h-52 rounded-2xl border-[3px] p-5 shadow-sm sm:min-h-56 sm:p-6",
+                note.className,
+              )}
+            >
+              <p className="text-foreground/75 flex items-center gap-2 text-xs">
+                <span className="font-bold">{note.date}</span>
+                <span aria-hidden="true">·</span>
+                <span>{note.category}</span>
+              </p>
+              <h2 className="mt-4 max-w-xs font-serif text-2xl leading-tight font-semibold tracking-[-0.02em] sm:text-3xl">
+                {note.title}
+              </h2>
+              <p className="text-foreground/80 mt-3 max-w-sm text-sm leading-6">
+                {note.body}
+              </p>
+            </article>
+          ))}
+        </section>
+      </div>
     </main>
   );
 }

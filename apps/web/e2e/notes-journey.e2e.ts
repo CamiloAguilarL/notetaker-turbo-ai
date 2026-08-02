@@ -16,7 +16,13 @@ test("a user can capture, organize, and reopen a private note", async ({
 }) => {
   const email = `playwright-${crypto.randomUUID()}@example.com`;
 
-  await page.goto("/register");
+  await page.goto("/");
+  await expect(
+    page.getByRole("heading", { name: "Your thoughts, in a softer place." }),
+  ).toBeVisible();
+  await expectNoAccessibilityViolations(page);
+  await page.getByRole("link", { name: "Get started" }).click();
+  await expect(page).toHaveURL(/\/register$/);
   await expectNoAccessibilityViolations(page);
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill("playwright-secure-password-2026");
@@ -141,6 +147,14 @@ test("a user can capture, organize, and reopen a private note", async ({
   await expect(
     page.getByRole("link", { name: "Open An end-to-end thought" }),
   ).toBeVisible();
+
+  await page.goto("/");
+  await expect(
+    page.getByRole("link", { name: "Continue to your notes" }),
+  ).toHaveAttribute("href", "/notes");
+  await expectNoAccessibilityViolations(page);
+  await page.getByRole("link", { name: "Open notebook" }).click();
+  await expect(page).toHaveURL(/\/notes$/);
 
   await page.getByRole("button", { name: "Sign out" }).click();
   await expect(page).toHaveURL(/\/login$/);
