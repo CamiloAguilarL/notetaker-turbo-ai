@@ -4,15 +4,15 @@ Use this list after implementation freezes. It separates repository readiness fr
 
 ## Repository preflight
 
-- [ ] `git status --short` is empty and no local `.env`, database, coverage output, Playwright artifact, or editor state is tracked.
-- [ ] `docker compose config --quiet` succeeds from a fresh `.env` copied from `.env.example`.
-- [ ] `make check` passes from the supported Docker environment.
-- [ ] `make e2e` passes for desktop, tablet, and mobile.
-- [ ] `docker compose ps` shows healthy `db`, `api`, and `web` services.
-- [ ] Web, API health, and Django admin open on ports 3000, 8000, and 8000 respectively; PostgreSQL maps to 5432.
-- [ ] The README quick start, environment tables, feature status, AI-use claims, and deferred scope match the code.
-- [ ] The demo seed command is idempotent and no password appears in source or shell history.
-- [ ] The focused commit history is understandable without squashing or rewriting it.
+- [x] `git status --short` is empty after the final documentation commit and no local `.env`, database, coverage output, Playwright artifact, or editor state is tracked.
+- [x] `docker compose config --quiet` succeeds from a fresh `.env` copied from `.env.example`.
+- [x] `make check` passes from the supported Docker environment.
+- [x] `make e2e` passes for desktop, tablet, and mobile.
+- [x] `docker compose ps` shows healthy `db`, `api`, and `web` services.
+- [x] Web, API health, and Django admin respond on ports 3000, 8000, and 8000 respectively; PostgreSQL maps to 5432.
+- [x] The README quick start, environment tables, feature status, AI-use claims, and deferred scope match the code.
+- [x] The demo seed command is idempotent and no password appears in source or shell history.
+- [x] The focused commit history is understandable without squashing or rewriting it.
 
 ## Public GitHub repository
 

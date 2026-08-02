@@ -83,8 +83,8 @@ Each enhancement is a complete vertical slice: persistence and API contract, res
 
 - README process/decisions update, demo seed data, and five-minute English walkthrough script. **Complete.**
 - Final AI-use and scope-decision record with only verified claims. **Complete.**
-- Clean-clone Docker setup test and production build.
-- Clean public GitHub history and working links.
+- Clean-clone Docker setup, full quality gate, production build, health checks, and three-breakpoint E2E/Axe run. **Complete:** the finalized runtime tree passed from a separate clone built directly from committed lockfiles.
+- Local Git history, ignored-artifact scan, documentation links, and submission checklist. **Complete.** Public GitHub publication, signed-out link verification, video recording/upload, and form submission remain candidate-owned external actions.
 
 ## Suggested schedule
 
