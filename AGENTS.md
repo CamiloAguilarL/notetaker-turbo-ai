@@ -20,6 +20,7 @@ These rules apply to every human and AI contributor in this repository. A nested
 ## Git history
 
 - Commit after a coherent unit is complete and its relevant checks pass. Do not commit half-working states merely to create activity.
+- Do not accumulate multiple completed, unrelated concerns in the working tree. Commit a checked unit before starting the next independent concern.
 - Use Conventional Commits: `feat:`, `fix:`, `test:`, `docs:`, `refactor:`, `chore:`, or `ci:`.
 - Keep commits focused and explain intent in the subject. The history should make implementation sequence and elapsed time understandable.
 - Never commit secrets, local `.env` files, databases, caches, coverage output, generated build artifacts, or editor state.
@@ -82,4 +83,3 @@ Run `make check` before a milestone commit. Use `docker compose config` and a lo
 - Review AI output for correctness, security, accessibility, maintainability, and license implications.
 - Record material AI use and validation in the README's “AI-assisted development” section.
 - Do not use AI-generated screenshots or assets as substitutes for provided Figma assets.
-
