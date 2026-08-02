@@ -11,13 +11,17 @@ import type { User } from "@/lib/api/types";
 export function AccountBar({ user }: { user: User }) {
   const router = useRouter();
   const [isPending, setIsPending] = useState(false);
+  const [error, setError] = useState<string>();
 
   async function handleLogout() {
     setIsPending(true);
+    setError(undefined);
     try {
       await logOut();
       router.replace("/login");
       router.refresh();
+    } catch {
+      setError("We couldn’t sign you out. Please try again.");
     } finally {
       setIsPending(false);
     }
@@ -32,6 +36,12 @@ export function AccountBar({ user }: { user: User }) {
         Turbo Notes
       </div>
       <div className="flex items-center gap-3">
+        <p
+          role={error ? "alert" : undefined}
+          className="text-destructive text-xs"
+        >
+          {error}
+        </p>
         <span className="text-muted-foreground hidden max-w-52 truncate text-sm sm:block">
           {user.email}
         </span>
