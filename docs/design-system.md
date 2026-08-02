@@ -37,6 +37,8 @@ Tokens live in `apps/web/src/app/globals.css` and are exposed to Tailwind throug
 | `--note-school-border` | `#e8bd58` | School emphasis. |
 | `--note-personal` | `#a9c6bf` | Personal surface. |
 | `--note-personal-border` | `#6caaa2` | Personal emphasis. |
+| `--note-drama` | `#c9b8d9` | Drama surface. |
+| `--note-drama-border` | `#9779b3` | Drama emphasis. |
 | `--destructive` | `#b7443e` | Destructive actions and errors. |
 | `--ring` | `#8e5d36` | Visible keyboard focus. |
 
@@ -67,8 +69,8 @@ shadcn/ui is a source-code supplier, not a fixed theme or runtime dependency cat
 - Add a component only when a current product slice uses it.
 - Review generated code and adapt its tokens, radius, focus, size, and interaction states to Figma.
 - Keep ownership in `src/components/ui` and product composition outside that folder.
-- The only installed UI component in this milestone is `Button`.
-- Likely future additions are `Input`, `Select`, and an accessible dialog/sheet primitive, but they must be added with the feature that needs them.
+- The installed source-owned UI components are `Button` and `Input`; both were added with authentication and adapted to the notebook theme.
+- The note editor uses a styled native `select` because it provides the required single-value category interaction without adding a larger primitive. An accessible dialog/sheet must be added only with a feature that needs it.
 - Prefer Lucide icons only when the glyph faithfully matches Figma; export and commit the exact Figma asset otherwise.
 
 ## Responsive behavior

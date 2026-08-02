@@ -29,6 +29,8 @@
   --color-note-school-border: var(--note-school-border);
   --color-note-personal: var(--note-personal);
   --color-note-personal-border: var(--note-personal-border);
+  --color-note-drama: var(--note-drama);
+  --color-note-drama-border: var(--note-drama-border);
   --font-sans: var(--font-geist-sans);
   --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
   --font-mono: var(--font-geist-mono);
@@ -65,6 +67,8 @@
   --note-school-border: #e8bd58;
   --note-personal: #a9c6bf;
   --note-personal-border: #6caaa2;
+  --note-drama: #c9b8d9;
+  --note-drama-border: #9779b3;
   --radius: 0.75rem;
 }
 
