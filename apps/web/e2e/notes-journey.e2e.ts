@@ -60,7 +60,9 @@ test("a user can capture, organize, and reopen a private note", async ({
   await page.getByRole("link", { name: /Personal\s*1/ }).click();
   await expect(page).toHaveURL(/\/notes\?category=personal$/);
   await page.getByRole("link", { name: "Open An end-to-end thought" }).click();
-  await expect(page).toHaveURL(/\/notes\/[0-9a-f-]+\?from=personal$/);
+  await expect(page).toHaveURL(
+    /\/notes\/[0-9a-f-]+\?return=category%3Dpersonal$/,
+  );
 
   await page.getByLabel("Category").selectOption("school");
   await expect(
@@ -96,6 +98,44 @@ test("a user can capture, organize, and reopen a private note", async ({
 
   await page.getByRole("button", { name: "Undo", exact: true }).click();
   await expect(page).toHaveURL(/\/notes\?category=school$/);
+  await expect(
+    page.getByRole("link", { name: "Open An end-to-end thought" }),
+  ).toBeVisible();
+
+  await page.getByLabel("Search notes").fill("browser");
+  await expect(page).toHaveURL(/\/notes\?category=school&q=browser$/);
+  await expect(
+    page.getByRole("link", { name: "Open An end-to-end thought" }),
+  ).toBeVisible();
+  await expect(page.getByRole("option", { name: "Category" })).toHaveCount(0);
+
+  await page
+    .getByRole("combobox", { name: "Sort notes" })
+    .selectOption("updated_at");
+  await expect(page).toHaveURL(
+    /\/notes\?category=school&q=browser&ordering=updated_at$/,
+  );
+  await page.getByRole("button", { name: "Clear search" }).click();
+  await expect(page).toHaveURL(/\/notes\?category=school&ordering=updated_at$/);
+
+  await page.getByRole("link", { name: /All Categories\s*1/ }).click();
+  await expect(page).toHaveURL(/\/notes\?ordering=updated_at$/);
+  await expect(page.getByRole("option", { name: "Category" })).toBeAttached();
+
+  await page.getByLabel("Search notes").fill("missing phrase");
+  await expect(page).toHaveURL(
+    /\/notes\?q=missing\+phrase&ordering=updated_at$/,
+  );
+  await expect(
+    page.getByRole("heading", { name: "No notes match “missing phrase”" }),
+  ).toBeVisible();
+  await expectNoAccessibilityViolations(page);
+
+  await page.getByRole("button", { name: "Clear search" }).click();
+  await page
+    .getByRole("combobox", { name: "Sort notes" })
+    .selectOption("category");
+  await expect(page).toHaveURL(/\/notes\?ordering=category$/);
   await expect(
     page.getByRole("link", { name: "Open An end-to-end thought" }),
   ).toBeVisible();

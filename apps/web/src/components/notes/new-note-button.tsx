@@ -7,7 +7,13 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { createNote } from "@/lib/api/notes";
 
-export function NewNoteButton({ category }: { category?: string }) {
+export function NewNoteButton({
+  category,
+  returnQuery,
+}: {
+  category?: string;
+  returnQuery?: string;
+}) {
   const router = useRouter();
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState<string>();
@@ -17,7 +23,9 @@ export function NewNoteButton({ category }: { category?: string }) {
     setError(undefined);
     try {
       const note = await createNote(category);
-      const query = category ? `?from=${encodeURIComponent(category)}` : "";
+      const query = returnQuery
+        ? `?return=${encodeURIComponent(returnQuery)}`
+        : "";
       router.push(`/notes/${note.id}${query}`);
     } catch {
       setError("We couldn’t create your note. Please try again.");

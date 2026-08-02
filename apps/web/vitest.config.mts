@@ -18,8 +18,9 @@ export default defineConfig({
         "src/components/notes/*.tsx",
         "src/lib/category-theme.ts",
         "src/lib/format-date.ts",
+        "src/lib/notes-query.ts",
       ],
-      exclude: ["**/*.test.tsx"],
+      exclude: ["**/*.test.ts", "**/*.test.tsx"],
       thresholds: {
         statements: 90,
         branches: 80,

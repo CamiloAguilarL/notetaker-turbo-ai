@@ -33,13 +33,13 @@ describe("NewNoteButton", () => {
       updated_at: "2026-08-02T12:00:00Z",
     });
 
-    render(<NewNoteButton category="school" />);
+    render(<NewNoteButton category="school" returnQuery="category=school" />);
     await user.click(screen.getByRole("button", { name: "New Note" }));
 
     expect(mockedCreateNote).toHaveBeenCalledWith("school");
     await waitFor(() =>
       expect(push).toHaveBeenCalledWith(
-        "/notes/8ff50ae7-a153-49cd-ab60-2c865f3d82a1?from=school",
+        "/notes/8ff50ae7-a153-49cd-ab60-2c865f3d82a1?return=category%3Dschool",
       ),
     );
   });

@@ -3,14 +3,22 @@ import Link from "next/link";
 
 import type { Category } from "@/lib/api/types";
 import { categoryThemes } from "@/lib/category-theme";
+import { buildNotesHref, type NoteOrdering } from "@/lib/notes-query";
 import { cn } from "@/lib/utils";
 
 type CategoryNavProps = {
   categories: Category[];
   activeCategory?: string;
+  searchQuery?: string;
+  ordering?: NoteOrdering;
 };
 
-export function CategoryNav({ categories, activeCategory }: CategoryNavProps) {
+export function CategoryNav({
+  categories,
+  activeCategory,
+  searchQuery,
+  ordering,
+}: CategoryNavProps) {
   const allCount = categories.reduce(
     (total, category) => total + category.note_count,
     0,
@@ -21,7 +29,7 @@ export function CategoryNav({ categories, activeCategory }: CategoryNavProps) {
       <ul className="flex gap-2 overflow-x-auto pb-2 lg:flex-col lg:overflow-visible lg:pb-0">
         <li className="shrink-0">
           <Link
-            href="/notes"
+            href={buildNotesHref({ search: searchQuery, ordering })}
             aria-current={!activeCategory ? "page" : undefined}
             className={cn(
               "focus-visible:ring-ring/50 flex min-h-11 items-center gap-3 rounded-full border px-4 text-sm font-semibold transition-colors outline-none focus-visible:ring-3 lg:w-full lg:rounded-lg",
@@ -44,7 +52,11 @@ export function CategoryNav({ categories, activeCategory }: CategoryNavProps) {
           return (
             <li key={category.id} className="shrink-0">
               <Link
-                href={`/notes?category=${encodeURIComponent(category.slug)}`}
+                href={buildNotesHref({
+                  category: category.slug,
+                  search: searchQuery,
+                  ordering: ordering === "category" ? "-updated_at" : ordering,
+                })}
                 aria-current={isActive ? "page" : undefined}
                 className={cn(
                   "focus-visible:ring-ring/50 flex min-h-11 items-center gap-3 rounded-full border px-4 text-sm font-semibold transition-colors outline-none focus-visible:ring-3 lg:w-full lg:rounded-lg",

@@ -9,13 +9,13 @@ import { cn } from "@/lib/utils";
 type NoteCardProps = {
   note: Note;
   category: Category;
-  returnCategory?: string;
+  returnQuery?: string;
 };
 
-export function NoteCard({ note, category, returnCategory }: NoteCardProps) {
+export function NoteCard({ note, category, returnQuery }: NoteCardProps) {
   const theme = categoryThemes[category.color_key];
-  const href = returnCategory
-    ? `/notes/${note.id}?from=${encodeURIComponent(returnCategory)}`
+  const href = returnQuery
+    ? `/notes/${note.id}?return=${encodeURIComponent(returnQuery)}`
     : `/notes/${note.id}`;
 
   return (

@@ -23,15 +23,25 @@ const categories: Category[] = [
 
 describe("CategoryNav", () => {
   it("shows scoped counts and exposes the active filter", () => {
-    render(<CategoryNav categories={categories} activeCategory="school" />);
+    render(
+      <CategoryNav
+        categories={categories}
+        activeCategory="school"
+        searchQuery="systems"
+        ordering="updated_at"
+      />,
+    );
 
     const all = screen.getByRole("link", { name: /All Categories\s*5/ });
     const school = screen.getByRole("link", { name: /School\s*3/ });
 
-    expect(all).toHaveAttribute("href", "/notes");
+    expect(all).toHaveAttribute("href", "/notes?q=systems&ordering=updated_at");
     expect(all).not.toHaveAttribute("aria-current");
     expect(school).toHaveAttribute("aria-current", "page");
-    expect(school).toHaveAttribute("href", "/notes?category=school");
+    expect(school).toHaveAttribute(
+      "href",
+      "/notes?category=school&q=systems&ordering=updated_at",
+    );
     expect(within(school).getByText("3")).toBeVisible();
   });
 });

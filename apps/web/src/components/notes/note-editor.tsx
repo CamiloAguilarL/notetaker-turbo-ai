@@ -27,7 +27,7 @@ type SaveStatus = "dirty" | "saving" | "saved" | "error";
 type NoteEditorProps = {
   note: Note;
   categories: Category[];
-  returnCategory?: string;
+  returnTo?: string;
 };
 
 const SAVE_DELAY = 650;
@@ -39,7 +39,7 @@ function signature(draft: NoteUpdate): string {
 export function NoteEditor({
   note,
   categories,
-  returnCategory,
+  returnTo = "/notes",
 }: NoteEditorProps) {
   const router = useRouter();
   const initialDraft: NoteUpdate = {
@@ -135,10 +135,7 @@ export function NoteEditor({
 
     try {
       await flushLatest();
-      const destination = returnCategory
-        ? `/notes?category=${encodeURIComponent(returnCategory)}`
-        : "/notes";
-      router.replace(destination);
+      router.replace(returnTo);
       router.refresh();
     } catch {
       setIsClosing(false);
@@ -152,8 +149,7 @@ export function NoteEditor({
     try {
       await flushLatest();
       await deleteNote(note.id);
-      const query = new URLSearchParams();
-      if (returnCategory) query.set("category", returnCategory);
+      const query = new URLSearchParams(returnTo.split("?")[1] ?? "");
       query.set("undo", note.id);
       router.replace(`/notes?${query.toString()}`);
       router.refresh();

@@ -22,9 +22,13 @@ const note: Note = {
 };
 
 describe("NoteCard", () => {
-  it("presents note metadata and preserves the active filter", () => {
+  it("presents metadata and preserves dashboard query state", () => {
     render(
-      <NoteCard note={note} category={category} returnCategory="school" />,
+      <NoteCard
+        note={note}
+        category={category}
+        returnQuery="category=school&q=architecture&ordering=updated_at"
+      />,
     );
 
     expect(screen.getByText("School")).toBeVisible();
@@ -40,7 +44,10 @@ describe("NoteCard", () => {
       screen.getByRole("link", {
         name: "Open Read the architecture chapter",
       }),
-    ).toHaveAttribute("href", `/notes/${note.id}?from=school`);
+    ).toHaveAttribute(
+      "href",
+      `/notes/${note.id}?return=category%3Dschool%26q%3Darchitecture%26ordering%3Dupdated_at`,
+    );
   });
 
   it("gives blank notes a useful accessible name", () => {

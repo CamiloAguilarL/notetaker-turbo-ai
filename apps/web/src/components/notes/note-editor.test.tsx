@@ -99,7 +99,7 @@ describe("NoteEditor", () => {
       <NoteEditor
         note={note}
         categories={categories}
-        returnCategory="random-thoughts"
+        returnTo="/notes?category=random-thoughts"
       />,
     );
 
@@ -147,7 +147,7 @@ describe("NoteEditor", () => {
       <NoteEditor
         note={note}
         categories={categories}
-        returnCategory="random-thoughts"
+        returnTo="/notes?category=random-thoughts"
       />,
     );
 
