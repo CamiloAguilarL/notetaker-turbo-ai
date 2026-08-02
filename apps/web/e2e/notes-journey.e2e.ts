@@ -79,6 +79,27 @@ test("a user can capture, organize, and reopen a private note", async ({
     page.getByRole("link", { name: "Open An end-to-end thought" }),
   ).toBeVisible();
 
+  await page.getByRole("link", { name: "Open An end-to-end thought" }).click();
+  await page.getByRole("button", { name: "Delete" }).click();
+  await expect(
+    page.getByRole("alertdialog", { name: "Delete this note?" }),
+  ).toBeVisible();
+  await expectNoAccessibilityViolations(page);
+  await page.getByRole("button", { name: "Delete note" }).click();
+
+  await expect(page).toHaveURL(/\/notes\?category=school&undo=[0-9a-f-]+$/);
+  await expect(
+    page.getByRole("heading", { name: "No School notes yet" }),
+  ).toBeVisible();
+  await expect(page.getByText("Note deleted", { exact: true })).toBeVisible();
+  await expectNoAccessibilityViolations(page);
+
+  await page.getByRole("button", { name: "Undo", exact: true }).click();
+  await expect(page).toHaveURL(/\/notes\?category=school$/);
+  await expect(
+    page.getByRole("link", { name: "Open An end-to-end thought" }),
+  ).toBeVisible();
+
   await page.getByRole("button", { name: "Sign out" }).click();
   await expect(page).toHaveURL(/\/login$/);
 

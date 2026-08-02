@@ -18,3 +18,11 @@ export function updateNote(id: string, changes: NoteUpdate): Promise<Note> {
     body: JSON.stringify(changes),
   });
 }
+
+export function deleteNote(id: string): Promise<void> {
+  return apiRequest<void>(`/notes/${id}/`, { method: "DELETE" });
+}
+
+export function restoreNote(id: string): Promise<Note> {
+  return apiRequest<Note>(`/notes/${id}/restore/`, { method: "POST" });
+}

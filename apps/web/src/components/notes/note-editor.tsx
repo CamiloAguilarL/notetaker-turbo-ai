@@ -1,12 +1,23 @@
 "use client";
 
-import { Check, LoaderCircle, RotateCcw, X } from "lucide-react";
+import { Check, LoaderCircle, RotateCcw, Trash2, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import type { Category, Note } from "@/lib/api/types";
-import { updateNote, type NoteUpdate } from "@/lib/api/notes";
+import { deleteNote, updateNote, type NoteUpdate } from "@/lib/api/notes";
 import { categoryThemes } from "@/lib/category-theme";
 import { formatNoteTimestamp } from "@/lib/format-date";
 import { cn } from "@/lib/utils";
@@ -40,6 +51,8 @@ export function NoteEditor({
   const [status, setStatus] = useState<SaveStatus>("saved");
   const [lastEdited, setLastEdited] = useState(note.updated_at);
   const [isClosing, setIsClosing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string>();
   const draftRef = useRef(initialDraft);
   const savedSignatureRef = useRef(signature(initialDraft));
   const saveQueueRef = useRef<Promise<void>>(Promise.resolve());
@@ -108,16 +121,20 @@ export function NoteEditor({
     });
   }
 
+  const flushLatest = useCallback(async () => {
+    clearTimeout(timerRef.current);
+    await saveQueueRef.current.catch(() => undefined);
+    const latest = draftRef.current;
+    if (signature(latest) !== savedSignatureRef.current) {
+      await queueSave(latest);
+    }
+  }, [queueSave]);
+
   async function handleClose() {
     setIsClosing(true);
-    clearTimeout(timerRef.current);
 
     try {
-      await saveQueueRef.current.catch(() => undefined);
-      const latest = draftRef.current;
-      if (signature(latest) !== savedSignatureRef.current) {
-        await queueSave(latest);
-      }
+      await flushLatest();
       const destination = returnCategory
         ? `/notes?category=${encodeURIComponent(returnCategory)}`
         : "/notes";
@@ -125,6 +142,24 @@ export function NoteEditor({
       router.refresh();
     } catch {
       setIsClosing(false);
+    }
+  }
+
+  async function handleDelete() {
+    setIsDeleting(true);
+    setDeleteError(undefined);
+
+    try {
+      await flushLatest();
+      await deleteNote(note.id);
+      const query = new URLSearchParams();
+      if (returnCategory) query.set("category", returnCategory);
+      query.set("undo", note.id);
+      router.replace(`/notes?${query.toString()}`);
+      router.refresh();
+    } catch {
+      setDeleteError("We couldn’t delete the note. Please try again.");
+      setIsDeleting(false);
     }
   }
 
@@ -165,21 +200,63 @@ export function NoteEditor({
             </select>
           </label>
 
-          <Button
-            type="button"
-            variant="outline"
-            className="bg-card text-foreground hover:bg-card/80 hover:text-foreground"
-            onClick={handleClose}
-            disabled={isClosing}
-          >
-            {isClosing ? (
-              <LoaderCircle aria-hidden="true" className="animate-spin" />
-            ) : (
-              <X aria-hidden="true" />
-            )}
-            {isClosing ? "Closing…" : "Close"}
-          </Button>
+          <div className="flex items-center gap-2">
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  disabled={isClosing || isDeleting}
+                >
+                  <Trash2 aria-hidden="true" />
+                  {isDeleting ? "Deleting…" : "Delete"}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete this note?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    It will disappear from your notebook. You’ll have a few
+                    seconds to undo this action without losing any writing.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Keep note</AlertDialogCancel>
+                  <AlertDialogAction
+                    variant="destructive"
+                    onClick={() => void handleDelete()}
+                  >
+                    Delete note
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+
+            <Button
+              type="button"
+              variant="outline"
+              className="bg-card text-foreground hover:bg-card/80 hover:text-foreground"
+              onClick={handleClose}
+              disabled={isClosing || isDeleting}
+            >
+              {isClosing ? (
+                <LoaderCircle aria-hidden="true" className="animate-spin" />
+              ) : (
+                <X aria-hidden="true" />
+              )}
+              {isClosing ? "Closing…" : "Close"}
+            </Button>
+          </div>
         </div>
+
+        {deleteError ? (
+          <p
+            role="alert"
+            className="text-destructive mt-4 text-sm font-semibold"
+          >
+            {deleteError}
+          </p>
+        ) : null}
 
         <div className="mx-auto max-w-3xl py-10 sm:py-14">
           <label htmlFor="note-title" className="sr-only">

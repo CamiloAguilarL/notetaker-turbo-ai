@@ -10,7 +10,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { NoteEditor } from "@/components/notes/note-editor";
 import type { Category, Note } from "@/lib/api/types";
-import { updateNote } from "@/lib/api/notes";
+import { deleteNote, updateNote } from "@/lib/api/notes";
 
 const replace = vi.fn();
 const refresh = vi.fn();
@@ -20,9 +20,11 @@ vi.mock("next/navigation", () => ({
 }));
 
 vi.mock("@/lib/api/notes", () => ({
+  deleteNote: vi.fn(),
   updateNote: vi.fn(),
 }));
 
+const mockedDeleteNote = vi.mocked(deleteNote);
 const mockedUpdateNote = vi.mocked(updateNote);
 
 const categories: Category[] = [
@@ -135,5 +137,53 @@ describe("NoteEditor", () => {
 
     expect(await screen.findByText("Saved")).toBeVisible();
     expect(mockedUpdateNote).toHaveBeenCalledTimes(2);
+  });
+
+  it("flushes the latest draft before a confirmed deletion", async () => {
+    const user = userEvent.setup();
+    mockedUpdateNote.mockResolvedValue(savedNote({ content: "Keep in undo" }));
+    mockedDeleteNote.mockResolvedValue();
+    render(
+      <NoteEditor
+        note={note}
+        categories={categories}
+        returnCategory="random-thoughts"
+      />,
+    );
+
+    await user.clear(screen.getByLabelText("Note content"));
+    await user.type(screen.getByLabelText("Note content"), "Keep in undo");
+    await user.click(screen.getByRole("button", { name: "Delete" }));
+    expect(
+      screen.getByRole("alertdialog", { name: "Delete this note?" }),
+    ).toBeVisible();
+    await user.click(screen.getByRole("button", { name: "Delete note" }));
+
+    await waitFor(() => expect(mockedDeleteNote).toHaveBeenCalledWith(note.id));
+    expect(mockedUpdateNote).toHaveBeenCalledWith(note.id, {
+      category: "random-thoughts",
+      title: "Before",
+      content: "Keep in undo",
+    });
+    expect(mockedUpdateNote.mock.invocationCallOrder[0]).toBeLessThan(
+      mockedDeleteNote.mock.invocationCallOrder[0],
+    );
+    expect(replace).toHaveBeenCalledWith(
+      `/notes?category=random-thoughts&undo=${note.id}`,
+    );
+  });
+
+  it("shows a recoverable message when deletion fails", async () => {
+    const user = userEvent.setup();
+    mockedDeleteNote.mockRejectedValue(new TypeError("Failed to fetch"));
+    render(<NoteEditor note={note} categories={categories} />);
+
+    await user.click(screen.getByRole("button", { name: "Delete" }));
+    await user.click(screen.getByRole("button", { name: "Delete note" }));
+
+    expect(
+      await screen.findByText("We couldn’t delete the note. Please try again."),
+    ).toHaveAttribute("role", "alert");
+    expect(screen.getByRole("button", { name: "Delete" })).toBeEnabled();
   });
 });

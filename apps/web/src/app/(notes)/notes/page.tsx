@@ -3,14 +3,19 @@ import { Inbox } from "lucide-react";
 import { CategoryNav } from "@/components/notes/category-nav";
 import { NewNoteButton } from "@/components/notes/new-note-button";
 import { NoteCard } from "@/components/notes/note-card";
+import { UndoDeleteBanner } from "@/components/notes/undo-delete-banner";
 import { getCategories, getNotes } from "@/lib/api/server";
 
 type NotesPageProps = {
-  searchParams: Promise<{ category?: string | string[] }>;
+  searchParams: Promise<{
+    category?: string | string[];
+    undo?: string | string[];
+  }>;
 };
 
 export default async function NotesPage({ searchParams }: NotesPageProps) {
-  const requestedCategory = (await searchParams).category;
+  const query = await searchParams;
+  const requestedCategory = query.category;
   const categoryParam = Array.isArray(requestedCategory)
     ? requestedCategory[0]
     : requestedCategory;
@@ -27,6 +32,15 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
   const activeName = categories.find(
     (category) => category.slug === activeCategory,
   )?.name;
+  const requestedUndo = Array.isArray(query.undo) ? query.undo[0] : query.undo;
+  const undoId = requestedUndo?.match(
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+  )
+    ? requestedUndo
+    : undefined;
+  const destination = activeCategory
+    ? `/notes?category=${encodeURIComponent(activeCategory)}`
+    : "/notes";
 
   return (
     <main className="mx-auto w-full max-w-screen-2xl px-5 py-8 sm:px-8 lg:px-10 lg:py-12">
@@ -91,6 +105,9 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
           </section>
         )}
       </div>
+      {undoId ? (
+        <UndoDeleteBanner noteId={undoId} destination={destination} />
+      ) : null}
     </main>
   );
 }
