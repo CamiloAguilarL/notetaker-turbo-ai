@@ -50,7 +50,7 @@ export function UndoDeleteBanner({
   return (
     <aside
       aria-label="Deleted note actions"
-      className="border-foreground bg-card fixed right-4 bottom-4 left-4 z-40 mx-auto flex max-w-xl flex-wrap items-center gap-3 rounded-xl border-2 p-3 shadow-[4px_5px_0_var(--foreground)] sm:left-auto sm:p-4"
+      className="border-primary/40 bg-card fixed right-4 bottom-4 left-4 z-40 mx-auto flex max-w-xl flex-wrap items-center gap-3 rounded-2xl border-2 p-3 shadow-xl sm:left-auto sm:p-4"
     >
       <div className="min-w-0 flex-1">
         <p className="font-semibold">Note deleted</p>

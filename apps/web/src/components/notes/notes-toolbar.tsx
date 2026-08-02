@@ -78,9 +78,9 @@ export function NotesToolbar({
   return (
     <section
       aria-label="Find and sort notes"
-      className="border-foreground/20 bg-card/40 mb-5 flex flex-col gap-3 border p-3 sm:flex-row sm:items-center sm:p-4"
+      className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center"
     >
-      <div className="flex min-w-0 flex-1 gap-1">
+      <div className="flex min-w-0 flex-1 gap-1 sm:max-w-md">
         <div className="relative min-w-0 flex-1">
           <label htmlFor="note-search" className="sr-only">
             Search notes
@@ -96,7 +96,7 @@ export function NotesToolbar({
             onChange={(event) => setSearch(event.currentTarget.value)}
             maxLength={MAX_SEARCH_LENGTH}
             placeholder="Search your notes"
-            className="bg-card h-11 pl-10"
+            className="border-primary/35 bg-transparent pl-10"
           />
         </div>
         {search ? (
@@ -106,7 +106,7 @@ export function NotesToolbar({
             size="icon"
             aria-label="Clear search"
             onClick={clearSearch}
-            className="size-11"
+            className="size-10"
           >
             <X aria-hidden="true" />
           </Button>
@@ -119,13 +119,13 @@ export function NotesToolbar({
             ? "Updating notes…"
             : `${resultCount} ${resultCount === 1 ? "note" : "notes"}`}
         </p>
-        <label className="flex items-center gap-2 text-sm font-semibold">
+        <label className="flex items-center gap-2 text-sm font-medium">
           <span className="sr-only sm:not-sr-only">Sort by</span>
           <select
             aria-label="Sort notes"
             value={ordering}
             onChange={(event) => changeOrdering(event.currentTarget.value)}
-            className="border-foreground/40 bg-card focus-visible:ring-ring/60 min-h-11 rounded-full border px-4 outline-none focus-visible:ring-3"
+            className="border-primary/35 focus-visible:ring-ring/40 min-h-10 rounded-full border bg-transparent px-4 outline-none focus-visible:ring-3"
           >
             {availableOrderings.map((option) => (
               <option key={option.value} value={option.value}>

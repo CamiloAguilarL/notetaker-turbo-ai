@@ -93,6 +93,11 @@ export function NoteEditor({
       return;
     }
 
+    if (signature(draft) === savedSignatureRef.current) {
+      setStatus("saved");
+      return;
+    }
+
     setStatus("dirty");
     clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
@@ -165,127 +170,97 @@ export function NoteEditor({
   const theme = categoryThemes[selectedCategory?.color_key ?? "random"];
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 py-5 sm:px-8 sm:py-8 lg:px-10">
+    <main className="mx-auto w-full max-w-[82rem] px-4 pt-1 pb-5 sm:px-8 lg:px-10">
+      <h1 className="sr-only">Edit note</h1>
+      <div className="flex min-h-14 items-center justify-between gap-4 pb-3">
+        <label className="flex items-center gap-2 text-sm font-medium">
+          <span
+            aria-hidden="true"
+            className={cn("size-2.5 rounded-full", theme.dot)}
+          />
+          <span className="sr-only">Category</span>
+          <select
+            value={draft.category}
+            onChange={(event) =>
+              changeDraft({ category: event.currentTarget.value })
+            }
+            className="border-primary/35 focus-visible:ring-ring/40 min-h-10 rounded-full border bg-transparent px-4 outline-none focus-visible:ring-3"
+          >
+            {categories.map((category) => (
+              <option key={category.id} value={category.slug}>
+                {category.name}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <div className="flex items-center gap-1">
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                type="button"
+                variant="ghost"
+                className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                disabled={isClosing || isDeleting}
+              >
+                <Trash2 aria-hidden="true" />
+                {isDeleting ? "Deleting…" : "Delete"}
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete this note?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  It will disappear from your notebook. You’ll have a few
+                  seconds to undo this action without losing any writing.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Keep note</AlertDialogCancel>
+                <AlertDialogAction
+                  variant="destructive"
+                  onClick={() => void handleDelete()}
+                >
+                  Delete note
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-lg"
+            aria-label={isClosing ? "Closing…" : "Close"}
+            onClick={handleClose}
+            disabled={isClosing || isDeleting}
+          >
+            {isClosing ? (
+              <LoaderCircle aria-hidden="true" className="animate-spin" />
+            ) : (
+              <X aria-hidden="true" />
+            )}
+          </Button>
+        </div>
+      </div>
+
+      {deleteError ? (
+        <p role="alert" className="text-destructive mb-3 text-sm font-semibold">
+          {deleteError}
+        </p>
+      ) : null}
+
       <div
         className={cn(
-          "min-h-[calc(100dvh-8rem)] border-2 p-5 transition-colors sm:p-8 lg:p-12",
+          "min-h-[calc(100dvh-9rem)] rounded-2xl border-[3px] p-6 transition-colors sm:p-10 lg:p-12",
           theme.surface,
           theme.border,
         )}
       >
-        <h1 className="sr-only">Edit note</h1>
-        <div className="border-foreground/25 flex flex-wrap items-center justify-between gap-4 border-b pb-5">
-          <label className="flex items-center gap-3 text-sm font-semibold">
-            <span
-              aria-hidden="true"
-              className={cn("size-2.5 rounded-full", theme.dot)}
-            />
-            <span className="sr-only">Category</span>
-            <select
-              value={draft.category}
-              onChange={(event) =>
-                changeDraft({ category: event.currentTarget.value })
-              }
-              className="border-foreground/40 bg-card/70 focus-visible:ring-ring/60 min-h-11 rounded-full border px-4 outline-none focus-visible:ring-3"
-            >
-              {categories.map((category) => (
-                <option key={category.id} value={category.slug}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <div className="flex items-center gap-2">
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button
-                  type="button"
-                  variant="destructive"
-                  disabled={isClosing || isDeleting}
-                >
-                  <Trash2 aria-hidden="true" />
-                  {isDeleting ? "Deleting…" : "Delete"}
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Delete this note?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    It will disappear from your notebook. You’ll have a few
-                    seconds to undo this action without losing any writing.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Keep note</AlertDialogCancel>
-                  <AlertDialogAction
-                    variant="destructive"
-                    onClick={() => void handleDelete()}
-                  >
-                    Delete note
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-
-            <Button
-              type="button"
-              variant="outline"
-              className="bg-card text-foreground hover:bg-card/80 hover:text-foreground"
-              onClick={handleClose}
-              disabled={isClosing || isDeleting}
-            >
-              {isClosing ? (
-                <LoaderCircle aria-hidden="true" className="animate-spin" />
-              ) : (
-                <X aria-hidden="true" />
-              )}
-              {isClosing ? "Closing…" : "Close"}
-            </Button>
-          </div>
-        </div>
-
-        {deleteError ? (
-          <p
-            role="alert"
-            className="text-destructive mt-4 text-sm font-semibold"
-          >
-            {deleteError}
-          </p>
-        ) : null}
-
-        <div className="mx-auto max-w-3xl py-10 sm:py-14">
-          <label htmlFor="note-title" className="sr-only">
-            Note title
-          </label>
-          <input
-            id="note-title"
-            value={draft.title}
-            onChange={(event) =>
-              changeDraft({ title: event.currentTarget.value })
-            }
-            maxLength={120}
-            placeholder="Note title"
-            className="placeholder:text-foreground/35 focus-visible:ring-ring/60 w-full rounded-sm border-0 bg-transparent font-serif text-4xl leading-tight font-semibold tracking-[-0.03em] outline-none focus-visible:ring-2 sm:text-6xl"
-          />
-
-          <label htmlFor="note-content" className="sr-only">
-            Note content
-          </label>
-          <textarea
-            id="note-content"
-            value={draft.content}
-            onChange={(event) =>
-              changeDraft({ content: event.currentTarget.value })
-            }
-            maxLength={10_000}
-            placeholder="Start writing…"
-            className="placeholder:text-foreground/35 focus-visible:ring-ring/60 mt-8 min-h-[45dvh] w-full resize-none rounded-sm border-0 bg-transparent text-base leading-8 outline-none focus-visible:ring-2 sm:text-lg"
-          />
-
-          <footer className="border-foreground/25 mt-8 flex flex-wrap items-center justify-between gap-3 border-t pt-5 text-sm">
-            <p className="text-foreground">
-              Last edited{" "}
+        <div className="mx-auto max-w-5xl">
+          <div className="text-foreground/85 flex min-h-10 flex-wrap items-center justify-end gap-x-4 gap-y-1 text-xs">
+            <p>
+              Last Edited:{" "}
               <time dateTime={lastEdited}>
                 {formatNoteTimestamp(lastEdited)}
               </time>
@@ -293,16 +268,16 @@ export function NoteEditor({
             <div
               aria-live="polite"
               aria-atomic="true"
-              className="flex min-h-10 items-center gap-2 font-semibold"
+              className="flex min-h-8 items-center gap-1.5 font-medium"
             >
               {status === "saving" ? (
                 <LoaderCircle
                   aria-hidden="true"
-                  className="size-4 animate-spin"
+                  className="size-3.5 animate-spin"
                 />
               ) : null}
               {status === "saved" ? (
-                <Check aria-hidden="true" className="size-4" />
+                <Check aria-hidden="true" className="size-3.5" />
               ) : null}
               <span>
                 {status === "dirty" ? "Unsaved changes" : null}
@@ -324,7 +299,35 @@ export function NoteEditor({
                 </Button>
               ) : null}
             </div>
-          </footer>
+          </div>
+
+          <label htmlFor="note-title" className="sr-only">
+            Note title
+          </label>
+          <input
+            id="note-title"
+            value={draft.title}
+            onChange={(event) =>
+              changeDraft({ title: event.currentTarget.value })
+            }
+            maxLength={120}
+            placeholder="Note title"
+            className="placeholder:text-foreground/35 focus-visible:ring-ring/50 mt-4 w-full rounded-sm border-0 bg-transparent font-serif text-3xl leading-tight font-semibold tracking-[-0.025em] outline-none focus-visible:ring-2 sm:mt-6 sm:text-4xl"
+          />
+
+          <label htmlFor="note-content" className="sr-only">
+            Note content
+          </label>
+          <textarea
+            id="note-content"
+            value={draft.content}
+            onChange={(event) =>
+              changeDraft({ content: event.currentTarget.value })
+            }
+            maxLength={10_000}
+            placeholder="Start writing…"
+            className="placeholder:text-foreground/35 focus-visible:ring-ring/50 mt-5 min-h-[calc(100dvh-24rem)] w-full resize-none rounded-sm border-0 bg-transparent text-base leading-7 outline-none focus-visible:ring-2 sm:mt-7 sm:min-h-[calc(100dvh-25rem)]"
+          />
         </div>
       </div>
     </main>

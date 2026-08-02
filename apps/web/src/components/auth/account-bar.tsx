@@ -28,21 +28,19 @@ export function AccountBar({ user }: { user: User }) {
   }
 
   return (
-    <header className="border-foreground/80 flex items-center justify-between border-b-2 px-5 py-4 sm:px-8">
-      <div className="flex items-center gap-3 font-semibold">
-        <span className="border-foreground bg-note-school grid size-9 place-items-center rounded-full border-2">
-          <NotebookPen aria-hidden="true" className="size-4" />
-        </span>
+    <header className="mx-auto flex min-h-14 w-full max-w-[82rem] items-center justify-between px-5 py-2 sm:px-8 lg:px-10">
+      <div className="flex items-center gap-2 text-sm font-semibold">
+        <NotebookPen aria-hidden="true" className="text-primary size-4" />
         Turbo Notes
       </div>
       <div className="flex items-center gap-3">
         <p
           role={error ? "alert" : undefined}
-          className="text-destructive text-xs"
+          className="text-destructive max-w-52 text-right text-xs"
         >
           {error}
         </p>
-        <span className="text-muted-foreground hidden max-w-52 truncate text-sm sm:block">
+        <span className="text-muted-foreground hidden max-w-52 truncate text-xs sm:block">
           {user.email}
         </span>
         <Button

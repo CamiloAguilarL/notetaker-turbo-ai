@@ -1,4 +1,4 @@
-import { Inbox } from "lucide-react";
+import Image from "next/image";
 
 import { CategoryNav } from "@/components/notes/category-nav";
 import { NewNoteButton } from "@/components/notes/new-note-button";
@@ -69,27 +69,17 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
   });
 
   return (
-    <main className="mx-auto w-full max-w-screen-2xl px-5 py-8 sm:px-8 lg:px-10 lg:py-12">
-      <div className="border-foreground/20 flex items-start justify-between gap-6 border-b pb-8">
-        <div>
-          <p className="text-muted-foreground font-mono text-xs font-semibold tracking-[0.18em] uppercase">
-            Your private notebook
-          </p>
-          <h1 className="mt-3 font-serif text-5xl leading-none font-semibold tracking-[-0.035em] sm:text-6xl">
-            {activeName ?? "All Notes"}
-          </h1>
-        </div>
+    <main className="mx-auto w-full max-w-[82rem] px-5 pt-2 pb-10 sm:px-8 lg:px-10 lg:pb-14">
+      <h1 className="sr-only">{activeName ?? "All Notes"}</h1>
+      <div className="flex min-h-14 items-start justify-end">
         <NewNoteButton
           category={activeCategory}
           returnQuery={dashboardQuery || undefined}
         />
       </div>
 
-      <div className="grid gap-8 pt-8 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-10">
-        <aside className="min-w-0 lg:sticky lg:top-6 lg:self-start">
-          <p className="text-muted-foreground mb-3 hidden text-xs font-semibold tracking-[0.14em] uppercase lg:block">
-            Categories
-          </p>
+      <div className="grid gap-6 pt-3 lg:grid-cols-[12rem_minmax(0,1fr)] lg:gap-12 lg:pt-5">
+        <aside className="min-w-0 lg:sticky lg:top-4 lg:self-start">
           <CategoryNav
             categories={categories}
             activeCategory={activeCategory}
@@ -126,25 +116,29 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
               })}
             </section>
           ) : (
-            <section className="border-foreground/25 bg-card/40 grid min-h-[24rem] place-items-center border-2 border-dashed px-6 py-12 text-center">
-              <div className="max-w-md">
-                <span className="border-foreground bg-note-school mx-auto grid size-16 place-items-center rounded-full border-2 shadow-[3px_4px_0_var(--foreground)]">
-                  <Inbox aria-hidden="true" className="size-6" />
-                </span>
-                <h2 className="mt-7 font-serif text-3xl font-semibold">
+            <section className="grid min-h-[27rem] place-items-center px-6 py-10 text-center">
+              <div className="max-w-lg">
+                <Image
+                  src="/illustrations/empty-boba.png"
+                  alt=""
+                  width={1254}
+                  height={1254}
+                  className="mx-auto h-auto w-44 sm:w-52"
+                />
+                <h2 className="mt-3 font-serif text-2xl leading-snug font-semibold sm:text-3xl">
                   {searchQuery
                     ? `No notes match “${searchQuery}”`
                     : activeName
                       ? `No ${activeName} notes yet`
-                      : "Your notes are waiting"}
+                      : "I’m just here waiting for your charming notes…"}
                 </h2>
-                <p className="text-muted-foreground mt-3 leading-7">
-                  {searchQuery
-                    ? "Try another phrase or clear the search to see every note in this view."
-                    : activeName
-                      ? "Start one here, or choose another category to keep exploring."
-                      : "Capture the first thought. You can change its category whenever you like."}
-                </p>
+                {searchQuery || activeName ? (
+                  <p className="text-muted-foreground mt-2 text-sm leading-6">
+                    {searchQuery
+                      ? "Try another phrase or clear the search to see every note in this view."
+                      : "Start one here, or choose another category to keep exploring."}
+                  </p>
+                ) : null}
               </div>
             </section>
           )}

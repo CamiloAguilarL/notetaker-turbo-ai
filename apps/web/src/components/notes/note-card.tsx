@@ -1,4 +1,3 @@
-import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 
 import type { Category, Note } from "@/lib/api/types";
@@ -21,7 +20,7 @@ export function NoteCard({ note, category, returnQuery }: NoteCardProps) {
   return (
     <article
       className={cn(
-        "group relative min-h-72 border-2 transition-transform motion-safe:hover:-translate-y-1",
+        "group relative min-h-72 overflow-hidden rounded-2xl border-[3px] transition-transform motion-safe:hover:-translate-y-0.5",
         theme.surface,
         theme.border,
       )}
@@ -29,30 +28,20 @@ export function NoteCard({ note, category, returnQuery }: NoteCardProps) {
       <Link
         href={href}
         aria-label={`Open ${note.title || "untitled note"}`}
-        className="focus-visible:ring-ring/70 flex h-full min-h-72 flex-col p-6 outline-none focus-visible:ring-4 focus-visible:ring-inset"
+        className="focus-visible:ring-ring/60 flex h-full min-h-72 flex-col rounded-[calc(var(--radius)*1.15)] p-5 outline-none focus-visible:ring-4 focus-visible:ring-inset sm:p-6"
       >
-        <div className="flex items-start justify-between gap-4">
-          <div className="space-y-1">
-            <p className="font-mono text-[0.68rem] font-semibold tracking-[0.14em] uppercase">
-              {category.name}
-            </p>
-            <time
-              dateTime={note.updated_at}
-              className="text-foreground block text-xs"
-            >
-              {formatNoteDate(note.updated_at)}
-            </time>
-          </div>
-          <ArrowUpRight
-            aria-hidden="true"
-            className="size-5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-          />
-        </div>
+        <p className="text-foreground/75 flex flex-wrap items-center gap-x-2 text-xs">
+          <time dateTime={note.updated_at} className="font-bold">
+            {formatNoteDate(note.updated_at)}
+          </time>
+          <span aria-hidden="true">·</span>
+          <span>{category.name}</span>
+        </p>
 
-        <h2 className="mt-10 line-clamp-2 font-serif text-3xl leading-tight font-semibold tracking-[-0.02em]">
+        <h2 className="mt-4 line-clamp-2 font-serif text-2xl leading-tight font-semibold tracking-[-0.02em] sm:text-[1.7rem]">
           {note.title || "Untitled note"}
         </h2>
-        <p className="text-foreground mt-4 line-clamp-4 text-sm leading-6 whitespace-pre-line">
+        <p className="text-foreground/85 mt-3 line-clamp-6 text-sm leading-6 whitespace-pre-line">
           {note.content || "No content yet. Open this note and start writing."}
         </p>
       </Link>

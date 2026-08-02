@@ -1,4 +1,3 @@
-import { Layers3 } from "lucide-react";
 import Link from "next/link";
 
 import type { Category } from "@/lib/api/types";
@@ -32,15 +31,14 @@ export function CategoryNav({
             href={buildNotesHref({ search: searchQuery, ordering })}
             aria-current={!activeCategory ? "page" : undefined}
             className={cn(
-              "focus-visible:ring-ring/50 flex min-h-11 items-center gap-3 rounded-full border px-4 text-sm font-semibold transition-colors outline-none focus-visible:ring-3 lg:w-full lg:rounded-lg",
+              "focus-visible:ring-ring/40 flex min-h-11 items-center gap-3 rounded-full border px-4 text-sm font-semibold transition-colors outline-none focus-visible:ring-3 lg:min-h-9 lg:w-full lg:rounded-md lg:border-transparent lg:px-1.5",
               !activeCategory
-                ? "border-foreground bg-foreground text-background"
-                : "hover:border-border hover:bg-card border-transparent",
+                ? "border-primary/55 bg-secondary/45 text-foreground lg:bg-transparent lg:font-bold lg:underline lg:decoration-1 lg:underline-offset-4"
+                : "border-input/70 hover:border-primary/45 hover:bg-secondary/30 lg:font-bold",
             )}
           >
-            <Layers3 aria-hidden="true" className="size-4" />
             <span>All Categories</span>
-            <span className="ml-auto font-mono text-xs opacity-70">
+            <span className="text-muted-foreground ml-auto font-mono text-xs font-normal">
               {allCount}
             </span>
           </Link>
@@ -59,10 +57,10 @@ export function CategoryNav({
                 })}
                 aria-current={isActive ? "page" : undefined}
                 className={cn(
-                  "focus-visible:ring-ring/50 flex min-h-11 items-center gap-3 rounded-full border px-4 text-sm font-semibold transition-colors outline-none focus-visible:ring-3 lg:w-full lg:rounded-lg",
+                  "focus-visible:ring-ring/40 flex min-h-11 items-center gap-3 rounded-full border px-4 text-sm font-medium transition-colors outline-none focus-visible:ring-3 lg:min-h-9 lg:w-full lg:rounded-md lg:border-transparent lg:px-1.5",
                   isActive
-                    ? "border-foreground bg-card"
-                    : "hover:border-border hover:bg-card border-transparent",
+                    ? "border-primary/45 bg-secondary/35 font-semibold lg:bg-transparent lg:underline lg:decoration-1 lg:underline-offset-4"
+                    : "border-input/70 hover:border-primary/45 hover:bg-secondary/30 lg:hover:bg-secondary/25",
                 )}
               >
                 <span

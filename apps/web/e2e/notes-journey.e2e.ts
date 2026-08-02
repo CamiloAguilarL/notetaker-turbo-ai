@@ -24,7 +24,9 @@ test("a user can capture, organize, and reopen a private note", async ({
 
   await expect(page).toHaveURL(/\/notes$/);
   await expect(
-    page.getByRole("heading", { name: "Your notes are waiting" }),
+    page.getByRole("heading", {
+      name: "I’m just here waiting for your charming notes…",
+    }),
   ).toBeVisible();
   await expectNoAccessibilityViolations(page);
 

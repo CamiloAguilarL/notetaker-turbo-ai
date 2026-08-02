@@ -70,6 +70,19 @@ describe("NoteEditor", () => {
     vi.useRealTimers();
   });
 
+  it("keeps an unchanged note in the saved state", async () => {
+    vi.useFakeTimers();
+    render(<NoteEditor note={note} categories={categories} />);
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(650);
+    });
+
+    expect(screen.getByText("Saved")).toBeVisible();
+    expect(screen.queryByText("Unsaved changes")).not.toBeInTheDocument();
+    expect(mockedUpdateNote).not.toHaveBeenCalled();
+  });
+
   it("autosaves the latest draft after a short pause", async () => {
     vi.useFakeTimers();
     mockedUpdateNote.mockResolvedValue(savedNote({ title: "After" }));

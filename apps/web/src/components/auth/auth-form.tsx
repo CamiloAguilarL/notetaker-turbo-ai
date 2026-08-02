@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { ArrowRight, LoaderCircle } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -59,9 +59,9 @@ export function AuthForm({ mode }: AuthFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-6">
-      <div className="space-y-2">
-        <label htmlFor="email" className="text-sm font-semibold">
+    <form onSubmit={handleSubmit} noValidate className="space-y-4">
+      <div className="space-y-1.5">
+        <label htmlFor="email" className="text-sm font-medium">
           Email
         </label>
         <Input
@@ -74,7 +74,7 @@ export function AuthForm({ mode }: AuthFormProps) {
           aria-invalid={Boolean(fieldErrors.email)}
           aria-describedby={fieldErrors.email ? "email-error" : undefined}
           placeholder="you@example.com"
-          className="border-foreground/40 focus-visible:border-primary h-12 rounded-none border-0 border-b-2 bg-transparent px-0 shadow-none focus-visible:ring-0"
+          className="border-primary/45 bg-card/20 focus-visible:border-primary h-11 rounded-lg"
         />
         {fieldErrors.email ? (
           <p id="email-error" className="text-destructive text-sm">
@@ -83,8 +83,8 @@ export function AuthForm({ mode }: AuthFormProps) {
         ) : null}
       </div>
 
-      <div className="space-y-2">
-        <label htmlFor="password" className="text-sm font-semibold">
+      <div className="space-y-1.5">
+        <label htmlFor="password" className="text-sm font-medium">
           Password
         </label>
         <Input
@@ -97,7 +97,7 @@ export function AuthForm({ mode }: AuthFormProps) {
           aria-invalid={Boolean(fieldErrors.password)}
           aria-describedby={fieldErrors.password ? "password-error" : undefined}
           placeholder="At least 8 characters"
-          className="border-foreground/40 focus-visible:border-primary h-12 rounded-none border-0 border-b-2 bg-transparent px-0 shadow-none focus-visible:ring-0"
+          className="border-primary/45 bg-card/20 focus-visible:border-primary h-11 rounded-lg"
         />
         {fieldErrors.password ? (
           <p id="password-error" className="text-destructive text-sm">
@@ -106,13 +106,13 @@ export function AuthForm({ mode }: AuthFormProps) {
         ) : null}
       </div>
 
-      <div aria-live="polite" aria-atomic="true" className="min-h-6">
+      <div aria-live="polite" aria-atomic="true" className="min-h-5">
         {formError ? (
           <p className="text-destructive text-sm">{formError}</p>
         ) : null}
       </div>
 
-      <Button type="submit" size="lg" className="w-full" disabled={isPending}>
+      <Button type="submit" className="mt-1 w-full" disabled={isPending}>
         {isPending ? (
           <LoaderCircle aria-hidden="true" className="animate-spin" />
         ) : null}
@@ -121,10 +121,9 @@ export function AuthForm({ mode }: AuthFormProps) {
           : isLogin
             ? "Sign in"
             : "Create account"}
-        {!isPending ? <ArrowRight aria-hidden="true" /> : null}
       </Button>
 
-      <p className="text-muted-foreground text-center text-sm">
+      <p className="text-muted-foreground pt-1 text-center text-sm">
         {isLogin ? "New around here?" : "Already have a notebook?"}{" "}
         <Link
           href={isLogin ? "/register" : "/login"}
