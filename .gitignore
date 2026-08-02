@@ -26,5 +26,6 @@ htmlcov/
 # Local artifacts
 coverage/
 dist/
+playwright-report/
+test-results/
 tmp/
-

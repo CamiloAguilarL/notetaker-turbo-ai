@@ -1,19 +1,23 @@
 # Turbo Notes
 
-Turbo Notes is a notes-taking hiring challenge built as a local-first monorepo with Next.js, Django REST Framework, and PostgreSQL. The repository currently contains the executable development foundation, documented product scope, and the first design-token layer.
+Turbo Notes is a private notes-taking hiring challenge built as a local-first monorepo with Next.js, Django REST Framework, and PostgreSQL. It includes session authentication, category-based organization, a responsive notes dashboard, and an autosaving editor.
 
 ## Current status
 
-The initial setup is complete:
+The complete P0 product journey is implemented and under its core quality audit:
 
-- Next.js 16.2.12, React 19, Tailwind CSS 4, and shadcn/ui with one source-owned `Button` component.
-- Django 6.0.7 and Django REST Framework 3.17.1 with a database-aware health endpoint.
+- Email/password registration, login, session persistence, route protection, and logout with Django sessions and CSRF protection.
+- Private user-scoped note creation, retrieval, updates, deterministic ordering, and four seeded categories with scoped counts.
+- Responsive empty/populated dashboards, URL-backed category filters, semantic category colors, loading/error states, and accessible note cards.
+- Plain-text editor with category changes, serialized debounced autosave, saving/error/retry states, last-edited metadata, and close-time flush.
+- Next.js 16.2.12, React 19, Tailwind CSS 4, and customized source-owned shadcn/ui `Button` and `Input` components.
+- Django 6.0.7 and Django REST Framework 3.17.1 with a database-aware health endpoint and a consistent JSON error contract.
 - PostgreSQL 17, Django, and Next.js orchestrated through Docker Compose.
-- Ruff, pytest with coverage, ESLint, TypeScript checks, production builds, and npm security auditing.
+- Ruff, pytest with enforced backend coverage, ESLint, TypeScript, Vitest with enforced frontend coverage, Playwright E2E, production builds, and npm security auditing.
 - A GitHub Actions quality gate that reuses the same Dockerized checks as local development.
 - Product requirements, architecture, delivery/evaluation priorities, quality strategy, and provisional design tokens in `docs/`.
 
-Application features such as authentication, note persistence, filters, and the editor are intentionally not implemented in this foundation milestone.
+Selected P1 enhancements remain intentionally blocked until the documented P0 audit is complete.
 
 ## Repository structure
 
@@ -21,7 +25,7 @@ Application features such as authentication, note persistence, filters, and the 
 .
 ├── apps/
 │   ├── api/                  # Django and Django REST Framework
-│   └── web/                  # Next.js App Router application
+│   └── web/                  # Next.js App Router, Vitest, and Playwright
 ├── docs/
 │   ├── architecture.md
 │   ├── delivery-plan.md
@@ -74,7 +78,8 @@ The API container applies pending Django migrations before starting the developm
 | `make ps` | Show container and health status. |
 | `make audit` | Audit production frontend dependencies. |
 | `make lint` | Run ESLint, TypeScript, and Ruff checks. |
-| `make test` | Run backend tests with coverage. |
+| `make test` | Run frontend and backend tests with enforced coverage. |
+| `make e2e` | Build the official Playwright image and run the core browser journey. |
 | `make build` | Create the Next.js production build. |
 | `make check` | Run the local quality gate. |
 
@@ -157,7 +162,9 @@ OpenAI Codex was used as an implementation and review assistant to:
 - research current official Next.js, Django/DRF, Motion, dnd kit, and Playwright guidance before selecting architecture, testing, animation, and accessible drag-and-drop approaches;
 - identify and replace vulnerable transitive PostCSS and Sharp versions with audited overrides;
 - validate the local UI at desktop and mobile viewports and smoke-test the Dockerized web, API, and database services.
+- detect and fix a server/client timestamp hydration mismatch through live browser diagnostics;
+- exercise the real registration, note creation, autosave, filtering, category change, logout, and route-protection journey in Playwright.
 
 AI accelerated source comparison, scaffolding, implementation, documentation, dependency review, and repetitive verification. It was not used to invent unavailable Figma values, replace provided design assets, or justify unverified completion claims.
 
-Generated work was checked with ESLint, TypeScript, a Next.js production build, Ruff, pytest and coverage, `npm audit`, Docker health checks, HTTP smoke tests, and visual browser inspection. AI output is not treated as authoritative: the repository owner remains responsible for reviewing, understanding, and presenting every decision. Material AI-assisted changes must record the inspected source, the decision influenced, and the independent validation performed.
+Generated work was checked with ESLint, TypeScript, Vitest and enforced coverage, Playwright, a Next.js production build, Ruff, pytest and enforced coverage, `npm audit`, Docker health checks, HTTP smoke tests, and visual browser inspection. AI output is not treated as authoritative: the repository owner remains responsible for reviewing, understanding, and presenting every decision. Material AI-assisted changes must record the inspected source, the decision influenced, and the independent validation performed.

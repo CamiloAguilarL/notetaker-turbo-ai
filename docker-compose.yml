@@ -79,6 +79,20 @@ services:
       retries: 10
       start_period: 15s
 
+  e2e:
+    profiles: ["test"]
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile.e2e
+    environment:
+      PLAYWRIGHT_BASE_URL: http://localhost:3000
+      PLAYWRIGHT_DOCKER: "true"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      web:
+        condition: service_healthy
+
 volumes:
   postgres_data:
   web_next_cache:

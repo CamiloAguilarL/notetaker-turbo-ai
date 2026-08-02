@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := help
 
-.PHONY: audit bootstrap build check down format help lint logs ps test up
+.PHONY: audit bootstrap build check down e2e format help lint logs ps test up
 
 help: ## Show available commands.
 	@awk 'BEGIN {FS = ":.*## "; printf "Usage: make <target>\n\n"} /^[a-zA-Z_-]+:.*?## / {printf "  %-12s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -37,8 +37,12 @@ format: ## Format backend and frontend source code.
 	docker compose run --rm --no-deps web npm run format
 
 test: ## Run the automated test suite.
-	docker compose run --rm --no-deps web npm run test
+	docker compose run --rm --no-deps web npm run test:coverage
 	docker compose run --rm api pytest
+
+e2e: ## Run the core browser journey in the Playwright container.
+	docker compose --profile test build e2e
+	docker compose --profile test run --rm e2e
 
 audit: ## Audit production frontend dependencies.
 	docker compose run --rm --no-deps web npm audit --omit=dev
