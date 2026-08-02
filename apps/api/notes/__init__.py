@@ -1,0 +1,1 @@
+"""Notes and categories domain."""

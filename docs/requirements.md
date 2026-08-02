@@ -49,7 +49,7 @@ Password reset, email verification, social login, and profile management are not
 | CAT-02 | P0 | Filter notes by category and return to all notes. | Video, Prototype | The selected filter is visually and semantically identified; the grid contains only matching notes; “All Categories” restores the complete list. |
 | CAT-03 | P0 | Use a stable color identity for every category. | Video, Prototype | Sidebar dot, note card, editor surface, and category selector use the same semantic category token. |
 
-The repeatedly visible categories are **Random Thoughts**, **School**, and **Personal**. The prototype's editor dropdown also exposes **Drama**, but the dashboard and video do not. The data model must not hard-code the three visible values; seed data will be finalized after source clarification.
+The seeded categories are **Random Thoughts**, **School**, **Personal**, and **Drama**. Drama is included because it is explicitly selectable in the prototype editor even though the dashboard and video samples show only the first three. Categories remain database data rather than values hard-coded in API views or React components.
 
 ### Note creation and editing
 
@@ -132,6 +132,5 @@ These are valid future extensions, but implementing them before the P0 workflow 
 ## Open questions
 
 1. The brief says **7 days** and later says **72 hours**. Which deadline governs the submission?
-2. Is **Drama** a real fourth category, a prototype-only state, or should users create categories?
-3. Does Turbo expect exact Figma tokens? The connected Figma MCP currently requires edit access to read variables and design context.
-4. Should the decorative authentication/empty-state illustrations be exported from Figma, or may equivalent licensed assets be used?
+2. Does Turbo expect exact Figma tokens? The connected Figma MCP currently requires edit access to read variables and design context.
+3. Should the decorative authentication/empty-state illustrations be exported from Figma, or may equivalent licensed assets be used?
