@@ -9,7 +9,12 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from notes.models import Category, Note
-from notes.serializers import CategorySerializer, NoteSerializer
+from notes.serializers import (
+    CategorySerializer,
+    NoteReorderSerializer,
+    NoteSerializer,
+)
+from notes.services import InvalidNoteOrder, next_manual_order, reorder_notes
 
 
 class CategoryListView(generics.ListAPIView):
@@ -45,6 +50,7 @@ class NoteViewSet(
         "-updated_at": ("-updated_at", "id"),
         "updated_at": ("updated_at", "id"),
         "category": ("category__sort_order", "-updated_at", "id"),
+        "manual": ("manual_order", "id"),
     }
 
     def get_queryset(self) -> QuerySet[Note]:
@@ -69,15 +75,22 @@ class NoteViewSet(
             )
 
         ordering = self.request.query_params.get("ordering", "-updated_at")
+        if ordering == "manual" and (category or search):
+            raise serializers.ValidationError(
+                {"ordering": ["Manual order requires all notes without search."]}
+            )
         ordering_fields = self.ordering_fields.get(ordering)
         if ordering_fields is None:
             raise serializers.ValidationError(
-                {"ordering": ["Choose -updated_at, updated_at, or category."]}
+                {"ordering": ["Choose -updated_at, updated_at, category, or manual."]}
             )
         return queryset.order_by(*ordering_fields)
 
     def perform_create(self, serializer: NoteSerializer) -> None:
-        serializer.save(owner=self.request.user)
+        serializer.save(
+            owner=self.request.user,
+            manual_order=next_manual_order(self.request.user),
+        )
 
     def perform_destroy(self, instance: Note) -> None:
         instance.deleted_at = timezone.now()
@@ -92,6 +105,20 @@ class NoteViewSet(
             deleted_at__isnull=False,
         )
         note.deleted_at = None
+        note.manual_order = next_manual_order(request.user)
         note.updated_at = timezone.now()
-        note.save(update_fields=("deleted_at", "updated_at"))
+        note.save(update_fields=("deleted_at", "manual_order", "updated_at"))
         return Response(self.get_serializer(note).data)
+
+    @action(detail=False, methods=("post",))
+    def reorder(self, request: Request) -> Response:
+        payload = NoteReorderSerializer(data=request.data)
+        payload.is_valid(raise_exception=True)
+        try:
+            reorder_notes(
+                owner=request.user,
+                note_ids=payload.validated_data["note_ids"],
+            )
+        except InvalidNoteOrder as exc:
+            raise serializers.ValidationError({"note_ids": [str(exc)]}) from exc
+        return Response(status=204)

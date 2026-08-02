@@ -44,6 +44,7 @@ class Note(models.Model):
     )
     title = models.CharField(max_length=120, blank=True)
     content = models.TextField(blank=True)
+    manual_order = models.PositiveIntegerField(default=0)
     deleted_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -58,6 +59,10 @@ class Note(models.Model):
             models.Index(
                 fields=("owner", "category", "-updated_at"),
                 name="note_owner_cat_updated_idx",
+            ),
+            models.Index(
+                fields=("owner", "manual_order", "id"),
+                name="note_owner_manual_idx",
             ),
         ]
 

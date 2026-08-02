@@ -31,10 +31,11 @@ class NoteSerializer(serializers.ModelSerializer):
             "category",
             "title",
             "content",
+            "manual_order",
             "created_at",
             "updated_at",
         )
-        read_only_fields = ("id", "created_at", "updated_at")
+        read_only_fields = ("id", "manual_order", "created_at", "updated_at")
         extra_kwargs = {
             "title": {
                 "allow_blank": True,
@@ -54,3 +55,17 @@ class NoteSerializer(serializers.ModelSerializer):
                     {"category": ["The default category is not configured."]}
                 ) from exc
         return super().create(validated_data)
+
+
+class NoteReorderSerializer(serializers.Serializer):
+    """Validate one complete manual-order payload."""
+
+    note_ids = serializers.ListField(
+        child=serializers.UUIDField(),
+        allow_empty=True,
+    )
+
+    def validate_note_ids(self, value: list) -> list:
+        if len(value) != len(set(value)):
+            raise serializers.ValidationError("Note identifiers must be unique.")
+        return value

@@ -84,6 +84,7 @@ def test_create_note_defaults_category_and_validates_input(
 
     assert created.status_code == status.HTTP_201_CREATED
     assert created.json()["category"] == "random-thoughts"
+    assert created.json()["manual_order"] == 0
     assert Note.objects.get(id=created.json()["id"]).owner == user
     assert invalid_category.status_code == status.HTTP_400_BAD_REQUEST
     assert "category" in invalid_category.json()["error"]["fields"]
@@ -192,6 +193,161 @@ def test_ordering_is_allowlisted_and_deterministic(
     ]
     assert invalid.status_code == status.HTTP_400_BAD_REQUEST
     assert "ordering" in invalid.json()["error"]["fields"]
+
+
+def test_manual_order_is_stable_and_requires_the_unfiltered_collection(
+    client: APIClient, user: User
+) -> None:
+    first = Note.objects.create(
+        owner=user,
+        category=category("school"),
+        title="First",
+        manual_order=2,
+    )
+    second = Note.objects.create(
+        owner=user,
+        category=category("personal"),
+        title="Second",
+        manual_order=0,
+    )
+    third = Note.objects.create(
+        owner=user,
+        category=category("drama"),
+        title="Third",
+        manual_order=1,
+    )
+
+    ordered = client.get(reverse("note-list"), {"ordering": "manual"})
+    filtered = client.get(
+        reverse("note-list"),
+        {"ordering": "manual", "category": "school"},
+    )
+    searched = client.get(
+        reverse("note-list"),
+        {"ordering": "manual", "q": "first"},
+    )
+
+    assert [item["id"] for item in ordered.json()] == [
+        str(second.id),
+        str(third.id),
+        str(first.id),
+    ]
+    assert filtered.status_code == status.HTTP_400_BAD_REQUEST
+    assert searched.status_code == status.HTTP_400_BAD_REQUEST
+
+
+def test_reorder_persists_complete_owner_scoped_order_without_editing_notes(
+    client: APIClient, user: User
+) -> None:
+    notes = [
+        Note.objects.create(
+            owner=user,
+            category=category("school"),
+            title=f"Note {index}",
+            manual_order=index,
+        )
+        for index in range(3)
+    ]
+    timestamps = {note.id: note.updated_at for note in notes}
+    requested_ids = [note.id for note in reversed(notes)]
+
+    response = client.post(
+        reverse("note-reorder"),
+        {"note_ids": [str(note_id) for note_id in requested_ids]},
+        format="json",
+    )
+    ordered = client.get(reverse("note-list"), {"ordering": "manual"})
+
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+    assert [item["id"] for item in ordered.json()] == [
+        str(note_id) for note_id in requested_ids
+    ]
+    for expected_position, note_id in enumerate(requested_ids):
+        note = Note.objects.get(id=note_id)
+        assert note.manual_order == expected_position
+        assert note.updated_at == timestamps[note_id]
+
+
+def test_reorder_rejects_duplicates_missing_and_foreign_notes_without_changes(
+    client: APIClient, user: User, other_user: User
+) -> None:
+    first = Note.objects.create(
+        owner=user,
+        category=category("school"),
+        title="First",
+        manual_order=0,
+    )
+    second = Note.objects.create(
+        owner=user,
+        category=category("personal"),
+        title="Second",
+        manual_order=1,
+    )
+    foreign = Note.objects.create(
+        owner=other_user,
+        category=category("drama"),
+        title="Private",
+        manual_order=0,
+    )
+
+    duplicate = client.post(
+        reverse("note-reorder"),
+        {"note_ids": [str(first.id), str(first.id)]},
+        format="json",
+    )
+    missing = client.post(
+        reverse("note-reorder"),
+        {"note_ids": [str(first.id)]},
+        format="json",
+    )
+    foreign_replacement = client.post(
+        reverse("note-reorder"),
+        {"note_ids": [str(first.id), str(foreign.id)]},
+        format="json",
+    )
+
+    assert duplicate.status_code == status.HTTP_400_BAD_REQUEST
+    assert missing.status_code == status.HTTP_400_BAD_REQUEST
+    assert foreign_replacement.status_code == status.HTTP_400_BAD_REQUEST
+    first.refresh_from_db()
+    second.refresh_from_db()
+    foreign.refresh_from_db()
+    assert (first.manual_order, second.manual_order, foreign.manual_order) == (0, 1, 0)
+
+
+def test_reorder_rolls_back_when_persistence_fails(
+    client: APIClient,
+    user: User,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    first = Note.objects.create(
+        owner=user,
+        category=category("school"),
+        title="First",
+        manual_order=0,
+    )
+    second = Note.objects.create(
+        owner=user,
+        category=category("personal"),
+        title="Second",
+        manual_order=1,
+    )
+
+    def fail_bulk_update(*args, **kwargs):
+        raise RuntimeError("database write failed")
+
+    monkeypatch.setattr(Note.objects, "bulk_update", fail_bulk_update)
+
+    with pytest.raises(RuntimeError, match="database write failed"):
+        client.post(
+            reverse("note-reorder"),
+            {"note_ids": [str(second.id), str(first.id)]},
+            format="json",
+        )
+
+    first.refresh_from_db()
+    second.refresh_from_db()
+    assert (first.manual_order, second.manual_order) == (0, 1)
 
 
 def test_retrieve_and_patch_are_owner_scoped(

@@ -14,7 +14,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Note)
 class NoteAdmin(admin.ModelAdmin):
-    list_display = ("title", "owner", "category", "updated_at")
+    list_display = ("title", "owner", "category", "manual_order", "updated_at")
     list_filter = ("category",)
     search_fields = ("title", "owner__email")
     readonly_fields = ("id", "created_at", "updated_at")
