@@ -1,0 +1,139 @@
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { NoteEditor } from "@/components/notes/note-editor";
+import type { Category, Note } from "@/lib/api/types";
+import { updateNote } from "@/lib/api/notes";
+
+const replace = vi.fn();
+const refresh = vi.fn();
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ replace, refresh }),
+}));
+
+vi.mock("@/lib/api/notes", () => ({
+  updateNote: vi.fn(),
+}));
+
+const mockedUpdateNote = vi.mocked(updateNote);
+
+const categories: Category[] = [
+  {
+    id: 1,
+    name: "Random Thoughts",
+    slug: "random-thoughts",
+    color_key: "random",
+    note_count: 1,
+  },
+  {
+    id: 2,
+    name: "School",
+    slug: "school",
+    color_key: "school",
+    note_count: 0,
+  },
+];
+
+const note: Note = {
+  id: "8ff50ae7-a153-49cd-ab60-2c865f3d82a1",
+  category: "random-thoughts",
+  title: "Before",
+  content: "Original body",
+  created_at: "2026-08-02T12:00:00Z",
+  updated_at: "2026-08-02T12:00:00Z",
+};
+
+function savedNote(changes: Partial<Note> = {}): Note {
+  return {
+    ...note,
+    updated_at: "2026-08-02T12:05:00Z",
+    ...changes,
+  };
+}
+
+describe("NoteEditor", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("autosaves the latest draft after a short pause", async () => {
+    vi.useFakeTimers();
+    mockedUpdateNote.mockResolvedValue(savedNote({ title: "After" }));
+    render(<NoteEditor note={note} categories={categories} />);
+
+    fireEvent.change(screen.getByLabelText("Note title"), {
+      target: { value: "After" },
+    });
+    expect(screen.getByText("Unsaved changes")).toBeVisible();
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(650);
+    });
+
+    expect(mockedUpdateNote).toHaveBeenCalledOnce();
+    expect(mockedUpdateNote).toHaveBeenCalledWith(note.id, {
+      category: "random-thoughts",
+      title: "After",
+      content: "Original body",
+    });
+    expect(screen.getByText("Saved")).toBeVisible();
+  });
+
+  it("flushes pending content and returns to the active filter", async () => {
+    mockedUpdateNote.mockResolvedValue(savedNote({ content: "Latest body" }));
+    render(
+      <NoteEditor
+        note={note}
+        categories={categories}
+        returnCategory="random-thoughts"
+      />,
+    );
+
+    fireEvent.change(screen.getByLabelText("Note content"), {
+      target: { value: "Latest body" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Close" }));
+
+    await waitFor(() =>
+      expect(mockedUpdateNote).toHaveBeenCalledWith(note.id, {
+        category: "random-thoughts",
+        title: "Before",
+        content: "Latest body",
+      }),
+    );
+    await waitFor(() =>
+      expect(replace).toHaveBeenCalledWith("/notes?category=random-thoughts"),
+    );
+    expect(refresh).toHaveBeenCalledOnce();
+  });
+
+  it("keeps the draft available and retries a failed close", async () => {
+    const user = userEvent.setup();
+    mockedUpdateNote
+      .mockRejectedValueOnce(new TypeError("Failed to fetch"))
+      .mockResolvedValueOnce(savedNote({ category: "school" }));
+    render(<NoteEditor note={note} categories={categories} />);
+
+    await user.selectOptions(screen.getByLabelText("Category"), "school");
+    await user.click(screen.getByRole("button", { name: "Close" }));
+
+    expect(await screen.findByText("Couldn’t save")).toBeVisible();
+    expect(screen.getByLabelText("Category")).toHaveValue("school");
+    await user.click(screen.getByRole("button", { name: "Retry" }));
+
+    expect(await screen.findByText("Saved")).toBeVisible();
+    expect(mockedUpdateNote).toHaveBeenCalledTimes(2);
+  });
+});

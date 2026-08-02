@@ -36,3 +36,9 @@ export async function getNotes(category?: string): Promise<Note[]> {
   const query = category ? `?category=${encodeURIComponent(category)}` : "";
   return readApiResponse<Note[]>(await serverApiRequest(`/notes/${query}`));
 }
+
+export async function getNote(id: string): Promise<Note | null> {
+  const response = await serverApiRequest(`/notes/${encodeURIComponent(id)}/`);
+  if (response.status === 404) return null;
+  return readApiResponse<Note>(response);
+}
