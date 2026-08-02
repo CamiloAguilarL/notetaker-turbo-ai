@@ -1,8 +1,8 @@
 import Image from "next/image";
 
+import { AnimatedNotesGrid } from "@/components/notes/animated-notes-grid";
 import { CategoryNav } from "@/components/notes/category-nav";
 import { NewNoteButton } from "@/components/notes/new-note-button";
-import { NoteCard } from "@/components/notes/note-card";
 import { NotesToolbar } from "@/components/notes/notes-toolbar";
 import { SortableNotesGrid } from "@/components/notes/sortable-notes-grid";
 import { UndoDeleteBanner } from "@/components/notes/undo-delete-banner";
@@ -111,19 +111,11 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
                 returnQuery={dashboardQuery || undefined}
               />
             ) : (
-              <section
-                aria-label={activeName ? `${activeName} notes` : "All notes"}
-                className="grid min-w-0 gap-5 sm:grid-cols-2 xl:grid-cols-3"
-              >
-                {noteItems.map(({ note, category }) => (
-                  <NoteCard
-                    key={note.id}
-                    note={note}
-                    category={category}
-                    returnQuery={dashboardQuery || undefined}
-                  />
-                ))}
-              </section>
+              <AnimatedNotesGrid
+                label={activeName ? `${activeName} notes` : "All notes"}
+                notes={noteItems}
+                returnQuery={dashboardQuery || undefined}
+              />
             )
           ) : (
             <section className="grid min-h-[27rem] place-items-center px-6 py-10 text-center">

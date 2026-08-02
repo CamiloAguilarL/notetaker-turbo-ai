@@ -27,7 +27,7 @@ export function NoteCard({
   return (
     <article
       className={cn(
-        "group relative min-h-72 overflow-hidden rounded-2xl border-[3px] transition-transform motion-safe:hover:-translate-y-0.5",
+        "group relative h-full min-h-72 overflow-hidden rounded-2xl border-[3px] transition-transform motion-safe:hover:-translate-y-0.5",
         theme.surface,
         theme.border,
       )}

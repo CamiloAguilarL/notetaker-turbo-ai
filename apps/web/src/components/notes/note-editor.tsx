@@ -1,6 +1,7 @@
 "use client";
 
 import { Check, LoaderCircle, RotateCcw, Trash2, X } from "lucide-react";
+import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -250,7 +251,10 @@ export function NoteEditor({
         </p>
       ) : null}
 
-      <div
+      <motion.div
+        initial={{ y: 6 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.28 }}
         className={cn(
           "min-h-[calc(100dvh-9rem)] rounded-2xl border-[3px] p-6 transition-colors sm:p-10 lg:p-12",
           theme.surface,
@@ -279,12 +283,17 @@ export function NoteEditor({
               {status === "saved" ? (
                 <Check aria-hidden="true" className="size-3.5" />
               ) : null}
-              <span>
+              <motion.span
+                key={status}
+                initial={{ y: 2 }}
+                animate={{ y: 0 }}
+                transition={{ duration: 0.16 }}
+              >
                 {status === "dirty" ? "Unsaved changes" : null}
                 {status === "saving" ? "Saving…" : null}
                 {status === "saved" ? "Saved" : null}
                 {status === "error" ? "Couldn’t save" : null}
-              </span>
+              </motion.span>
               {status === "error" ? (
                 <Button
                   type="button"
@@ -329,7 +338,7 @@ export function NoteEditor({
             className="placeholder:text-foreground/35 focus-visible:ring-ring/50 mt-5 min-h-[calc(100dvh-24rem)] w-full resize-none rounded-sm border-0 bg-transparent text-base leading-7 outline-none focus-visible:ring-2 sm:mt-7 sm:min-h-[calc(100dvh-25rem)]"
           />
         </div>
-      </div>
+      </motion.div>
     </main>
   );
 }

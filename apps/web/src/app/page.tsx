@@ -1,5 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 import { Check, NotebookPen, Palette, Search } from "lucide-react";
+import * as motion from "motion/react-client";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -69,7 +70,12 @@ export default async function Home() {
       </header>
 
       <div className="grid flex-1 items-center gap-10 py-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16 lg:py-14">
-        <section className="max-w-2xl">
+        <motion.section
+          initial={{ y: 6 }}
+          animate={{ y: 0 }}
+          transition={{ duration: 0.34 }}
+          className="max-w-2xl"
+        >
           <p className="text-primary text-sm font-semibold">
             A private notebook for everyday thoughts
           </p>
@@ -96,10 +102,13 @@ export default async function Home() {
               </li>
             ))}
           </ul>
-        </section>
+        </motion.section>
 
-        <section
+        <motion.section
           aria-label="A preview of organized notes"
+          initial={{ y: 10 }}
+          animate={{ y: 0 }}
+          transition={{ duration: 0.38, delay: 0.06 }}
           className="relative mx-auto h-[29rem] w-full max-w-xl sm:h-[33rem]"
         >
           <div
@@ -127,7 +136,7 @@ export default async function Home() {
               </p>
             </article>
           ))}
-        </section>
+        </motion.section>
       </div>
     </main>
   );

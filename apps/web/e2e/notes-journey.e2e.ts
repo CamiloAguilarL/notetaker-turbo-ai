@@ -13,7 +13,7 @@ async function expectNoAccessibilityViolations(page: Page) {
 
 test("a user can capture, organize, and reopen a private note", async ({
   page,
-}) => {
+}, testInfo) => {
   const email = `playwright-${crypto.randomUUID()}@example.com`;
 
   await page.goto("/");
@@ -205,4 +205,15 @@ test("a user can capture, organize, and reopen a private note", async ({
 
   await page.goto("/notes");
   await expect(page).toHaveURL(/\/login$/);
+
+  if (testInfo.project.name === "chromium-mobile") {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/");
+    const reducedMotionHero = page
+      .getByRole("heading", { name: "Your thoughts, in a softer place." })
+      .locator("..");
+    await expect(reducedMotionHero).toBeVisible();
+    await expect(reducedMotionHero).toHaveCSS("transform", "none");
+    await expectNoAccessibilityViolations(page);
+  }
 });

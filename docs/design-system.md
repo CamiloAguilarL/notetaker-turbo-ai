@@ -100,19 +100,20 @@ The source primarily shows a laptop-width frame. Implementation must add intenti
 - Form errors are associated with their fields and announced.
 - Focus rings use the semantic ring token and must remain visible on category colors.
 - Autosave status uses text and an appropriate live region, not animation alone.
-- Any card entrance or editor transition is removed or shortened for `prefers-reduced-motion`.
+- Any card entrance or editor transition is removed for `prefers-reduced-motion`.
 
 ## Motion system
 
 Motion has one job: make the note's physical metaphor and system state easier to understand. It is not a layer of ambient decoration.
 
-- **Signature moment**: a selected note expands into the editor and settles back into the grid after close. If route architecture prevents a reliable shared-layout transition, use a short opacity-and-scale transition instead of forcing complexity.
-- **State feedback**: new, restored, and reordered notes may settle into position; autosave uses primarily text and a restrained check transition.
-- **Duration vocabulary**: approximately 120–160 ms for control feedback and 180–240 ms for card/editor transitions, refined against the Figma prototype.
-- **Easing**: one standard ease-out for entrances and one ease-in for exits; avoid unrelated springs on every component.
-- **Library**: prefer CSS transitions for isolated hover/focus states. Add `motion` only with the feature that needs layout or presence animation; wrap it in a small product-level motion boundary.
-- **Reduced motion**: configure Motion to respect the user's preference and replace spatial movement with instant changes or short opacity transitions.
-- **Performance**: animate transform and opacity where practical; never animate autosizing text input on every keystroke.
+- **Signature moment**: note cards settle into their new positions after a filter or sort change; the editor surface enters by six pixels without delaying focus or input.
+- **State feedback**: new, restored, and reordered notes may settle into position; autosave still communicates primarily through live text and uses only a two-pixel status movement.
+- **Duration vocabulary**: 160 ms for save-state feedback, 220–280 ms for cards/editor, and up to 380 ms for the first landing composition.
+- **Easing**: one standard ease-out curve (`[0.22, 1, 0.36, 1]`); avoid unrelated springs on every component.
+- **Library**: CSS remains responsible for isolated hover/focus states. Motion 12.43.0 owns only layout and entrance transitions behind one product-level configuration boundary.
+- **Reduced motion**: `MotionConfig` uses `reducedMotion="user"`; spatial and layout movement becomes an immediate final state. Playwright verifies this behavior with emulated device preference.
+- **Contrast**: do not fade text-bearing containers. Live Axe validation rejected opacity entrances because intermediate compositing lowered contrast even though the final tokens passed.
+- **Performance**: animate transform and layout position only; never animate autosizing text input on every keystroke or promote static elements with `will-change`.
 
 Manual reordering must remain understandable without animation. Drag handles are explicit controls, the lifted card keeps its category label, drop targets retain contrast, and screen-reader announcements describe positions rather than visual coordinates.
 

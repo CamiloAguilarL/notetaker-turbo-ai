@@ -11,9 +11,10 @@ The complete P0 product journey and its documented quality gate are complete:
 - Responsive empty/populated dashboards, URL-backed category filters, semantic category colors, loading/error states, and accessible note cards.
 - Debounced full-text note search plus recently edited, oldest edited, and category ordering; every view composes through durable URL state and deterministic API ordering.
 - Atomic manual ordering in the unfiltered notebook with optimistic updates, rollback feedback, pointer/touch drag handles, keyboard move controls, position announcements, and reload persistence.
+- Restrained Motion-based landing, grid-layout, editor, and autosave-state transitions with a global user-preference policy and an automated reduced-motion check.
 - Plain-text editor with category changes, serialized debounced autosave, saving/error/retry states, last-edited metadata, and close-time flush.
 - Accessible delete confirmation and an eight-second Undo action that restores the complete note without losing its category or latest draft.
-- Next.js 16.2.12, React 19, Tailwind CSS 4, dnd kit, and customized source-owned shadcn/ui `Button`, `Input`, and `AlertDialog` components.
+- Next.js 16.2.12, React 19, Tailwind CSS 4, Motion 12.43.0, dnd kit, and customized source-owned shadcn/ui `Button`, `Input`, and `AlertDialog` components.
 - Django 6.0.7 and Django REST Framework 3.17.1 with a database-aware health endpoint and a consistent JSON error contract.
 - PostgreSQL 17, Django, and Next.js orchestrated through Docker Compose.
 - Ruff, pytest with enforced backend coverage, ESLint, TypeScript, Vitest with enforced frontend coverage, Playwright E2E plus Axe accessibility scans at three breakpoints, production builds, and npm security auditing.
@@ -22,7 +23,7 @@ The complete P0 product journey and its documented quality gate are complete:
 - A source-aligned visual fidelity pass covering authentication, empty/populated dashboards, cards, controls, responsive editor composition, and original transparent stationery illustrations.
 - A public Server Component landing page with visitor registration/login actions and a personalized return-to-notes action for authenticated users.
 
-The selected P1 enhancements—reversible deletion, search/deterministic sorting, the public landing, and accessible manual ordering—are complete across their relevant API, responsive UI, failure handling, unit tests, E2E, and accessibility checks. The manual-order interaction is stable, so the final conditional Motion slice is now eligible without displacing the submission buffer.
+The selected P1 enhancements—reversible deletion, search/deterministic sorting, the public landing, accessible manual ordering, and purposeful motion—are complete across their relevant API, responsive UI, failure handling, unit tests, E2E, and accessibility checks. The protected submission buffer remains intact for final demo and clean-clone verification.
 
 ## Repository structure
 
@@ -101,7 +102,7 @@ The implementation order is intentionally tied to Turbo AI's four assessment cri
 
 The planned time allocation is 55% P0 slices, 25% quality work performed alongside them, 10% selected P1 enhancements, and 10% submission verification and presentation. These percentages are prioritization guardrails, not retrospective time claims.
 
-Selected P1 work is ordered as deletion with undo (complete), search and sorting (complete), a minimal landing (complete), accessible manual ordering (complete), then conditional motion. Pinning, keyboard shortcuts, and a complete trash screen remain P2. See the [evaluation strategy](docs/evaluation-strategy.md) for scoring and go/no-go conditions.
+Selected P1 work was completed in the protected order: deletion with undo, search and sorting, a minimal landing, accessible manual ordering, then purposeful motion. Pinning, keyboard shortcuts, and a complete trash screen remain intentionally deferred P2 scope. See the [evaluation strategy](docs/evaluation-strategy.md) for scoring and go/no-go conditions.
 
 ## Environment variables
 
@@ -166,6 +167,7 @@ OpenAI Codex was used as an implementation and review assistant to:
 - scaffold and configure the Next.js and Django workspaces;
 - define Docker, environment, testing, linting, and documentation contracts;
 - research current official Next.js, Django/DRF, Motion, dnd kit, and Playwright guidance before selecting architecture, testing, animation, and accessible drag-and-drop approaches;
+- apply a restrained transform-only Motion language after browser/Axe feedback showed that opacity fades can create transient low-contrast frames, and verify the result with emulated reduced-motion preferences;
 - identify and replace vulnerable transitive PostCSS and Sharp versions with audited overrides;
 - validate the local UI at desktop, tablet, and mobile viewports and smoke-test the Dockerized web, API, and database services;
 - detect and fix a server/client timestamp hydration mismatch through live browser diagnostics;

@@ -6,6 +6,7 @@ import {
   waitFor,
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { PropsWithChildren } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { NoteEditor } from "@/components/notes/note-editor";
@@ -17,6 +18,18 @@ const refresh = vi.fn();
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ replace, refresh }),
+}));
+
+vi.mock("motion/react", () => ({
+  motion: {
+    div: ({
+      children,
+      className,
+    }: PropsWithChildren<{ className?: string }>) => (
+      <div className={className}>{children}</div>
+    ),
+    span: ({ children }: PropsWithChildren) => <span>{children}</span>,
+  },
 }));
 
 vi.mock("@/lib/api/notes", () => ({
