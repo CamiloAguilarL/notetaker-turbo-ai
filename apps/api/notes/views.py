@@ -1,7 +1,12 @@
 """User-scoped category and note API views."""
 
 from django.db.models import Count, Q, QuerySet
+from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from rest_framework import generics, mixins, serializers, viewsets
+from rest_framework.decorators import action
+from rest_framework.request import Request
+from rest_framework.response import Response
 
 from notes.models import Category, Note
 from notes.serializers import CategorySerializer, NoteSerializer
@@ -16,7 +21,10 @@ class CategoryListView(generics.ListAPIView):
         return Category.objects.annotate(
             note_count=Count(
                 "notes",
-                filter=Q(notes__owner=self.request.user),
+                filter=Q(
+                    notes__owner=self.request.user,
+                    notes__deleted_at__isnull=True,
+                ),
             )
         ).order_by("sort_order", "id")
 
@@ -26,17 +34,19 @@ class NoteViewSet(
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
 ):
     """Read and mutate only notes owned by the authenticated user."""
 
     serializer_class = NoteSerializer
-    http_method_names = ("get", "post", "patch", "head", "options")
+    http_method_names = ("get", "post", "patch", "delete", "head", "options")
 
     def get_queryset(self) -> QuerySet[Note]:
-        queryset = Note.objects.filter(owner=self.request.user).select_related(
-            "category"
-        )
+        queryset = Note.objects.filter(
+            owner=self.request.user,
+            deleted_at__isnull=True,
+        ).select_related("category")
         category = self.request.query_params.get("category")
         if category:
             if not Category.objects.filter(slug=category).exists():
@@ -46,3 +56,20 @@ class NoteViewSet(
 
     def perform_create(self, serializer: NoteSerializer) -> None:
         serializer.save(owner=self.request.user)
+
+    def perform_destroy(self, instance: Note) -> None:
+        instance.deleted_at = timezone.now()
+        instance.save(update_fields=("deleted_at", "updated_at"))
+
+    @action(detail=True, methods=("post",))
+    def restore(self, request: Request, pk: str | None = None) -> Response:
+        note = get_object_or_404(
+            Note.objects.select_related("category"),
+            id=pk,
+            owner=request.user,
+            deleted_at__isnull=False,
+        )
+        note.deleted_at = None
+        note.updated_at = timezone.now()
+        note.save(update_fields=("deleted_at", "updated_at"))
+        return Response(self.get_serializer(note).data)

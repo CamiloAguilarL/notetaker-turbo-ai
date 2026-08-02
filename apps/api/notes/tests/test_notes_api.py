@@ -43,6 +43,12 @@ def test_categories_are_seeded_in_stable_order_with_user_counts(
     client: APIClient, user: User, other_user: User
 ) -> None:
     Note.objects.create(owner=user, category=category("school"), title="One")
+    Note.objects.create(
+        owner=user,
+        category=category("school"),
+        title="Deleted",
+        deleted_at=timezone.now(),
+    )
     Note.objects.create(owner=other_user, category=category("school"), title="Private")
 
     response = client.get(reverse("category-list"))
@@ -137,13 +143,64 @@ def test_retrieve_and_patch_are_owner_scoped(
     assert foreign.title == "Private"
 
 
-def test_delete_is_not_part_of_p0_api(client: APIClient, user: User) -> None:
-    note = Note.objects.create(owner=user, category=category("school"), title="Keep")
+def test_delete_hides_note_and_restore_preserves_it(
+    client: APIClient, user: User
+) -> None:
+    note = Note.objects.create(
+        owner=user,
+        category=category("school"),
+        title="Keep this thought",
+        content="The complete body",
+    )
 
-    response = client.delete(reverse("note-detail", args=[note.id]))
+    deleted = client.delete(reverse("note-detail", args=[note.id]))
+    hidden_list = client.get(reverse("note-list"))
+    hidden_detail = client.get(reverse("note-detail", args=[note.id]))
+    counts = client.get(reverse("category-list"))
 
-    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
-    assert Note.objects.filter(id=note.id).exists()
+    assert deleted.status_code == status.HTTP_204_NO_CONTENT
+    assert hidden_list.json() == []
+    assert hidden_detail.status_code == status.HTTP_404_NOT_FOUND
+    assert [item["note_count"] for item in counts.json()] == [0, 0, 0, 0]
+    note.refresh_from_db()
+    assert note.deleted_at is not None
+
+    restored = client.post(reverse("note-restore", args=[note.id]))
+
+    assert restored.status_code == status.HTTP_200_OK
+    assert restored.json()["title"] == "Keep this thought"
+    assert restored.json()["content"] == "The complete body"
+    assert restored.json()["category"] == "school"
+    note.refresh_from_db()
+    assert note.deleted_at is None
+
+
+def test_delete_and_restore_are_owner_scoped(
+    client: APIClient, other_user: User
+) -> None:
+    active_foreign = Note.objects.create(
+        owner=other_user,
+        category=category("personal"),
+        title="Private active note",
+    )
+    deleted_foreign = Note.objects.create(
+        owner=other_user,
+        category=category("drama"),
+        title="Private deleted note",
+        deleted_at=timezone.now(),
+    )
+
+    delete_response = client.delete(reverse("note-detail", args=[active_foreign.id]))
+    restore_response = client.post(reverse("note-restore", args=[deleted_foreign.id]))
+    restore_active = client.post(reverse("note-restore", args=[active_foreign.id]))
+
+    assert delete_response.status_code == status.HTTP_404_NOT_FOUND
+    assert restore_response.status_code == status.HTTP_404_NOT_FOUND
+    assert restore_active.status_code == status.HTTP_404_NOT_FOUND
+    active_foreign.refresh_from_db()
+    deleted_foreign.refresh_from_db()
+    assert active_foreign.deleted_at is None
+    assert deleted_foreign.deleted_at is not None
 
 
 def test_note_list_avoids_category_n_plus_one(
