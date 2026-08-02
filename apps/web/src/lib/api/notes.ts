@@ -26,3 +26,10 @@ export function deleteNote(id: string): Promise<void> {
 export function restoreNote(id: string): Promise<Note> {
   return apiRequest<Note>(`/notes/${id}/restore/`, { method: "POST" });
 }
+
+export function reorderNotes(noteIds: string[]): Promise<void> {
+  return apiRequest<void>("/notes/reorder/", {
+    method: "POST",
+    body: JSON.stringify({ note_ids: noteIds }),
+  });
+}

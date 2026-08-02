@@ -4,6 +4,7 @@ import { CategoryNav } from "@/components/notes/category-nav";
 import { NewNoteButton } from "@/components/notes/new-note-button";
 import { NoteCard } from "@/components/notes/note-card";
 import { NotesToolbar } from "@/components/notes/notes-toolbar";
+import { SortableNotesGrid } from "@/components/notes/sortable-notes-grid";
 import { UndoDeleteBanner } from "@/components/notes/undo-delete-banner";
 import { getCategories, getNotes } from "@/lib/api/server";
 import {
@@ -39,6 +40,7 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
   const ordering = normalizeNoteOrdering(
     first(query.ordering),
     Boolean(activeCategory),
+    Boolean(searchQuery),
   );
   const notes = await getNotes({
     category: activeCategory,
@@ -66,6 +68,10 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
     category: activeCategory,
     search: searchQuery,
     ordering,
+  });
+  const noteItems = notes.flatMap((note) => {
+    const category = categoryBySlug.get(note.category);
+    return category ? [{ note, category }] : [];
   });
 
   return (
@@ -98,23 +104,27 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
           />
 
           {notes.length ? (
-            <section
-              aria-label={activeName ? `${activeName} notes` : "All notes"}
-              className="grid min-w-0 gap-5 sm:grid-cols-2 xl:grid-cols-3"
-            >
-              {notes.map((note) => {
-                const category = categoryBySlug.get(note.category);
-                if (!category) return null;
-                return (
+            ordering === "manual" ? (
+              <SortableNotesGrid
+                key={notes.map((note) => note.id).join(":")}
+                notes={noteItems}
+                returnQuery={dashboardQuery || undefined}
+              />
+            ) : (
+              <section
+                aria-label={activeName ? `${activeName} notes` : "All notes"}
+                className="grid min-w-0 gap-5 sm:grid-cols-2 xl:grid-cols-3"
+              >
+                {noteItems.map(({ note, category }) => (
                   <NoteCard
                     key={note.id}
                     note={note}
                     category={category}
                     returnQuery={dashboardQuery || undefined}
                   />
-                );
-              })}
-            </section>
+                ))}
+              </section>
+            )
           ) : (
             <section className="grid min-h-[27rem] place-items-center px-6 py-10 text-center">
               <div className="max-w-lg">

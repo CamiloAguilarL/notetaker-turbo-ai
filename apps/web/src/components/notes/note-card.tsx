@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 
 import type { Category, Note } from "@/lib/api/types";
 import { categoryThemes } from "@/lib/category-theme";
@@ -9,9 +10,15 @@ type NoteCardProps = {
   note: Note;
   category: Category;
   returnQuery?: string;
+  action?: ReactNode;
 };
 
-export function NoteCard({ note, category, returnQuery }: NoteCardProps) {
+export function NoteCard({
+  note,
+  category,
+  returnQuery,
+  action,
+}: NoteCardProps) {
   const theme = categoryThemes[category.color_key];
   const href = returnQuery
     ? `/notes/${note.id}?return=${encodeURIComponent(returnQuery)}`
@@ -25,12 +32,20 @@ export function NoteCard({ note, category, returnQuery }: NoteCardProps) {
         theme.border,
       )}
     >
+      {action ? (
+        <div className="absolute top-3 right-3 z-10">{action}</div>
+      ) : null}
       <Link
         href={href}
         aria-label={`Open ${note.title || "untitled note"}`}
         className="focus-visible:ring-ring/60 flex h-full min-h-72 flex-col rounded-[calc(var(--radius)*1.15)] p-5 outline-none focus-visible:ring-4 focus-visible:ring-inset sm:p-6"
       >
-        <p className="text-foreground/75 flex flex-wrap items-center gap-x-2 text-xs">
+        <p
+          className={cn(
+            "text-foreground/75 flex flex-wrap items-center gap-x-2 text-xs",
+            action && "pr-24",
+          )}
+        >
           <time dateTime={note.updated_at} className="font-bold">
             {formatNoteDate(note.updated_at)}
           </time>

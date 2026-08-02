@@ -5,6 +5,7 @@ export const noteOrderingOptions = [
   { value: "-updated_at", label: "Recently edited" },
   { value: "updated_at", label: "Oldest edited" },
   { value: "category", label: "Category" },
+  { value: "manual", label: "Manual order" },
 ] as const;
 
 export type NoteOrdering = (typeof noteOrderingOptions)[number]["value"];
@@ -23,9 +24,12 @@ export function normalizeSearchQuery(value?: string): string {
 export function normalizeNoteOrdering(
   value: string | undefined,
   hasCategory: boolean,
+  hasSearch = false,
 ): NoteOrdering {
   const isKnown = noteOrderingOptions.some((option) => option.value === value);
-  if (!isKnown || (hasCategory && value === "category")) {
+  const isInvalidCategorySort = hasCategory && value === "category";
+  const isInvalidManualSort = value === "manual" && (hasCategory || hasSearch);
+  if (!isKnown || isInvalidCategorySort || isInvalidManualSort) {
     return DEFAULT_NOTE_ORDERING;
   }
   return value as NoteOrdering;

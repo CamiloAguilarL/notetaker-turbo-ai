@@ -16,6 +16,11 @@ describe("notes query state", () => {
     );
     expect(normalizeNoteOrdering("updated_at", false)).toBe("updated_at");
     expect(normalizeNoteOrdering("category", true)).toBe(DEFAULT_NOTE_ORDERING);
+    expect(normalizeNoteOrdering("manual", true)).toBe(DEFAULT_NOTE_ORDERING);
+    expect(normalizeNoteOrdering("manual", false, true)).toBe(
+      DEFAULT_NOTE_ORDERING,
+    );
+    expect(normalizeNoteOrdering("manual", false)).toBe("manual");
     expect(normalizeNoteOrdering("unknown", false)).toBe(DEFAULT_NOTE_ORDERING);
   });
 

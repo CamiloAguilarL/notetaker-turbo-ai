@@ -44,4 +44,16 @@ describe("CategoryNav", () => {
     );
     expect(within(school).getByText("3")).toBeVisible();
   });
+
+  it("keeps manual order only in the complete collection", () => {
+    render(<CategoryNav categories={categories} ordering="manual" />);
+
+    expect(
+      screen.getByRole("link", { name: /All Categories\s*5/ }),
+    ).toHaveAttribute("href", "/notes?ordering=manual");
+    expect(screen.getByRole("link", { name: /School\s*3/ })).toHaveAttribute(
+      "href",
+      "/notes?category=school",
+    );
+  });
 });

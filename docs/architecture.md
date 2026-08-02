@@ -91,12 +91,12 @@ Categories should be seeded through a data migration. Do not hard-code the visib
 | `category` | protected foreign key | Required by the reviewed editor. |
 | `title` | bounded string | Plain text; whitespace normalized deliberately. |
 | `content` | text | Plain text with line breaks preserved. |
-| `manual_position` | positive integer | Global manual order for the owner's active notes. |
+| `manual_order` | positive integer | Global manual order for the owner's active notes. |
 | `deleted_at` | nullable timestamp | Supports reversible deletion; excluded from normal queries. |
 | `created_at` | timestamp | UTC, server controlled. |
 | `updated_at` | timestamp | UTC, drives display and ordering. |
 
-Indexes should support `(owner, -updated_at)`, `(owner, category, -updated_at)`, and `(owner, manual_position)`. Active manual positions should be unique per owner through a conditional PostgreSQL constraint. Database constraints should enforce field bounds and valid relationships where practical. Manual ordering applies only to the complete, unfiltered active-note set; this keeps one position per note and avoids a speculative per-filter ordering model.
+Indexes support `(owner, -updated_at)`, `(owner, category, -updated_at)`, and `(owner, manual_order, id)`. The reorder service owns positional consistency: it locks the owner's active set, requires every identifier exactly once, assigns zero-based positions, and bulk-updates only `manual_order` so a move does not masquerade as a content edit. Manual ordering applies only to the complete, unfiltered active-note set; this keeps one position per note and avoids a speculative per-filter ordering model.
 
 ## API direction
 
@@ -143,7 +143,7 @@ Expected list parameters are `category`, `q`, and an allowlisted `ordering` valu
 - The client sends the complete ordered list of active note identifiers after a drop.
 - The API validates ownership and set equality, then updates positions inside one transaction.
 - The client may update optimistically but restores the last server-confirmed order after failure.
-- Use the current `@dnd-kit/react` API only when this slice starts; keep pointer, touch, keyboard sensors, instructions, and live announcements enabled.
+- The client uses `@dnd-kit/core` and `@dnd-kit/sortable` with an explicit activator, pointer/touch support, keyboard movement controls, screen-reader instructions, and live announcements.
 
 ## Authentication and CSRF
 

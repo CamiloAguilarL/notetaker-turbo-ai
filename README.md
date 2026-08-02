@@ -1,6 +1,6 @@
 # Turbo Notes
 
-Turbo Notes is a private notes-taking hiring challenge built as a local-first monorepo with Next.js, Django REST Framework, and PostgreSQL. It includes session authentication, category-based organization, search and sorting, a responsive notes dashboard, an autosaving editor, reversible note deletion, and a minimal public landing.
+Turbo Notes is a private notes-taking hiring challenge built as a local-first monorepo with Next.js, Django REST Framework, and PostgreSQL. It includes session authentication, category-based organization, search and sorting, accessible manual ordering, a responsive notes dashboard, an autosaving editor, reversible note deletion, and a minimal public landing.
 
 ## Current status
 
@@ -10,9 +10,10 @@ The complete P0 product journey and its documented quality gate are complete:
 - Private user-scoped note creation, retrieval, updates, deterministic ordering, reversible soft deletion, and four seeded categories with scoped counts.
 - Responsive empty/populated dashboards, URL-backed category filters, semantic category colors, loading/error states, and accessible note cards.
 - Debounced full-text note search plus recently edited, oldest edited, and category ordering; every view composes through durable URL state and deterministic API ordering.
+- Atomic manual ordering in the unfiltered notebook with optimistic updates, rollback feedback, pointer/touch drag handles, keyboard move controls, position announcements, and reload persistence.
 - Plain-text editor with category changes, serialized debounced autosave, saving/error/retry states, last-edited metadata, and close-time flush.
 - Accessible delete confirmation and an eight-second Undo action that restores the complete note without losing its category or latest draft.
-- Next.js 16.2.12, React 19, Tailwind CSS 4, and customized source-owned shadcn/ui `Button`, `Input`, and `AlertDialog` components.
+- Next.js 16.2.12, React 19, Tailwind CSS 4, dnd kit, and customized source-owned shadcn/ui `Button`, `Input`, and `AlertDialog` components.
 - Django 6.0.7 and Django REST Framework 3.17.1 with a database-aware health endpoint and a consistent JSON error contract.
 - PostgreSQL 17, Django, and Next.js orchestrated through Docker Compose.
 - Ruff, pytest with enforced backend coverage, ESLint, TypeScript, Vitest with enforced frontend coverage, Playwright E2E plus Axe accessibility scans at three breakpoints, production builds, and npm security auditing.
@@ -21,7 +22,7 @@ The complete P0 product journey and its documented quality gate are complete:
 - A source-aligned visual fidelity pass covering authentication, empty/populated dashboards, cards, controls, responsive editor composition, and original transparent stationery illustrations.
 - A public Server Component landing page with visitor registration/login actions and a personalized return-to-notes action for authenticated users.
 
-The low-risk P1 enhancements—reversible deletion, search/deterministic sorting, and the public landing—are complete across their relevant API, responsive UI, failure handling, unit tests, E2E, and accessibility checks. The documented manual-order gate is now open; Motion remains sequenced after the target interactions stabilize.
+The selected P1 enhancements—reversible deletion, search/deterministic sorting, the public landing, and accessible manual ordering—are complete across their relevant API, responsive UI, failure handling, unit tests, E2E, and accessibility checks. The manual-order interaction is stable, so the final conditional Motion slice is now eligible without displacing the submission buffer.
 
 ## Repository structure
 
@@ -100,7 +101,7 @@ The implementation order is intentionally tied to Turbo AI's four assessment cri
 
 The planned time allocation is 55% P0 slices, 25% quality work performed alongside them, 10% selected P1 enhancements, and 10% submission verification and presentation. These percentages are prioritization guardrails, not retrospective time claims.
 
-Selected P1 work is ordered as deletion with undo (complete), search and sorting (complete), a minimal landing (complete), then conditional manual ordering and motion. Pinning, keyboard shortcuts, and a complete trash screen remain P2. See the [evaluation strategy](docs/evaluation-strategy.md) for scoring and go/no-go conditions.
+Selected P1 work is ordered as deletion with undo (complete), search and sorting (complete), a minimal landing (complete), accessible manual ordering (complete), then conditional motion. Pinning, keyboard shortcuts, and a complete trash screen remain P2. See the [evaluation strategy](docs/evaluation-strategy.md) for scoring and go/no-go conditions.
 
 ## Environment variables
 
@@ -168,7 +169,7 @@ OpenAI Codex was used as an implementation and review assistant to:
 - identify and replace vulnerable transitive PostCSS and Sharp versions with audited overrides;
 - validate the local UI at desktop, tablet, and mobile viewports and smoke-test the Dockerized web, API, and database services;
 - detect and fix a server/client timestamp hydration mismatch through live browser diagnostics;
-- exercise the real landing, registration, note creation, autosave, reload persistence, filtering, search, sorting, category change, reversible deletion, logout, route protection, and automated accessibility scans in Playwright.
+- exercise the real landing, registration, note creation, autosave, reload persistence, filtering, search, sorting, manual reordering, category change, reversible deletion, logout, route protection, and automated accessibility scans in Playwright;
 - generate two original transparent colored-pencil/watercolor stationery illustrations for authentication and the empty state, remove their chroma backgrounds, and inspect the resulting RGBA assets at desktop and mobile sizes.
 
 AI accelerated source comparison, scaffolding, implementation, documentation, dependency review, original illustration creation, and repetitive verification. It was not used to invent unavailable Figma values, present generated illustrations as Figma exports, or justify unverified completion claims.

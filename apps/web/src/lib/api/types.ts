@@ -16,6 +16,7 @@ export type Note = {
   category: Category["slug"];
   title: string;
   content: string;
+  manual_order: number;
   created_at: string;
   updated_at: string;
 };

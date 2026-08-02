@@ -53,11 +53,11 @@ The P1 go/no-go gate passed with the following repository evidence:
 4. The Playwright journey and Axe scans pass at 390px, 820px, and 1440px; editor fields have visible focus treatment and global reduced-motion fallback.
 5. The Figma prototype and walkthrough were compared manually. Exact Figma token extraction remains unavailable because the connected MCP requires edit access, so provisional semantic values remain explicitly labeled rather than blocking functional work.
 
-Selected P1 work may proceed in the documented order. Manual ordering was initially blocked until deletion, search, and deterministic sorting became stable; Motion remains blocked until target interactions are final.
+Selected P1 work may proceed in the documented order. Manual ordering was initially blocked until deletion, search, and deterministic sorting became stable; its completed interaction contract now opens the Motion gate.
 
-Reversible deletion, search, deterministic sorting, and the public landing are now complete. Evidence includes owner-scoped soft-delete/restore and search/order API tests, frontend confirmation/failure/Undo and query-state component tests, preservation of the latest draft before deletion, visitor/authenticated landing actions, production builds, and the complete Playwright journey with Axe scans at desktop, tablet, and mobile breakpoints.
+Reversible deletion, search, deterministic sorting, the public landing, and manual ordering are now complete. Evidence includes owner-scoped soft-delete/restore, search/order, reorder-validation, ownership, timestamp-preservation, and transaction-rollback API tests; frontend confirmation/failure/Undo, query-state, optimistic-reorder, and rollback component tests; preservation of the latest draft before deletion; visitor/authenticated landing actions; production builds; and the complete Playwright journey with Axe scans at desktop, tablet, and mobile breakpoints.
 
-The manual-order gate is now open: deletion, search, and deterministic sorting are stable and independently committed. Manual ordering remains a conditional slice and must still satisfy transactional persistence, rollback, touch, keyboard, announcement, responsive, and testing criteria before Motion begins.
+The manual-order gate passed: the API atomically validates the owner's complete active-note set, leaves content-edit timestamps unchanged, and rejects duplicate, incomplete, or foreign identifiers. The responsive client provides pointer/touch drag activation, explicit keyboard move controls, screen-reader instructions and live announcements, optimistic persistence, failure rollback, and durable URL/reload state. The full quality gate passes with 30 frontend tests, 22 backend tests, a production build, and one Playwright/Axe journey at each target breakpoint. Motion may now begin while the submission buffer remains protected.
 
 ## Demonstration plan
 

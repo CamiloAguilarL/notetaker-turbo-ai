@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   buildNotesHref,
+  DEFAULT_NOTE_ORDERING,
   MAX_SEARCH_LENGTH,
   noteOrderingOptions,
   normalizeSearchQuery,
@@ -36,12 +37,16 @@ export function NotesToolbar({
 
   const navigate = useCallback(
     (nextSearch: string, nextOrdering: NoteOrdering) => {
+      const safeOrdering =
+        nextOrdering === "manual" && (activeCategory || nextSearch)
+          ? DEFAULT_NOTE_ORDERING
+          : nextOrdering;
       startTransition(() => {
         router.replace(
           buildNotesHref({
             category: activeCategory,
             search: nextSearch,
-            ordering: nextOrdering,
+            ordering: safeOrdering,
           }),
         );
       });
@@ -71,9 +76,16 @@ export function NotesToolbar({
     navigate(normalizeSearchQuery(search), nextOrdering);
   }
 
-  const availableOrderings = activeCategory
-    ? noteOrderingOptions.filter((option) => option.value !== "category")
-    : noteOrderingOptions;
+  const availableOrderings = noteOrderingOptions.filter((option) => {
+    if (activeCategory && option.value === "category") return false;
+    if (
+      (activeCategory || normalizeSearchQuery(search)) &&
+      option.value === "manual"
+    ) {
+      return false;
+    }
+    return true;
+  });
 
   return (
     <section

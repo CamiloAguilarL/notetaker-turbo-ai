@@ -148,6 +148,50 @@ test("a user can capture, organize, and reopen a private note", async ({
     page.getByRole("link", { name: "Open An end-to-end thought" }),
   ).toBeVisible();
 
+  await page.getByRole("button", { name: "New Note" }).click();
+  await page.getByLabel("Note title").fill("A second thought");
+  await page
+    .getByLabel("Note content")
+    .fill("This note makes manual ordering observable and persistent.");
+  await expect(page.getByText("Saved", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Close" }).click();
+  await expect(page).toHaveURL(/\/notes\?ordering=category$/);
+
+  await page
+    .getByRole("combobox", { name: "Sort notes" })
+    .selectOption("manual");
+  await expect(page).toHaveURL(/\/notes\?ordering=manual$/);
+  await expect(
+    page.getByRole("listitem", {
+      name: "A second thought, position 2 of 2",
+    }),
+  ).toBeVisible();
+
+  await expect(
+    page.getByRole("button", {
+      name: "Drag A second thought to reorder",
+    }),
+  ).toBeVisible();
+  const moveEarlier = page.getByRole("button", {
+    name: "Move A second thought earlier",
+  });
+  await moveEarlier.focus();
+  await moveEarlier.press("Enter");
+  await expect(page.getByText("Manual order saved.")).toBeVisible();
+  await expect(
+    page.getByRole("listitem", {
+      name: "A second thought, position 1 of 2",
+    }),
+  ).toBeVisible();
+  await expectNoAccessibilityViolations(page);
+
+  await page.reload();
+  await expect(
+    page.getByRole("listitem", {
+      name: "A second thought, position 1 of 2",
+    }),
+  ).toBeVisible();
+
   await page.goto("/");
   await expect(
     page.getByRole("link", { name: "Continue to your notes" }),

@@ -35,6 +35,7 @@ describe("UndoDeleteBanner", () => {
       category: "school",
       title: "Restored",
       content: "Body",
+      manual_order: 0,
       created_at: "2026-08-02T12:00:00Z",
       updated_at: "2026-08-02T12:05:00Z",
     });

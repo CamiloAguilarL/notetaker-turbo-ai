@@ -22,13 +22,18 @@ export function CategoryNav({
     (total, category) => total + category.note_count,
     0,
   );
+  const allOrdering =
+    searchQuery && ordering === "manual" ? "-updated_at" : ordering;
 
   return (
     <nav aria-label="Note categories">
       <ul className="flex gap-2 overflow-x-auto pb-2 lg:flex-col lg:overflow-visible lg:pb-0">
         <li className="shrink-0">
           <Link
-            href={buildNotesHref({ search: searchQuery, ordering })}
+            href={buildNotesHref({
+              search: searchQuery,
+              ordering: allOrdering,
+            })}
             aria-current={!activeCategory ? "page" : undefined}
             className={cn(
               "focus-visible:ring-ring/40 flex min-h-11 items-center gap-3 rounded-full border px-4 text-sm font-semibold transition-colors outline-none focus-visible:ring-3 lg:min-h-9 lg:w-full lg:rounded-md lg:border-transparent lg:px-1.5",
@@ -53,7 +58,10 @@ export function CategoryNav({
                 href={buildNotesHref({
                   category: category.slug,
                   search: searchQuery,
-                  ordering: ordering === "category" ? "-updated_at" : ordering,
+                  ordering:
+                    ordering === "category" || ordering === "manual"
+                      ? "-updated_at"
+                      : ordering,
                 })}
                 aria-current={isActive ? "page" : undefined}
                 className={cn(

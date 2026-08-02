@@ -76,4 +76,21 @@ describe("NotesToolbar", () => {
       "/notes?category=school&ordering=updated_at",
     );
   });
+
+  it("leaves manual order when a search starts", async () => {
+    vi.useFakeTimers();
+    currentParams = new URLSearchParams("ordering=manual");
+    render(<NotesToolbar initialSearch="" ordering="manual" resultCount={2} />);
+
+    fireEvent.change(screen.getByLabelText("Search notes"), {
+      target: { value: "browser" },
+    });
+    expect(screen.queryByRole("option", { name: "Manual order" })).toBeNull();
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(350);
+    });
+
+    expect(replace).toHaveBeenCalledWith("/notes?q=browser");
+  });
 });
