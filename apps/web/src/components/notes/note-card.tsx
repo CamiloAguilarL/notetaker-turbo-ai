@@ -38,7 +38,7 @@ export function NoteCard({ note, category, returnCategory }: NoteCardProps) {
             </p>
             <time
               dateTime={note.updated_at}
-              className="text-foreground/60 block text-xs"
+              className="text-foreground block text-xs"
             >
               {formatNoteDate(note.updated_at)}
             </time>
@@ -52,7 +52,7 @@ export function NoteCard({ note, category, returnCategory }: NoteCardProps) {
         <h2 className="mt-10 line-clamp-2 font-serif text-3xl leading-tight font-semibold tracking-[-0.02em]">
           {note.title || "Untitled note"}
         </h2>
-        <p className="text-foreground/70 mt-4 line-clamp-4 text-sm leading-6 whitespace-pre-line">
+        <p className="text-foreground mt-4 line-clamp-4 text-sm leading-6 whitespace-pre-line">
           {note.content || "No content yet. Open this note and start writing."}
         </p>
       </Link>

@@ -142,6 +142,7 @@ export function NoteEditor({
           theme.border,
         )}
       >
+        <h1 className="sr-only">Edit note</h1>
         <div className="border-foreground/25 flex flex-wrap items-center justify-between gap-4 border-b pb-5">
           <label className="flex items-center gap-3 text-sm font-semibold">
             <span
@@ -167,6 +168,7 @@ export function NoteEditor({
           <Button
             type="button"
             variant="outline"
+            className="bg-card text-foreground hover:bg-card/80 hover:text-foreground"
             onClick={handleClose}
             disabled={isClosing}
           >
@@ -191,7 +193,7 @@ export function NoteEditor({
             }
             maxLength={120}
             placeholder="Note title"
-            className="placeholder:text-foreground/35 w-full border-0 bg-transparent font-serif text-4xl leading-tight font-semibold tracking-[-0.03em] outline-none focus-visible:ring-0 sm:text-6xl"
+            className="placeholder:text-foreground/35 focus-visible:ring-ring/60 w-full rounded-sm border-0 bg-transparent font-serif text-4xl leading-tight font-semibold tracking-[-0.03em] outline-none focus-visible:ring-2 sm:text-6xl"
           />
 
           <label htmlFor="note-content" className="sr-only">
@@ -205,11 +207,11 @@ export function NoteEditor({
             }
             maxLength={10_000}
             placeholder="Start writing…"
-            className="placeholder:text-foreground/35 mt-8 min-h-[45dvh] w-full resize-none border-0 bg-transparent text-base leading-8 outline-none focus-visible:ring-0 sm:text-lg"
+            className="placeholder:text-foreground/35 focus-visible:ring-ring/60 mt-8 min-h-[45dvh] w-full resize-none rounded-sm border-0 bg-transparent text-base leading-8 outline-none focus-visible:ring-2 sm:text-lg"
           />
 
           <footer className="border-foreground/25 mt-8 flex flex-wrap items-center justify-between gap-3 border-t pt-5 text-sm">
-            <p className="text-foreground/65">
+            <p className="text-foreground">
               Last edited{" "}
               <time dateTime={lastEdited}>
                 {formatNoteTimestamp(lastEdited)}
