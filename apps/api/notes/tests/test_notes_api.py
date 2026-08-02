@@ -115,6 +115,85 @@ def test_list_is_private_filterable_and_recently_updated_first(
     assert unknown.status_code == status.HTTP_400_BAD_REQUEST
 
 
+def test_search_is_case_insensitive_private_and_composes_with_category(
+    client: APIClient, user: User, other_user: User
+) -> None:
+    title_match = Note.objects.create(
+        owner=user,
+        category=category("school"),
+        title="Distributed Systems",
+        content="Lecture notes",
+    )
+    body_match = Note.objects.create(
+        owner=user,
+        category=category("personal"),
+        title="Reading list",
+        content="Review distributed tracing",
+    )
+    Note.objects.create(
+        owner=other_user,
+        category=category("school"),
+        title="Distributed secret",
+    )
+    Note.objects.create(
+        owner=user,
+        category=category("school"),
+        title="Distributed deleted",
+        deleted_at=timezone.now(),
+    )
+
+    matches = client.get(reverse("note-list"), {"q": "DISTRIBUTED"})
+    school_matches = client.get(
+        reverse("note-list"), {"q": "distributed", "category": "school"}
+    )
+    too_long = client.get(reverse("note-list"), {"q": "x" * 201})
+
+    assert {item["id"] for item in matches.json()} == {
+        str(title_match.id),
+        str(body_match.id),
+    }
+    assert [item["id"] for item in school_matches.json()] == [str(title_match.id)]
+    assert too_long.status_code == status.HTTP_400_BAD_REQUEST
+    assert "q" in too_long.json()["error"]["fields"]
+
+
+def test_ordering_is_allowlisted_and_deterministic(
+    client: APIClient, user: User
+) -> None:
+    timestamp = timezone.now() - timedelta(hours=1)
+    school = Note.objects.create(
+        owner=user,
+        category=category("school"),
+        title="School",
+    )
+    personal = Note.objects.create(
+        owner=user,
+        category=category("personal"),
+        title="Personal",
+    )
+    random = Note.objects.create(
+        owner=user,
+        category=category("random-thoughts"),
+        title="Random",
+    )
+    Note.objects.filter(id__in=(school.id, personal.id)).update(updated_at=timestamp)
+    Note.objects.filter(id=random.id).update(updated_at=timestamp - timedelta(days=1))
+
+    oldest = client.get(reverse("note-list"), {"ordering": "updated_at"})
+    by_category = client.get(reverse("note-list"), {"ordering": "category"})
+    invalid = client.get(reverse("note-list"), {"ordering": "title"})
+
+    expected_tie = sorted((str(school.id), str(personal.id)))
+    assert [item["id"] for item in oldest.json()] == [str(random.id), *expected_tie]
+    assert [item["id"] for item in by_category.json()] == [
+        str(random.id),
+        str(school.id),
+        str(personal.id),
+    ]
+    assert invalid.status_code == status.HTTP_400_BAD_REQUEST
+    assert "ordering" in invalid.json()["error"]["fields"]
+
+
 def test_retrieve_and_patch_are_owner_scoped(
     client: APIClient, user: User, other_user: User
 ) -> None:

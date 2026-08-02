@@ -41,6 +41,11 @@ class NoteViewSet(
 
     serializer_class = NoteSerializer
     http_method_names = ("get", "post", "patch", "delete", "head", "options")
+    ordering_fields = {
+        "-updated_at": ("-updated_at", "id"),
+        "updated_at": ("updated_at", "id"),
+        "category": ("category__sort_order", "-updated_at", "id"),
+    }
 
     def get_queryset(self) -> QuerySet[Note]:
         queryset = Note.objects.filter(
@@ -52,7 +57,24 @@ class NoteViewSet(
             if not Category.objects.filter(slug=category).exists():
                 raise serializers.ValidationError({"category": ["Unknown category."]})
             queryset = queryset.filter(category__slug=category)
-        return queryset
+
+        search = self.request.query_params.get("q", "").strip()
+        if len(search) > 200:
+            raise serializers.ValidationError(
+                {"q": ["Search queries cannot exceed 200 characters."]}
+            )
+        if search:
+            queryset = queryset.filter(
+                Q(title__icontains=search) | Q(content__icontains=search)
+            )
+
+        ordering = self.request.query_params.get("ordering", "-updated_at")
+        ordering_fields = self.ordering_fields.get(ordering)
+        if ordering_fields is None:
+            raise serializers.ValidationError(
+                {"ordering": ["Choose -updated_at, updated_at, or category."]}
+            )
+        return queryset.order_by(*ordering_fields)
 
     def perform_create(self, serializer: NoteSerializer) -> None:
         serializer.save(owner=self.request.user)
