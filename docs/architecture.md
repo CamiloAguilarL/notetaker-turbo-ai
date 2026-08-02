@@ -96,7 +96,7 @@ Categories should be seeded through a data migration. Do not hard-code the visib
 | `created_at` | timestamp | UTC, server controlled. |
 | `updated_at` | timestamp | UTC, drives display and ordering. |
 
-Indexes should support `(owner, -updated_at)`, `(owner, category, -updated_at)`, and `(owner, manual_position)`. Database constraints should enforce field bounds and valid relationships where practical. Manual ordering applies only to the complete, unfiltered active-note set; this keeps one position per note and avoids a speculative per-filter ordering model.
+Indexes should support `(owner, -updated_at)`, `(owner, category, -updated_at)`, and `(owner, manual_position)`. Active manual positions should be unique per owner through a conditional PostgreSQL constraint. Database constraints should enforce field bounds and valid relationships where practical. Manual ordering applies only to the complete, unfiltered active-note set; this keeps one position per note and avoids a speculative per-filter ordering model.
 
 ## API direction
 
@@ -109,6 +109,7 @@ The exact contract will be finalized with the first product slice. Expected mini
 | `POST` | `/api/v1/auth/login/` | Authenticate credentials. |
 | `POST` | `/api/v1/auth/logout/` | Invalidate the session. |
 | `GET` | `/api/v1/auth/me/` | Return the current identity. |
+| `GET` | `/api/v1/auth/csrf/` | Issue or refresh the CSRF cookie used for unsafe browser requests. |
 | `GET` | `/api/v1/categories/` | Categories with current user's note counts. |
 | `GET` | `/api/v1/notes/` | Current user's notes with allowlisted search, category, and ordering parameters. |
 | `POST` | `/api/v1/notes/` | Create a note. |

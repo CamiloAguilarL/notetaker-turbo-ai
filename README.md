@@ -11,7 +11,7 @@ The initial setup is complete:
 - PostgreSQL 17, Django, and Next.js orchestrated through Docker Compose.
 - Ruff, pytest with coverage, ESLint, TypeScript checks, production builds, and npm security auditing.
 - A GitHub Actions quality gate that reuses the same Dockerized checks as local development.
-- Product requirements, architecture, delivery priorities, and provisional design tokens in `docs/`.
+- Product requirements, architecture, delivery/evaluation priorities, quality strategy, and provisional design tokens in `docs/`.
 
 Application features such as authentication, note persistence, filters, and the editor are intentionally not implemented in this foundation milestone.
 
@@ -26,6 +26,8 @@ Application features such as authentication, note persistence, filters, and the 
 │   ├── architecture.md
 │   ├── delivery-plan.md
 │   ├── design-system.md
+│   ├── evaluation-strategy.md
+│   ├── quality-strategy.md
 │   └── requirements.md
 ├── .env.example              # Local environment contract
 ├── AGENTS.md                 # Engineering and AI contribution rules
@@ -78,6 +80,19 @@ The API container applies pending Django migrations before starting the developm
 
 The Make targets run their checks inside the project containers, so they use the same dependency and database environment on every machine. The applications can also be run independently from `apps/web` with npm and `apps/api` with uv, but Docker Compose remains the supported local integration path because it supplies PostgreSQL and the correct service-to-service URLs.
 
+## Evaluation-driven delivery
+
+The implementation order is intentionally tied to Turbo AI's four assessment criteria:
+
+- **Functionality**: finish the source-derived authentication, dashboard, category, editor, persistence, and autosave journey before optional work.
+- **Code quality**: deliver each vertical slice with ownership, validation, error behavior, tests, responsive behavior, and documentation rather than postponing quality to the end.
+- **Creativity**: demonstrate AI-assisted research and verification, then add useful product differentiation such as reversible deletion, search/sorting, accessible manual ordering, and one restrained motion language when the core is stable.
+- **Time management**: protect the P0 gate and submission buffer; cut P2, Motion, and drag-and-drop before cutting security, tests, accessibility, or demo readiness.
+
+The planned time allocation is 55% P0 slices, 25% quality work performed alongside them, 10% selected P1 enhancements, and 10% submission verification and presentation. These percentages are prioritization guardrails, not retrospective time claims.
+
+Selected P1 work is currently ordered as deletion with undo, search and sorting, a minimal landing, then conditional manual ordering and motion. Pinning, keyboard shortcuts, and a complete trash screen remain P2. See the [evaluation strategy](docs/evaluation-strategy.md) for scoring and go/no-go conditions.
+
 ## Environment variables
 
 Copy `.env.example` to `.env`. The committed example contains local-only values; `.env` is ignored by Git.
@@ -117,6 +132,8 @@ No deployment environment is defined yet. Before any non-local use, secrets, deb
 - [Architecture](docs/architecture.md): service boundaries, data model, API direction, and security decisions.
 - [Design system](docs/design-system.md): Tailwind v4 token contract, shadcn/ui policy, and Figma access status.
 - [Delivery plan](docs/delivery-plan.md): priority order for the challenge timebox.
+- [Evaluation strategy](docs/evaluation-strategy.md): criteria mapping, enhancement scoring, gates, and demo evidence.
+- [Quality strategy](docs/quality-strategy.md): KISS/SOLID boundaries, test matrix, coverage policy, and review gate.
 - [Engineering rules](AGENTS.md): coding, testing, Git, security, frontend, backend, and AI rules.
 
 ## Source material
@@ -131,10 +148,16 @@ The public prototype and the full 3:52 video were reviewed. The connected Figma 
 
 OpenAI Codex was used as an implementation and review assistant to:
 
-- inspect the challenge brief, public Figma prototype, and reference video;
+- translate the written brief into traceable functional and non-functional requirements;
+- inspect the public Figma prototype interactively through browser control, including empty, populated, filtered, editor, and category-selector states;
+- review the full 3:52 Google Drive walkthrough through browser control to capture registration, login, empty dashboard, creation, category switching, filtering, and editing behavior;
+- attempt structured Figma design-context and variable extraction through the Figma MCP integration, document the edit-access limitation, and keep visually estimated tokens explicitly provisional;
 - scaffold and configure the Next.js and Django workspaces;
 - define Docker, environment, testing, linting, and documentation contracts;
+- research current official Next.js, Django/DRF, Motion, dnd kit, and Playwright guidance before selecting architecture, testing, animation, and accessible drag-and-drop approaches;
 - identify and replace vulnerable transitive PostCSS and Sharp versions with audited overrides;
-- validate the local UI at desktop and mobile viewports.
+- validate the local UI at desktop and mobile viewports and smoke-test the Dockerized web, API, and database services.
 
-Generated work was checked with ESLint, TypeScript, a Next.js production build, Ruff, pytest and coverage, `npm audit`, Docker health checks, HTTP smoke tests, and visual browser inspection. AI output is not treated as authoritative: the repository owner remains responsible for reviewing, understanding, and presenting every decision.
+AI accelerated source comparison, scaffolding, implementation, documentation, dependency review, and repetitive verification. It was not used to invent unavailable Figma values, replace provided design assets, or justify unverified completion claims.
+
+Generated work was checked with ESLint, TypeScript, a Next.js production build, Ruff, pytest and coverage, `npm audit`, Docker health checks, HTTP smoke tests, and visual browser inspection. AI output is not treated as authoritative: the repository owner remains responsible for reviewing, understanding, and presenting every decision. Material AI-assisted changes must record the inspected source, the decision influenced, and the independent validation performed.

@@ -6,6 +6,7 @@ These rules apply to every human and AI contributor in this repository. A nested
 
 - Use English for code, identifiers, comments, commit messages, documentation, UI copy, API payloads, and test names.
 - Treat `docs/requirements.md` as the functional scope and `docs/design-system.md` as the visual source of truth. The challenge brief, reference video, and Figma file override assumptions.
+- Treat `docs/delivery-plan.md` as the priority source and `docs/quality-strategy.md` as the verification contract. Do not start P1 while the documented P0 gate is incomplete.
 - Mark an inference or provisional design value explicitly. Never present guessed behavior or visually estimated tokens as confirmed source data.
 - Keep scope aligned with the hiring challenge. Prefer a polished core workflow over speculative features.
 
@@ -16,6 +17,7 @@ These rules apply to every human and AI contributor in this repository. A nested
 - Update documentation in the same change whenever an API contract, environment variable, architecture decision, or user-visible behavior changes.
 - Do not modify unrelated files or silently rewrite user changes.
 - Do not add a dependency when the platform or an existing dependency solves the problem clearly.
+- Apply KISS and YAGNI before abstraction. Use SOLID principles at proven boundaries without creating pattern-only layers, wrappers, or interfaces.
 
 ## Git history
 
@@ -43,6 +45,7 @@ These rules apply to every human and AI contributor in this repository. A nested
 - Prevent N+1 queries with deliberate `select_related`/`prefetch_related` usage and add tests for query-sensitive code when relevant.
 - Keep settings environment-driven. Fail clearly for missing production secrets; safe local defaults are allowed only for local development.
 - Test happy paths, validation errors, authorization boundaries, and meaningful edge cases with pytest.
+- Treat cross-user ownership, session/CSRF behavior, and transactional workflows as mandatory test cases rather than optional coverage improvements.
 
 ## Frontend: Next.js, React, Tailwind, and shadcn/ui
 
@@ -56,6 +59,7 @@ These rules apply to every human and AI contributor in this repository. A nested
 - Use shadcn/ui as source-owned building blocks, not an unmodified theme. Add only components required by the current slice and adapt them to the Figma design.
 - Prefer composition over large components. Keep client-side state local unless multiple distant consumers truly share it.
 - Test user-observable behavior. Avoid tests coupled to internal component implementation.
+- Add Motion or dnd kit only when its prioritized slice begins. Preserve keyboard/touch parity, live announcements, reduced motion, and a non-animated fallback.
 
 ## Security and privacy
 
@@ -82,4 +86,5 @@ Run `make check` before a milestone commit. Use `docker compose config` and a lo
 - The human contributor owns every generated line and must be able to explain it.
 - Review AI output for correctness, security, accessibility, maintainability, and license implications.
 - Record material AI use and validation in the README's “AI-assisted development” section.
+- Record which source or tool AI inspected, what decision or artifact it influenced, and how the result was independently verified.
 - Do not use AI-generated screenshots or assets as substitutes for provided Figma assets.
