@@ -37,6 +37,7 @@ format: ## Format backend and frontend source code.
 	docker compose run --rm --no-deps web npm run format
 
 test: ## Run the automated test suite.
+	docker compose run --rm --no-deps web npm run test
 	docker compose run --rm api pytest
 
 audit: ## Audit production frontend dependencies.
