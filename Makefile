@@ -26,13 +26,15 @@ ps: ## Show local service health.
 	docker compose ps
 
 lint: ## Run frontend and backend static checks.
+	docker compose run --rm --no-deps web npm run format:check
 	docker compose run --rm --no-deps web npm run lint
 	docker compose run --rm --no-deps web npm run typecheck
-	docker compose run --rm --no-deps api ruff check config core manage.py
+	docker compose run --rm --no-deps api ruff format --check .
+	docker compose run --rm --no-deps api ruff check .
 
-format: ## Format backend code and check frontend formatting through ESLint.
-	docker compose run --rm --no-deps api ruff format config core manage.py
-	docker compose run --rm --no-deps web npm run lint
+format: ## Format backend and frontend source code.
+	docker compose run --rm --no-deps api ruff format .
+	docker compose run --rm --no-deps web npm run format
 
 test: ## Run the automated test suite.
 	docker compose run --rm api pytest

@@ -20,4 +20,3 @@ def test_health_check_reports_api_and_database_readiness(api_client: APIClient) 
 @pytest.fixture
 def api_client() -> APIClient:
     return APIClient()
-

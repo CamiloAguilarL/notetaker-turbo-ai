@@ -17,4 +17,3 @@ def health_check(request: Request) -> Response:
         cursor.fetchone()
 
     return Response({"status": "ok", "service": "api", "database": "ok"})
-

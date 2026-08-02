@@ -9,4 +9,3 @@ app_name = "core"
 urlpatterns = [
     path("health/", health_check, name="health"),
 ]
-

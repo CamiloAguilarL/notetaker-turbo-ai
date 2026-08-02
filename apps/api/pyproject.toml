@@ -35,7 +35,7 @@ omit = [
 [tool.ruff]
 line-length = 88
 target-version = "py313"
-exclude = ["migrations"]
+exclude = [".venv", "migrations"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM", "DJ"]
