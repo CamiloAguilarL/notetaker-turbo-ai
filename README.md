@@ -6,7 +6,7 @@ Turbo Notes is a private notes-taking hiring challenge built as a local-first mo
 
 The complete P0 product journey and its documented quality gate are complete:
 
-- Email/password registration, login, session persistence, route protection, and logout with Django sessions and CSRF protection.
+- Email/password registration, login, session persistence, route protection, and logout with Django sessions; CSRF is enforced on every unsafe request, including anonymous login and registration.
 - Private user-scoped note creation, retrieval, updates, deterministic ordering, reversible soft deletion, and four seeded categories with scoped counts.
 - Responsive empty/populated dashboards, URL-backed category filters, semantic category colors, loading/error states, and accessible note cards.
 - Debounced full-text note search plus recently edited, oldest edited, and category ordering; every view composes through durable URL state and deterministic API ordering.
@@ -138,7 +138,7 @@ Copy `.env.example` to `.env`. The committed example contains local-only values;
 | `NEXT_PUBLIC_API_URL` | Public/browser | Browser-facing, versioned API base URL. It is bundled into client code. |
 | `API_INTERNAL_URL` | Server-only | API base URL reachable from Next.js inside the Docker network. |
 
-No deployment environment is defined yet. Before any non-local use, secrets, debug flags, allowed hosts, cookie security, and production servers must be configured explicitly.
+No deployment environment is defined yet. Django refuses to start without an explicit secret when debug mode is disabled and automatically marks session/CSRF cookies secure, but allowed hosts, trusted origins, production servers, and secret management still require explicit non-local configuration.
 
 ## Product and technical documentation
 

@@ -22,6 +22,10 @@ def csrf_token(client: APIClient) -> str:
 
 def test_register_creates_normalized_user_and_session() -> None:
     client = APIClient(enforce_csrf_checks=True)
+    missing_csrf = client.post(
+        reverse("accounts:register"),
+        {"email": "Friend@EXAMPLE.COM", "password": PASSWORD},
+    )
     token = csrf_token(client)
 
     response = client.post(
@@ -30,6 +34,8 @@ def test_register_creates_normalized_user_and_session() -> None:
         HTTP_X_CSRFTOKEN=token,
     )
 
+    assert missing_csrf.status_code == status.HTTP_403_FORBIDDEN
+    assert missing_csrf.json()["error"]["code"] == "permission_denied"
     assert response.status_code == status.HTTP_201_CREATED
     assert response.json()["email"] == EMAIL
     user = User.objects.get(email=EMAIL)
@@ -39,15 +45,18 @@ def test_register_creates_normalized_user_and_session() -> None:
 
 def test_register_rejects_duplicate_and_weak_password() -> None:
     User.objects.create_user(email=EMAIL, password=PASSWORD)
-    client = APIClient()
+    client = APIClient(enforce_csrf_checks=True)
+    token = csrf_token(client)
 
     duplicate = client.post(
         reverse("accounts:register"),
         {"email": EMAIL.upper(), "password": PASSWORD},
+        HTTP_X_CSRFTOKEN=token,
     )
     weak = client.post(
         reverse("accounts:register"),
         {"email": "other@example.com", "password": "password"},
+        HTTP_X_CSRFTOKEN=token,
     )
 
     assert duplicate.status_code == status.HTTP_400_BAD_REQUEST
@@ -59,17 +68,27 @@ def test_register_rejects_duplicate_and_weak_password() -> None:
 
 def test_login_accepts_normalized_email_and_rejects_bad_credentials() -> None:
     user = User.objects.create_user(email=EMAIL, password=PASSWORD)
-    client = APIClient()
+    client = APIClient(enforce_csrf_checks=True)
+
+    missing_csrf = client.post(
+        reverse("accounts:login"),
+        {"email": EMAIL, "password": PASSWORD},
+    )
+    token = csrf_token(client)
 
     invalid = client.post(
         reverse("accounts:login"),
         {"email": EMAIL, "password": "wrong-password"},
+        HTTP_X_CSRFTOKEN=token,
     )
     valid = client.post(
         reverse("accounts:login"),
         {"email": EMAIL.upper(), "password": PASSWORD},
+        HTTP_X_CSRFTOKEN=token,
     )
 
+    assert missing_csrf.status_code == status.HTTP_403_FORBIDDEN
+    assert missing_csrf.json()["error"]["code"] == "permission_denied"
     assert invalid.status_code == status.HTTP_400_BAD_REQUEST
     assert invalid.json()["error"]["fields"]["non_field_errors"] == [
         "Invalid email or password."

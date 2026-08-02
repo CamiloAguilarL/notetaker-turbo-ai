@@ -8,6 +8,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
+from accounts.permissions import HasValidCsrfToken
 from accounts.serializers import (
     LoginSerializer,
     RegistrationSerializer,
@@ -25,7 +26,7 @@ def csrf_cookie(request: Request) -> Response:
 
 
 @api_view(["POST"])
-@permission_classes([AllowAny])
+@permission_classes([HasValidCsrfToken])
 def register(request: Request) -> Response:
     """Create an account and start its authenticated session."""
     serializer = RegistrationSerializer(data=request.data)
@@ -36,7 +37,7 @@ def register(request: Request) -> Response:
 
 
 @api_view(["POST"])
-@permission_classes([AllowAny])
+@permission_classes([HasValidCsrfToken])
 def log_in(request: Request) -> Response:
     """Validate credentials and start an authenticated session."""
     serializer = LoginSerializer(data=request.data, context={"request": request})

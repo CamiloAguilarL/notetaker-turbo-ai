@@ -151,7 +151,7 @@ Use Django session authentication for the local web application. This keeps cred
 
 - browser requests include credentials;
 - CORS allows only configured frontend origins;
-- unsafe requests include Django's CSRF token;
+- every unsafe request includes Django's CSRF token; a dedicated permission enforces it for anonymous login and registration before a session exists;
 - session and CSRF cookies use secure production settings before deployment;
 - API errors never reveal whether a password or a particular credential field was correct.
 
