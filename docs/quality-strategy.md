@@ -82,7 +82,7 @@ Tests query visible roles, labels, and user-observable output. CSS selectors, in
 
 - Keep the backend project threshold at **80% or higher** throughout development; domain and authorization code should normally exceed it because meaningful success, validation, and permission branches are mandatory.
 - A feature may not lower coverage without a documented reason, and coverage never replaces a missing ownership or failure-path assertion.
-- Introduce frontend coverage reporting with the first Vitest slice. Measure testable client/domain modules, but use E2E evidence for async Server Components rather than distorting architecture to satisfy a number.
+- Frontend coverage is enforced for testable client/domain modules at 90% statements, 80% branches, 85% functions, and 95% lines. Async Server Components remain covered through E2E evidence rather than architecture-distorting unit seams.
 - CI requires zero lint warnings, successful type checking, Ruff, all tests, the Next.js production build, and a clean production dependency audit.
 - Flaky tests are defects. Use isolated users/data, deterministic clocks where behavior depends on time, explicit readiness, and no order-dependent state.
 

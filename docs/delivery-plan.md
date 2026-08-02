@@ -28,28 +28,28 @@ Quality is not a final-day phase. The allocation identifies emphasis; every vert
 - Docker Compose, environment contract, health checks, lint, tests, build, and security audit.
 - Evidence-backed requirements and architecture documentation.
 
-### M1 — Authentication (P0)
+### M1 — Authentication (P0, complete)
 
 - Custom user model decision before domain migrations.
 - Register, login, logout, current-user, CSRF/session flow.
 - Accessible auth pages aligned with Figma.
 - Validation and authorization tests.
 
-### M2 — Notes domain API (P0)
+### M2 — Notes domain API (P0, complete)
 
 - Category seed migration and note model.
 - User-scoped list, retrieve, create, and patch endpoints.
 - Category counts, filtering, ordering, validation, and permission tests.
 - OpenAPI or concise endpoint examples if time permits.
 
-### M3 — Dashboard (P0)
+### M3 — Dashboard (P0, complete)
 
 - Authenticated layout, category navigation, counts, and filtering.
 - Empty, loading, error, and populated states.
 - Responsive note-card grid using semantic category tokens.
 - Component and API integration tests.
 
-### M4 — Editor and autosave (P0)
+### M4 — Editor and autosave (P0, complete)
 
 - Create and edit flows.
 - Category selector and editor recoloring.
@@ -57,7 +57,7 @@ Quality is not a final-day phase. The allocation identifies emphasis; every vert
 - Close behavior that preserves pending content.
 - Date formatting and ordering refresh.
 
-### M5 — Core hardening and P0 gate
+### M5 — Core hardening and P0 gate (complete)
 
 - End-to-end happy path and authorization regression tests.
 - Keyboard, focus, screen-reader, responsive, and reduced-motion pass.

@@ -4,7 +4,7 @@ Turbo Notes is a private notes-taking hiring challenge built as a local-first mo
 
 ## Current status
 
-The complete P0 product journey is implemented and under its core quality audit:
+The complete P0 product journey and its documented quality gate are complete:
 
 - Email/password registration, login, session persistence, route protection, and logout with Django sessions and CSRF protection.
 - Private user-scoped note creation, retrieval, updates, deterministic ordering, and four seeded categories with scoped counts.
@@ -13,11 +13,11 @@ The complete P0 product journey is implemented and under its core quality audit:
 - Next.js 16.2.12, React 19, Tailwind CSS 4, and customized source-owned shadcn/ui `Button` and `Input` components.
 - Django 6.0.7 and Django REST Framework 3.17.1 with a database-aware health endpoint and a consistent JSON error contract.
 - PostgreSQL 17, Django, and Next.js orchestrated through Docker Compose.
-- Ruff, pytest with enforced backend coverage, ESLint, TypeScript, Vitest with enforced frontend coverage, Playwright E2E, production builds, and npm security auditing.
+- Ruff, pytest with enforced backend coverage, ESLint, TypeScript, Vitest with enforced frontend coverage, Playwright E2E plus Axe accessibility scans at three breakpoints, production builds, and npm security auditing.
 - A GitHub Actions quality gate that reuses the same Dockerized checks as local development.
 - Product requirements, architecture, delivery/evaluation priorities, quality strategy, and provisional design tokens in `docs/`.
 
-Selected P1 enhancements remain intentionally blocked until the documented P0 audit is complete.
+Selected P1 enhancements are now eligible in the documented order: reversible deletion, search/sorting, then the public landing page. Manual ordering and Motion retain their separate conditional gate.
 
 ## Repository structure
 
@@ -161,9 +161,9 @@ OpenAI Codex was used as an implementation and review assistant to:
 - define Docker, environment, testing, linting, and documentation contracts;
 - research current official Next.js, Django/DRF, Motion, dnd kit, and Playwright guidance before selecting architecture, testing, animation, and accessible drag-and-drop approaches;
 - identify and replace vulnerable transitive PostCSS and Sharp versions with audited overrides;
-- validate the local UI at desktop and mobile viewports and smoke-test the Dockerized web, API, and database services.
+- validate the local UI at desktop, tablet, and mobile viewports and smoke-test the Dockerized web, API, and database services;
 - detect and fix a server/client timestamp hydration mismatch through live browser diagnostics;
-- exercise the real registration, note creation, autosave, filtering, category change, logout, and route-protection journey in Playwright.
+- exercise the real registration, note creation, autosave, reload persistence, filtering, category change, logout, route protection, and automated accessibility scans in Playwright.
 
 AI accelerated source comparison, scaffolding, implementation, documentation, dependency review, and repetitive verification. It was not used to invent unavailable Figma values, replace provided design assets, or justify unverified completion claims.
 

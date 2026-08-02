@@ -43,6 +43,18 @@ No selected P1 work starts until all of the following are true:
 
 Conditional P1 work has a second gate. Manual ordering begins only if search, deterministic sorting, and deletion are stable. Motion begins only after target interactions are final, so animation does not hide incomplete behavior or cause UI rework.
 
+## P0 gate result — August 2, 2026
+
+The P1 go/no-go gate passed with the following repository evidence:
+
+1. Playwright covers registration, note creation, category filtering, editing, serialized autosave, close-time flush, reload persistence, logout, and protected-route redirection.
+2. DRF integration tests prove owner-scoped lists and deny foreign retrieve/update access without leaking object existence.
+3. `make check` passes production dependency audit, Prettier, ESLint, TypeScript, Ruff, Vitest coverage thresholds, pytest coverage threshold, and the Next.js production build.
+4. The Playwright journey and Axe scans pass at 390px, 820px, and 1440px; editor fields have visible focus treatment and global reduced-motion fallback.
+5. The Figma prototype and walkthrough were compared manually. Exact Figma token extraction remains unavailable because the connected MCP requires edit access, so provisional semantic values remain explicitly labeled rather than blocking functional work.
+
+Selected P1 work may now proceed in the documented order. Manual ordering remains blocked until deletion, search, and deterministic sorting are stable; Motion remains blocked until target interactions are final.
+
 ## Demonstration plan
 
 The final video should spend most of its five minutes on evidence:
