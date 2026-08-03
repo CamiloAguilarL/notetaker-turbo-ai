@@ -136,7 +136,7 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
               />
             ) : (
               <InfiniteNotesGrid
-                key={`grid:${activeCategory ?? "all"}:${searchQuery}:${ordering}`}
+                key={`grid:${activeCategory ?? "all"}:${searchQuery}:${ordering}:${notePage.count}:${notes.map((note) => note.id).join(":")}`}
                 label={activeName ? `${activeName} notes` : "All notes"}
                 initialNotes={noteItems}
                 categories={categories}
