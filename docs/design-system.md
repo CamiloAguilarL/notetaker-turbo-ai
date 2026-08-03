@@ -61,6 +61,9 @@ The serif family visible in the source cannot be identified reliably without des
 
 - Category cards use a three-pixel category border and a large radius rather than a generic shadow-only container. These dimensions were visually matched to the public prototype and remain tokenized estimates.
 - The product UI uses `--radius: 0.75rem` as its provisional base; note cards and the editor intentionally compose larger semantic radii from it.
+- The editor uses tighter responsive padding and a wider writing measure than its initial implementation so note content, rather than empty inset space, remains dominant.
+- The title and writing area compose shadcn `Input` and `Textarea` primitives but remain visually unframed in every state. The visible text caret communicates editing focus without adding a box inside the note surface.
+- The writing area owns a thin, rounded scrollbar whose thumb derives from the active category border token; the track stays transparent so it reads as part of the note rather than browser chrome.
 - Touch targets must be at least 44 by 44 CSS pixels even when the visual glyph is smaller.
 - Use a small spacing vocabulary derived from Tailwind's scale; avoid one-off arbitrary values unless an inspected Figma measurement requires them.
 - Keep the note editor visually dominant and quiet. Status text and the category selector are supporting controls.

@@ -171,7 +171,8 @@ export function NoteEditor({
   const selectedCategory =
     categories.find((category) => category.slug === draft.category) ??
     categories[0];
-  const theme = categoryThemes[selectedCategory?.color_key ?? "random"];
+  const selectedColorKey = selectedCategory?.color_key ?? "random";
+  const theme = categoryThemes[selectedColorKey];
 
   return (
     <main
@@ -247,13 +248,14 @@ export function NoteEditor({
         initial={{ y: 6 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.28 }}
+        data-note-color={selectedColorKey}
         className={cn(
-          "min-h-[calc(100dvh-9rem)] rounded-2xl border-[3px] p-6 transition-colors sm:p-10 lg:p-12",
+          "min-h-[calc(100dvh-9rem)] rounded-2xl border-[3px] p-5 transition-colors sm:p-6 lg:p-8",
           theme.surface,
           theme.border,
         )}
       >
-        <div className="mx-auto max-w-5xl">
+        <div className="mx-auto max-w-6xl">
           <div className="text-foreground/85 flex min-h-10 flex-wrap items-center justify-end gap-x-4 gap-y-1 text-xs">
             <p>
               Last Edited:{" "}
@@ -315,7 +317,7 @@ export function NoteEditor({
             }
             maxLength={120}
             placeholder="Note title"
-            className="placeholder:text-foreground/35 focus-visible:ring-ring/50 mt-4 h-auto w-full rounded-sm border-0 bg-transparent px-0 py-0 font-serif text-3xl leading-tight font-semibold tracking-[-0.025em] shadow-none focus-visible:ring-2 sm:mt-6 sm:text-4xl md:text-4xl"
+            className="placeholder:text-foreground/35 caret-foreground mt-4 h-auto w-full rounded-none border-0 bg-transparent px-0 py-0 font-serif text-3xl leading-tight font-semibold tracking-[-0.025em] shadow-none ring-0 outline-none focus-visible:border-0 focus-visible:ring-0 focus-visible:outline-none sm:mt-6 sm:text-4xl md:text-4xl"
           />
 
           <label htmlFor="note-content" className="sr-only">
@@ -331,7 +333,7 @@ export function NoteEditor({
             }
             maxLength={10_000}
             placeholder="Start writing…"
-            className="placeholder:text-foreground/35 focus-visible:ring-ring/50 mt-5 min-h-[calc(100dvh-24rem)] w-full resize-none rounded-sm border-0 bg-transparent px-0 py-0 text-base leading-7 shadow-none focus-visible:ring-2 sm:mt-7 sm:min-h-[calc(100dvh-25rem)] md:text-base"
+            className="notebook-scrollbar placeholder:text-foreground/35 caret-foreground mt-5 field-sizing-fixed min-h-[calc(100dvh-24rem)] w-full resize-none overflow-y-auto rounded-none border-0 bg-transparent px-0 py-0 text-base leading-7 shadow-none ring-0 outline-none focus-visible:border-0 focus-visible:ring-0 focus-visible:outline-none sm:mt-7 sm:min-h-[calc(100dvh-25rem)] md:text-base"
           />
         </div>
       </motion.div>
