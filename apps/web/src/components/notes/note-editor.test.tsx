@@ -4,6 +4,7 @@ import {
   render,
   screen,
   waitFor,
+  within,
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { PropsWithChildren } from "react";
@@ -156,7 +157,7 @@ describe("NoteEditor", () => {
     render(<NoteEditor note={note} categories={categories} />);
 
     await user.click(screen.getByRole("combobox", { name: "Category" }));
-    await user.click(screen.getByRole("option", { name: "School" }));
+    await user.click(await screen.findByRole("option", { name: "School" }));
     await user.click(screen.getByRole("button", { name: "Close" }));
 
     expect(await screen.findByText("Couldn’t save")).toBeVisible();
@@ -184,10 +185,12 @@ describe("NoteEditor", () => {
     await user.clear(screen.getByLabelText("Note content"));
     await user.type(screen.getByLabelText("Note content"), "Keep in undo");
     await user.click(screen.getByRole("button", { name: "Delete" }));
-    expect(
-      screen.getByRole("alertdialog", { name: "Delete this note?" }),
-    ).toBeVisible();
-    await user.click(screen.getByRole("button", { name: "Delete note" }));
+    const dialog = await screen.findByRole("alertdialog", {
+      name: "Delete this note?",
+    });
+    await user.click(
+      within(dialog).getByRole("button", { name: "Delete note" }),
+    );
 
     await waitFor(() => expect(mockedDeleteNote).toHaveBeenCalledWith(note.id));
     expect(mockedUpdateNote).toHaveBeenCalledWith(note.id, {
@@ -209,7 +212,12 @@ describe("NoteEditor", () => {
     render(<NoteEditor note={note} categories={categories} />);
 
     await user.click(screen.getByRole("button", { name: "Delete" }));
-    await user.click(screen.getByRole("button", { name: "Delete note" }));
+    const dialog = await screen.findByRole("alertdialog", {
+      name: "Delete this note?",
+    });
+    await user.click(
+      within(dialog).getByRole("button", { name: "Delete note" }),
+    );
 
     expect(
       await screen.findByText("We couldn’t delete the note. Please try again."),
