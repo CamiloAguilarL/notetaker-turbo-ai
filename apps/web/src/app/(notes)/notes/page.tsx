@@ -1,12 +1,12 @@
 import Image from "next/image";
 
-import { AnimatedNotesGrid } from "@/components/notes/animated-notes-grid";
 import { CategoryNav } from "@/components/notes/category-nav";
+import { InfiniteNotesGrid } from "@/components/notes/infinite-notes-grid";
 import { NewNoteButton } from "@/components/notes/new-note-button";
 import { NotesToolbar } from "@/components/notes/notes-toolbar";
 import { SortableNotesGrid } from "@/components/notes/sortable-notes-grid";
 import { UndoDeleteBanner } from "@/components/notes/undo-delete-banner";
-import { getCategories, getNotes } from "@/lib/api/server";
+import { getCategories, getNotes, getNotesPage } from "@/lib/api/server";
 import { formatNoteDate } from "@/lib/format-date";
 import {
   buildNotesHref,
@@ -43,11 +43,21 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
     Boolean(activeCategory),
     Boolean(searchQuery),
   );
-  const notes = await getNotes({
+  const noteOptions = {
     category: activeCategory,
     search: searchQuery,
     ordering,
-  });
+  };
+  const notePage =
+    ordering === "manual"
+      ? await getNotes(noteOptions).then((results) => ({
+          count: results.length,
+          next_page: null,
+          previous_page: null,
+          results,
+        }))
+      : await getNotesPage(noteOptions);
+  const notes = notePage.results;
   const categoryBySlug = new Map(
     categories.map((category) => [category.slug, category]),
   );
@@ -114,7 +124,7 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
             initialSearch={searchQuery}
             ordering={ordering}
             activeCategory={activeCategory}
-            resultCount={notes.length}
+            resultCount={notePage.count}
           />
 
           {notes.length ? (
@@ -125,9 +135,17 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
                 returnQuery={dashboardQuery || undefined}
               />
             ) : (
-              <AnimatedNotesGrid
+              <InfiniteNotesGrid
+                key={`${activeCategory ?? "all"}:${searchQuery}:${ordering}`}
                 label={activeName ? `${activeName} notes` : "All notes"}
-                notes={noteItems}
+                initialNotes={noteItems}
+                categories={categories}
+                nextPage={notePage.next_page}
+                totalCount={notePage.count}
+                dateReference={dateReference.toISOString()}
+                category={activeCategory}
+                search={searchQuery}
+                ordering={ordering}
                 returnQuery={dashboardQuery || undefined}
               />
             )

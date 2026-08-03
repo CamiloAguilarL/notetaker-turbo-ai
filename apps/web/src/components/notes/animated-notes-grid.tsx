@@ -5,7 +5,7 @@ import { motion } from "motion/react";
 import { NoteCard } from "@/components/notes/note-card";
 import type { Category, Note } from "@/lib/api/types";
 
-type NotesGridItem = {
+export type NotesGridItem = {
   note: Note;
   category: Category;
   displayDate: string;

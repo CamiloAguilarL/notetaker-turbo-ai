@@ -21,6 +21,13 @@ export type Note = {
   updated_at: string;
 };
 
+export type NotePage = {
+  count: number;
+  next_page: number | null;
+  previous_page: number | null;
+  results: Note[];
+};
+
 export type ApiErrorBody = {
   error?: {
     code?: string;

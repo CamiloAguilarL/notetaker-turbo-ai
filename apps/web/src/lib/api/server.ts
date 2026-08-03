@@ -2,7 +2,7 @@ import "server-only";
 
 import { cookies } from "next/headers";
 
-import type { Category, Note, User } from "@/lib/api/types";
+import type { Category, Note, NotePage, User } from "@/lib/api/types";
 import { buildNotesSearchParams, type NoteOrdering } from "@/lib/notes-query";
 
 const API_URL = process.env.API_INTERNAL_URL ?? "http://localhost:8000/api/v1";
@@ -41,6 +41,18 @@ export async function getNotes(options?: {
   const query = buildNotesSearchParams(options ?? {}).toString();
   const suffix = query ? `?${query}` : "";
   return readApiResponse<Note[]>(await serverApiRequest(`/notes/${suffix}`));
+}
+
+export async function getNotesPage(options: {
+  category?: string;
+  search?: string;
+  ordering: NoteOrdering;
+}): Promise<NotePage> {
+  const query = buildNotesSearchParams(options).toString();
+  const suffix = query ? `?${query}` : "";
+  return readApiResponse<NotePage>(
+    await serverApiRequest(`/notes/page/${suffix}`),
+  );
 }
 
 export async function getNote(id: string): Promise<Note | null> {

@@ -1,7 +1,8 @@
 "use client";
 
 import { apiRequest } from "@/lib/api/client";
-import type { Note } from "@/lib/api/types";
+import type { Note, NotePage } from "@/lib/api/types";
+import { buildNotesSearchParams, type NoteOrdering } from "@/lib/notes-query";
 
 export type NoteUpdate = Partial<Pick<Note, "category" | "title" | "content">>;
 
@@ -32,4 +33,16 @@ export function reorderNotes(noteIds: string[]): Promise<void> {
     method: "POST",
     body: JSON.stringify({ note_ids: noteIds }),
   });
+}
+
+export function getNotesPage(options: {
+  category?: string;
+  search?: string;
+  ordering: NoteOrdering;
+  page: number;
+}): Promise<NotePage> {
+  const query = buildNotesSearchParams(options);
+  if (options.page > 1) query.set("page", String(options.page));
+  const suffix = query.toString();
+  return apiRequest<NotePage>(`/notes/page/${suffix ? `?${suffix}` : ""}`);
 }
