@@ -34,6 +34,7 @@ export function CategoryNav({
               search: searchQuery,
               ordering: allOrdering,
             })}
+            scroll={false}
             aria-current={!activeCategory ? "page" : undefined}
             className={cn(
               "focus-visible:ring-ring/40 flex min-h-11 items-center gap-3 rounded-full border px-4 text-sm font-semibold transition-colors outline-none focus-visible:ring-3 lg:min-h-9 lg:w-full lg:rounded-md lg:border-transparent lg:px-1.5",
@@ -63,6 +64,7 @@ export function CategoryNav({
                       ? "-updated_at"
                       : ordering,
                 })}
+                scroll={false}
                 aria-current={isActive ? "page" : undefined}
                 className={cn(
                   "focus-visible:ring-ring/40 flex min-h-11 items-center gap-3 rounded-full border px-4 text-sm font-medium transition-colors outline-none focus-visible:ring-3 lg:min-h-9 lg:w-full lg:rounded-md lg:border-transparent lg:px-1.5",

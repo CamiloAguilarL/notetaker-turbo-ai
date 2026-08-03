@@ -467,6 +467,18 @@ test("a user can capture, organize, and reopen a private note", async ({
   await expect(
     page.getByText("All 13 notes loaded.", { exact: true }),
   ).toBeVisible();
+  const beforeCategoryFilterScroll = await page.evaluate(() => {
+    window.scrollTo(0, document.body.scrollHeight);
+    return window.scrollY;
+  });
+  expect(beforeCategoryFilterScroll).toBeGreaterThan(0);
+  await page
+    .getByRole("link", { name: /Random Thoughts\s*\d+/ })
+    .evaluate((element) => (element as HTMLAnchorElement).click());
+  await expect(page).toHaveURL(/\/notes\?category=random-thoughts$/);
+  await expect
+    .poll(() => page.evaluate(() => window.scrollY))
+    .toBeGreaterThan(0);
   await expectNoAccessibilityViolations(page);
 
   await page.getByRole("button", { name: "Sign out" }).click();
