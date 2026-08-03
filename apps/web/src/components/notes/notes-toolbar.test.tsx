@@ -76,8 +76,11 @@ describe("NotesToolbar", () => {
     );
 
     await user.click(screen.getByRole("combobox", { name: "Sort notes" }));
+    const oldestEditedOption = await screen.findByRole("option", {
+      name: "Oldest edited",
+    });
     expect(screen.queryByRole("option", { name: "Category" })).toBeNull();
-    await user.click(screen.getByRole("option", { name: "Oldest edited" }));
+    await user.click(oldestEditedOption);
 
     expect(replace).toHaveBeenCalledWith(
       "/notes?category=school&ordering=updated_at",
@@ -93,6 +96,7 @@ describe("NotesToolbar", () => {
       target: { value: "browser" },
     });
     await user.click(screen.getByRole("combobox", { name: "Sort notes" }));
+    await screen.findByRole("option", { name: "Recently edited" });
     expect(screen.queryByRole("option", { name: "Manual order" })).toBeNull();
 
     await waitFor(() =>
