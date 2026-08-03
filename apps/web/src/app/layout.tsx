@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import { MotionProvider } from "@/components/motion-provider";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 import "./globals.css";
 
@@ -34,7 +35,9 @@ export default function RootLayout({
         >
           Skip to main content
         </a>
-        <MotionProvider>{children}</MotionProvider>
+        <MotionProvider>
+          <TooltipProvider>{children}</TooltipProvider>
+        </MotionProvider>
       </body>
     </html>
   );

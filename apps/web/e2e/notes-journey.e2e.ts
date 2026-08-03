@@ -44,6 +44,13 @@ test("a user can capture, organize, and reopen a private note", async ({
       name: "I’m just here waiting for your charming notes…",
     }),
   ).toBeVisible();
+  if (testInfo.project.name !== "chromium-mobile") {
+    const accountEmail = page.getByText(email, { exact: true });
+    await accountEmail.focus();
+    await expect(page.getByRole("tooltip")).toHaveText(email);
+    await page.getByRole("button", { name: "New Note" }).focus();
+    await expect(page.getByRole("tooltip")).toBeHidden();
+  }
   await expectNoAccessibilityViolations(page);
 
   await page.getByRole("button", { name: "New Note" }).click();

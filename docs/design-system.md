@@ -75,7 +75,8 @@ shadcn/ui is a source-code supplier, not a fixed theme or runtime dependency cat
 - Add a component only when a current product slice uses it.
 - Review generated code and adapt its tokens, radius, focus, size, and interaction states to Figma.
 - Keep ownership in `src/components/ui` and product composition outside that folder.
-- The installed source-owned UI components are `Button`, `Input`, `Textarea`, `Select`, and `AlertDialog`; each was added with the slice that first needed it and adapted to the notebook theme.
+- The installed source-owned UI components are `Button`, `Input`, `Textarea`, `Select`, `Tooltip`, and `AlertDialog`; each was added with the slice that first needed it and adapted to the notebook theme.
+- Truncated identity text in the authenticated header uses the shadcn `Tooltip` composition. It reveals the complete email on hover or keyboard focus without changing the compact header layout.
 - `AlertDialog` was added for destructive note confirmation. Its content scales without an opacity fade so text meets contrast requirements from the first animation frame, and its destructive action uses the semantic high-contrast token on every category surface.
 - Category and ordering controls compose the shadcn `Select` built on Base UI. The category trigger's 194-by-34-pixel visual box, six-pixel radius, inset category dot, warm outline, and wide hand-drawn-style chevron follow the inspected reference; the underlying trigger remains 44 pixels tall for touch input. Product styling remains outside the source-owned primitive.
 - Prefer Lucide icons only when the glyph faithfully matches Figma; export and commit the exact Figma asset otherwise.

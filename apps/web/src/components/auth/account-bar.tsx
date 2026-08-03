@@ -5,6 +5,11 @@ import { useState } from "react";
 import { LogOut, NotebookPen } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { logOut } from "@/lib/api/auth";
 import type { User } from "@/lib/api/types";
 
@@ -40,9 +45,24 @@ export function AccountBar({ user }: { user: User }) {
         >
           {error}
         </p>
-        <span className="text-muted-foreground hidden max-w-52 truncate text-xs sm:block">
-          {user.email}
-        </span>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span
+              tabIndex={0}
+              className="text-muted-foreground focus-visible:ring-ring hidden max-w-52 truncate rounded-sm text-xs outline-none focus-visible:ring-2 sm:block"
+            >
+              {user.email}
+            </span>
+          </TooltipTrigger>
+          <TooltipContent
+            side="bottom"
+            align="end"
+            sideOffset={6}
+            className="max-w-[min(22rem,calc(100vw-2rem))] break-all"
+          >
+            {user.email}
+          </TooltipContent>
+        </Tooltip>
         <Button
           type="button"
           variant="ghost"

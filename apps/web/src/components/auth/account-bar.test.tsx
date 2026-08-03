@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { AccountBar } from "@/components/auth/account-bar";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { logOut } from "@/lib/api/auth";
 
 const replace = vi.fn();
@@ -18,6 +19,14 @@ vi.mock("@/lib/api/auth", () => ({
 
 const mockedLogOut = vi.mocked(logOut);
 
+function renderAccountBar(email = "reader@example.com") {
+  return render(
+    <TooltipProvider delayDuration={0}>
+      <AccountBar user={{ id: 1, email }} />
+    </TooltipProvider>,
+  );
+}
+
 describe("AccountBar", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -26,7 +35,7 @@ describe("AccountBar", () => {
   it("invalidates the session and leaves the private area", async () => {
     const user = userEvent.setup();
     mockedLogOut.mockResolvedValue();
-    render(<AccountBar user={{ id: 1, email: "reader@example.com" }} />);
+    renderAccountBar();
 
     await user.click(screen.getByRole("button", { name: "Sign out" }));
 
@@ -38,7 +47,7 @@ describe("AccountBar", () => {
   it("keeps a recoverable action when logout fails", async () => {
     const user = userEvent.setup();
     mockedLogOut.mockRejectedValue(new TypeError("Failed to fetch"));
-    render(<AccountBar user={{ id: 1, email: "reader@example.com" }} />);
+    renderAccountBar();
 
     await user.click(screen.getByRole("button", { name: "Sign out" }));
 
@@ -46,5 +55,16 @@ describe("AccountBar", () => {
       await screen.findByText("We couldn’t sign you out. Please try again."),
     ).toHaveAttribute("role", "alert");
     expect(screen.getByRole("button", { name: "Sign out" })).toBeEnabled();
+  });
+
+  it("reveals the complete email from the truncated header label", async () => {
+    const user = userEvent.setup();
+    const email = "avery.long.reader.address@example.com";
+    renderAccountBar(email);
+
+    const emailTrigger = screen.getByText(email);
+    await user.hover(emailTrigger);
+
+    expect(await screen.findByRole("tooltip")).toHaveTextContent(email);
   });
 });
