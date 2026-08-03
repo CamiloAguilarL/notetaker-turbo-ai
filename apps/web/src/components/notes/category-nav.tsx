@@ -27,7 +27,7 @@ export function CategoryNav({
 
   return (
     <nav aria-label="Note categories">
-      <ul className="flex gap-2 overflow-x-auto pb-2 lg:flex-col lg:overflow-visible lg:pb-0">
+      <ul className="app-scrollbar flex gap-2 overflow-x-auto pb-2 lg:flex-col lg:overflow-visible lg:pb-0">
         <li className="shrink-0">
           <Link
             href={buildNotesHref({

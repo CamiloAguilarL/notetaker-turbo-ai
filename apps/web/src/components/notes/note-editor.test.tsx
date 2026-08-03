@@ -89,6 +89,10 @@ describe("NoteEditor", () => {
     vi.useFakeTimers();
     render(<NoteEditor note={note} categories={categories} />);
 
+    expect(screen.getByLabelText("Note content").className).toContain(
+      "app-scrollbar app-scrollbar-stable",
+    );
+
     await act(async () => {
       await vi.advanceTimersByTimeAsync(650);
     });
@@ -188,6 +192,7 @@ describe("NoteEditor", () => {
     const dialog = await screen.findByRole("alertdialog", {
       name: "Delete this note?",
     });
+    expect(dialog.className).toContain("app-scrollbar");
     await user.click(
       within(dialog).getByRole("button", { name: "Delete note" }),
     );

@@ -69,6 +69,9 @@ describe("NotebookSelect", () => {
     expect(selectContentVariants({ variant: "notebook" })).toContain(
       "bg-control-surface",
     );
+    expect(selectContentVariants({ variant: "notebook" })).toContain(
+      "app-scrollbar",
+    );
     expect(selectItemVariants({ variant: "notebook" })).toContain(
       "data-selected:bg-accent",
     );

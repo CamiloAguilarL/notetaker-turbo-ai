@@ -34,6 +34,9 @@ Tokens live in `apps/web/src/app/globals.css` and are exposed to Tailwind throug
 | `--control-surface` | `#fbf2e3` | Quiet fill for compact source-matched controls. |
 | `--control-border` | `#ad7841` | Warm outline for the editor category selector. |
 | `--control-icon` | `#956326` | Chevron and compact-control icon ink. |
+| `--scrollbar-thumb` | derived from `--control-border` and `--background` | Standard scrollbar thumb for vertical and horizontal overflow. |
+| `--scrollbar-thumb-hover` | derived from `--control-border` and `--foreground` | Higher-contrast scrollbar hover state. |
+| `--scrollbar-track` | transparent | Keeps scroll tracks integrated with paper and component surfaces. |
 | `--auth-ink` | `#88642a` | Exact authentication display-heading ink. |
 | `--auth-border` | `#957139` | Exact authentication input and action outline/ink. |
 | `--auth-link` | `#88642a` | Accessible authentication link ink (4.8:1); keeps the source border color separate from 12-pixel text. |
@@ -71,7 +74,7 @@ Authentication geometry is tokenized from the 1280-by-832 source frames: a 384-p
 - Dashboard density uses named tokens for the 15.5-rem minimum grid column and an explicit fluid card height clamped between 13 and 18 rem. The fixed tokenized height prevents long copy or font metrics from stretching a grid row; line clamping and anywhere wrapping contain the preview. The shared `notes-grid` class owns the fluid grid algorithm for animated, sortable, and loading states.
 - The editor uses tighter responsive padding and a wider writing measure than its initial implementation so note content, rather than empty inset space, remains dominant.
 - The title and writing area compose shadcn `Input` and `Textarea` primitives but remain visually unframed in every state. The visible text caret communicates editing focus without adding a box inside the note surface.
-- The writing area owns a thin, rounded scrollbar whose thumb derives from the active category border token; the track stays transparent so it reads as part of the note rather than browser chrome.
+- Every scroll surface uses `app-scrollbar`: a 10-pixel interaction channel with a thin rounded thumb, transparent track, matching horizontal and vertical geometry, and Firefox/WebKit support. The page and editor reserve a stable vertical gutter where it prevents layout shift. Note surfaces override only the inherited thumb colors with their category border tokens; dropdowns, dialogs, horizontal category navigation, and the document use the neutral warm control treatment. Forced-colors mode returns color choice to the operating system.
 - Touch targets must be at least 44 by 44 CSS pixels even when the visual glyph is smaller.
 - Use a small spacing vocabulary derived from Tailwind's scale; avoid one-off arbitrary values unless an inspected Figma measurement requires them.
 - Keep the note editor visually dominant and quiet. Status text and the category selector are supporting controls.
@@ -85,7 +88,7 @@ shadcn/ui is a source-code supplier, not a fixed theme or runtime dependency cat
 - Keep ownership in `src/components/ui` and product composition outside that folder.
 - Product compositions choose explicit component variants such as `auth`, `search`, `editor-title`, `notebook`, and `long-text`. They must not patch reusable control cosmetics with call-site Tailwind classes; call-site classes are reserved for local layout and non-reusable positioning.
 - ESLint rejects raw `button`, `input`, `textarea`, `select`, and `option` elements outside `src/components/ui`, preserving the shadcn ownership boundary automatically.
-- The installed source-owned UI components are `Button`, `Input`, `Textarea`, `Select`, `Tooltip`, `AlertDialog`, and `Skeleton`; each was added with the slice that first needed it and adapted to the notebook theme.
+- The installed source-owned UI components are `Button`, `Input`, `InputGroup`, `Textarea`, `Select`, `Tooltip`, `AlertDialog`, and `Skeleton`; each was added with the slice that first needed it and adapted to the notebook theme.
 - Loading states compose the source-owned `Skeleton` primitive with semantic surface, border, and ink tokens. Dashboard and editor placeholders mirror their final geometry and internal hierarchy to minimize perceived layout shift; the placeholder atoms remain decorative while the route loading container announces its busy state.
 - Truncated identity text in the authenticated header uses the shadcn `Tooltip` composition. It reveals the complete email on hover or keyboard focus without changing the compact header layout.
 - `AlertDialog` was added for destructive note confirmation. Its content scales without an opacity fade so text meets contrast requirements from the first animation frame, and its destructive action uses the semantic high-contrast token on every category surface.

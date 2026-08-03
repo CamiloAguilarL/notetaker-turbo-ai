@@ -10,7 +10,7 @@ const textareaVariants = cva(
       variant: {
         default: "",
         "editor-body":
-          "notebook-scrollbar placeholder:text-foreground/35 caret-foreground mt-5 field-sizing-fixed min-h-[calc(100dvh-24rem)] resize-none overflow-y-auto rounded-none border-0 px-0 py-0 text-base leading-7 shadow-none ring-0 focus-visible:border-0 focus-visible:ring-0 sm:mt-7 sm:min-h-[calc(100dvh-25rem)] md:text-base",
+          "app-scrollbar app-scrollbar-stable placeholder:text-foreground/35 caret-foreground mt-5 field-sizing-fixed min-h-[calc(100dvh-24rem)] resize-none overflow-y-auto rounded-none border-0 px-0 py-0 text-base leading-7 shadow-none ring-0 focus-visible:border-0 focus-visible:ring-0 sm:mt-7 sm:min-h-[calc(100dvh-25rem)] md:text-base",
       },
     },
     defaultVariants: {

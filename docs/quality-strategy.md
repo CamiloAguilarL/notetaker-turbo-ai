@@ -75,7 +75,7 @@ Next.js notes that async Server Components are better covered end to end while e
 - Simulate recoverable autosave, delete/restore, and reorder failures without losing the last confirmed state.
 - Reorder with pointer and keyboard; announce lift, position change, drop, and cancellation.
 - Sign out and verify protected routes no longer render private data.
-- Exercise empty, no-results, loading, validation, server-error, and reduced-motion states at representative mobile and desktop widths.
+- Exercise empty, no-results, loading, validation, server-error, reduced-motion, and horizontal/vertical overflow states at representative mobile and desktop widths.
 
 Tests query visible roles, labels, and user-observable output. CSS selectors, internal hook state, implementation-specific snapshots, and arbitrary sleeps are avoided.
 

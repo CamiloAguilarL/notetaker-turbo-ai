@@ -68,7 +68,7 @@ The complete local submission gate passes with the following evidence:
 
 1. `make check` reports zero production npm vulnerabilities and passes Prettier, ESLint, TypeScript, Ruff, 46 frontend tests, 26 backend tests, enforced coverage thresholds, and the Next.js production build.
 2. Frontend coverage reaches 95.34% statements, 87.92% branches, 94.73% functions, and 97.11% lines; backend coverage reaches 97.47%.
-3. The final Playwright journey passes in all 5 configured projects at 1440, 820, 650, 480, and 390-pixel widths with responsive geometry, shared 44-pixel control, progressive 12-to-13 note loading, and Axe assertions; the smallest project also asserts reduced-motion behavior.
+3. The final Playwright journey passes in all 5 configured projects at 1440, 820, 650, 480, and 390-pixel widths with responsive geometry, shared 44-pixel controls, standardized global/horizontal scrollbar contracts, progressive 12-to-13 note loading, and Axe assertions; the smallest project also asserts reduced-motion behavior.
 4. Anonymous authentication mutations reject missing CSRF tokens, authenticated writes preserve the same protection, and cross-user note access remains owner-scoped without leaking object existence.
 5. A separate clean clone of the final runtime tree built fresh Docker images from committed lockfiles, passed the complete quality and E2E gates, reached healthy status for PostgreSQL, Django, and Next.js, and returned HTTP 200 from the web and API health endpoints.
 6. The final interface audit covers a focused skip link, invalid-field focus, modal overflow, touch targets, native control contrast, responsive layouts, and the reference-aligned soft visual treatment.

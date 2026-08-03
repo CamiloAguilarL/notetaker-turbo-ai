@@ -10,6 +10,7 @@ Turbo Notes is a private, responsive notes application built for Turbo AI's Seni
 - Plain-text editing with a 650 ms debounced, serialized autosave queue, retry feedback, and close-time flushing.
 - URL-backed category filters, debounced search, and deterministic date/category sorting.
 - Server-rendered 12-note pages with automatic infinite loading, accessible retry/fallback controls, and an accurate filtered total.
+- One warm, rounded scrollbar treatment across page, horizontal navigation, editor, dropdown, and dialog overflow.
 - Accessible manual ordering with pointer, touch, keyboard controls, announcements, optimistic updates, and rollback.
 - Reversible soft deletion with confirmation and an eight-second Undo window.
 - Human-readable dates, long-text wrapping, route-specific skeletons, reduced-motion support, and Axe-checked accessibility.
@@ -171,7 +172,7 @@ The final runtime was rebuilt and exercised from a separate clean local clone as
 | Static and build gate | Prettier, ESLint, TypeScript, Ruff, and the Next.js production build passed; production npm audit reported zero vulnerabilities. |
 | Frontend tests | 46 passed; 95.34% statements, 87.92% branches, 94.73% functions, 97.11% lines. |
 | Backend tests | 26 passed; 97.47% coverage, including authorization, CSRF, pagination, reorder rollback, and seed behavior. |
-| Browser tests | 5/5 Playwright projects passed at 1440, 820, 650, 480, and 390 px with Axe scans; they verify shared control geometry and progressive 12-to-13 note loading, while the smallest viewport also verifies reduced motion. |
+| Browser tests | 5/5 Playwright projects passed at 1440, 820, 650, 480, and 390 px with Axe scans; they verify shared control geometry, horizontal/global scrollbar contracts, and progressive 12-to-13 note loading, while the smallest viewport also verifies reduced motion. |
 | Clean-clone smoke test | Fresh images built from lockfiles; `db`, `api`, and `web` became healthy; UI and API health returned HTTP 200. |
 
 The test strategy focuses on observable risk rather than coverage alone: ownership isolation, validation failures, anonymous and authenticated CSRF, autosave sequencing, optimistic rollback, URL-state composition, responsive geometry, accessibility, and the complete user journey.

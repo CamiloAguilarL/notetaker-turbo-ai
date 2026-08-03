@@ -77,6 +77,7 @@ Implement in this order and stop when the protected submission buffer would be a
 4. Manual ordering with accessible drag-and-drop. **Complete:** owner-scoped transactional persistence, exact-set validation, optimistic rollback, pointer/touch sensor, keyboard controls, live position announcements, and five-viewport E2E/Axe evidence.
 5. One restrained Motion-based interaction language. **Complete:** global user-preference policy, transform-only landing/editor entrances, grid layout transitions, autosave-state feedback, reduced-motion E2E evidence, and five-viewport Axe coverage.
 6. Progressive note loading. **Complete:** owner-scoped 12-note API pages, a server-rendered first page, automatic sentinel loading, accessible load/retry/completion states, full-result totals, focused API/component coverage, and five-viewport E2E evidence.
+7. Unified overflow treatment. **Complete:** one tokenized horizontal/vertical scrollbar across the document, category navigation, editor, selects, and dialogs, with category inheritance, stable gutters where useful, forced-colors fallback, and component regression coverage.
 
 Each enhancement is a complete vertical slice: persistence and API contract, responsive UI, loading/error/empty states, tests, documentation, and a focused commit. Do not install dnd kit or Motion before its slice starts.
 

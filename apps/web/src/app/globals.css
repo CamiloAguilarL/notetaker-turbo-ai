@@ -134,6 +134,19 @@
     transparent
   );
   --control-icon: #956326;
+  --scrollbar-thumb: color-mix(
+    in srgb,
+    var(--control-border) 62%,
+    var(--background)
+  );
+  --scrollbar-thumb-hover: color-mix(
+    in srgb,
+    var(--control-border) 82%,
+    var(--foreground)
+  );
+  --scrollbar-track: transparent;
+  --scrollbar-size: 0.625rem;
+  --scrollbar-inset: 0.1875rem;
   --auth-ink: #88642a;
   --auth-border: #957139;
   --auth-link: #88642a;
@@ -238,63 +251,68 @@
 }
 
 @layer components {
+  [data-note-color] {
+    --scrollbar-thumb: color-mix(
+      in srgb,
+      var(--note-scrollbar-accent) 76%,
+      var(--foreground)
+    );
+    --scrollbar-thumb-hover: color-mix(
+      in srgb,
+      var(--note-scrollbar-accent) 88%,
+      var(--foreground)
+    );
+  }
+
   [data-note-color="random"] {
-    --notebook-scrollbar-thumb: var(--note-random-border);
+    --note-scrollbar-accent: var(--note-random-border);
   }
 
   [data-note-color="school"] {
-    --notebook-scrollbar-thumb: var(--note-school-border);
+    --note-scrollbar-accent: var(--note-school-border);
   }
 
   [data-note-color="personal"] {
-    --notebook-scrollbar-thumb: var(--note-personal-border);
+    --note-scrollbar-accent: var(--note-personal-border);
   }
 
   [data-note-color="drama"] {
-    --notebook-scrollbar-thumb: var(--note-drama-border);
+    --note-scrollbar-accent: var(--note-drama-border);
   }
 
-  .notebook-scrollbar {
-    scrollbar-color: color-mix(
-        in srgb,
-        var(--notebook-scrollbar-thumb) 76%,
-        var(--foreground)
-      )
-      transparent;
-    scrollbar-gutter: stable;
+  .app-scrollbar {
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
     scrollbar-width: thin;
   }
 
-  .notebook-scrollbar::-webkit-scrollbar {
-    width: 0.625rem;
+  .app-scrollbar-stable {
+    scrollbar-gutter: stable;
   }
 
-  .notebook-scrollbar::-webkit-scrollbar-track,
-  .notebook-scrollbar::-webkit-scrollbar-corner {
-    background: transparent;
+  .app-scrollbar::-webkit-scrollbar {
+    width: var(--scrollbar-size);
+    height: var(--scrollbar-size);
   }
 
-  .notebook-scrollbar::-webkit-scrollbar-thumb {
-    min-height: 3rem;
-    border: 0.1875rem solid transparent;
+  .app-scrollbar::-webkit-scrollbar-track,
+  .app-scrollbar::-webkit-scrollbar-corner {
+    background: var(--scrollbar-track);
+  }
+
+  .app-scrollbar::-webkit-scrollbar-thumb {
+    min-width: 2.5rem;
+    min-height: 2.5rem;
+    border: var(--scrollbar-inset) solid transparent;
     border-radius: 999px;
-    background-color: color-mix(
-      in srgb,
-      var(--notebook-scrollbar-thumb) 76%,
-      var(--foreground)
-    );
+    background-color: var(--scrollbar-thumb);
     background-clip: padding-box;
   }
 
-  .notebook-scrollbar::-webkit-scrollbar-thumb:hover {
-    background-color: color-mix(
-      in srgb,
-      var(--notebook-scrollbar-thumb) 88%,
-      var(--foreground)
-    );
+  .app-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-thumb-hover);
   }
 
-  .notebook-scrollbar::-webkit-scrollbar-button {
+  .app-scrollbar::-webkit-scrollbar-button {
     display: none;
   }
 
@@ -303,6 +321,12 @@
       auto-fill,
       minmax(min(100%, var(--note-grid-min-column)), 1fr)
     );
+  }
+}
+
+@media (forced-colors: active) {
+  .app-scrollbar {
+    scrollbar-color: auto;
   }
 }
 

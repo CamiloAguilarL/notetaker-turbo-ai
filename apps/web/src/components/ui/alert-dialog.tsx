@@ -58,7 +58,7 @@ function AlertDialogContent({
         data-slot="alert-dialog-content"
         data-size={size}
         className={cn(
-          "group/alert-dialog-content border-primary/45 bg-card text-card-foreground data-open:animate-in data-open:zoom-in-95 data-closed:animate-out data-closed:zoom-out-95 fixed top-1/2 left-1/2 z-50 grid max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-5 overflow-y-auto overscroll-contain rounded-2xl border-2 p-5 shadow-xl duration-150 outline-none data-[size=default]:max-w-md data-[size=sm]:max-w-sm",
+          "app-scrollbar group/alert-dialog-content border-primary/45 bg-card text-card-foreground data-open:animate-in data-open:zoom-in-95 data-closed:animate-out data-closed:zoom-out-95 fixed top-1/2 left-1/2 z-50 grid max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-5 overflow-y-auto overscroll-contain rounded-2xl border-2 p-5 shadow-xl duration-150 outline-none data-[size=default]:max-w-md data-[size=sm]:max-w-sm",
           className,
         )}
         {...props}

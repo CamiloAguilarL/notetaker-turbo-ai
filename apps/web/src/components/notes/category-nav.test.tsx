@@ -34,7 +34,9 @@ describe("CategoryNav", () => {
 
     const all = screen.getByRole("link", { name: /All Categories\s*5/ });
     const school = screen.getByRole("link", { name: /School\s*3/ });
+    const categoryList = screen.getByRole("list");
 
+    expect(categoryList.className).toContain("app-scrollbar");
     expect(all).toHaveAttribute("href", "/notes?q=systems&ordering=updated_at");
     expect(all).not.toHaveAttribute("aria-current");
     expect(school).toHaveAttribute("aria-current", "page");

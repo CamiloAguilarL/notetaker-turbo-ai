@@ -64,6 +64,44 @@ async function expectCardCopyContained(page: Page, accessibleName: string) {
   expect(Math.max(...horizontalOverflow)).toBeLessThanOrEqual(8);
 }
 
+async function expectUnifiedScrollbars(page: Page) {
+  const viewport = page.viewportSize();
+  expect(viewport).not.toBeNull();
+  if (!viewport) return;
+
+  const categoryList = page
+    .getByRole("navigation", { name: "Note categories" })
+    .getByRole("list");
+  const contract = await categoryList.evaluate((element) => {
+    const root = document.documentElement;
+    const rootStyle = getComputedStyle(root);
+    const listStyle = getComputedStyle(element);
+    return {
+      rootClasses: root.className,
+      rootScrollbarColor: rootStyle.scrollbarColor,
+      rootScrollbarWidth: rootStyle.scrollbarWidth,
+      listClasses: element.className,
+      listScrollbarColor: listStyle.scrollbarColor,
+      listScrollbarWidth: listStyle.scrollbarWidth,
+      listOverflowX: listStyle.overflowX,
+      listClientWidth: element.clientWidth,
+      listScrollWidth: element.scrollWidth,
+    };
+  });
+
+  expect(contract.rootClasses).toContain("app-scrollbar");
+  expect(contract.rootScrollbarWidth).toBe("thin");
+  expect(contract.rootScrollbarColor).not.toBe("auto");
+  expect(contract.listClasses).toContain("app-scrollbar");
+  expect(contract.listScrollbarWidth).toBe("thin");
+  expect(contract.listScrollbarColor).toBe(contract.rootScrollbarColor);
+
+  if (viewport.width < 768) {
+    expect(contract.listOverflowX).toBe("auto");
+    expect(contract.listScrollWidth).toBeGreaterThan(contract.listClientWidth);
+  }
+}
+
 async function expectConsistentDashboardControls(page: Page) {
   await page.mouse.move(0, 0);
   await page.waitForTimeout(200);
@@ -228,6 +266,7 @@ test("a user can capture, organize, and reopen a private note", async ({
       .locator("time"),
   ).toHaveText("Today");
   await expectResponsiveDashboard(page);
+  await expectUnifiedScrollbars(page);
   await expectConsistentDashboardControls(page);
   await expectCardCopyContained(page, "Open An end-to-end thought");
   await expect(page.getByRole("link", { name: /Personal\s*1/ })).toBeVisible();
