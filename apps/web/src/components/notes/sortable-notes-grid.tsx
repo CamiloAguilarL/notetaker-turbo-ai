@@ -87,15 +87,14 @@ function SortableNoteCard({
         category={item.category}
         returnQuery={returnQuery}
         action={
-          <div className="bg-background/55 flex rounded-full p-0.5 backdrop-blur-[2px]">
+          <div className="bg-background/55 backdrop-blur-note-controls flex rounded-full p-0.5">
             <Button
               type="button"
-              variant="ghost"
+              variant="note-control"
               size="icon-sm"
               aria-label={`Move ${title} earlier`}
               title="Move earlier"
               disabled={disabled || index === 0}
-              className="hover:bg-background/85"
               onClick={onMoveEarlier}
             >
               <ArrowUp aria-hidden="true" />
@@ -103,12 +102,12 @@ function SortableNoteCard({
             <Button
               ref={setActivatorNodeRef}
               type="button"
-              variant="ghost"
+              variant="note-control"
               size="icon-sm"
               aria-label={`Drag ${title} to reorder`}
               title="Drag to reorder"
               disabled={disabled}
-              className="hover:bg-background/85 cursor-grab touch-none active:cursor-grabbing"
+              className="cursor-grab touch-none active:cursor-grabbing"
               {...attributes}
               {...listeners}
             >
@@ -116,12 +115,11 @@ function SortableNoteCard({
             </Button>
             <Button
               type="button"
-              variant="ghost"
+              variant="note-control"
               size="icon-sm"
               aria-label={`Move ${title} later`}
               title="Move later"
               disabled={disabled || index === count - 1}
-              className="hover:bg-background/85"
               onClick={onMoveLater}
             >
               <ArrowDown aria-hidden="true" />

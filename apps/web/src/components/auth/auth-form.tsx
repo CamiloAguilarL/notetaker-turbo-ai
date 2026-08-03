@@ -81,7 +81,7 @@ export function AuthForm({ mode }: AuthFormProps) {
           aria-invalid={Boolean(fieldErrors.email)}
           aria-describedby={fieldErrors.email ? "email-error" : undefined}
           placeholder="you@example.com"
-          className="border-primary/45 bg-card/20 focus-visible:border-primary h-11 rounded-lg"
+          variant="auth"
         />
         {fieldErrors.email ? (
           <p id="email-error" className="text-destructive text-sm">
@@ -105,7 +105,7 @@ export function AuthForm({ mode }: AuthFormProps) {
           aria-invalid={Boolean(fieldErrors.password)}
           aria-describedby={fieldErrors.password ? "password-error" : undefined}
           placeholder="At least 8 characters…"
-          className="border-primary/45 bg-card/20 focus-visible:border-primary h-11 rounded-lg"
+          variant="auth"
         />
         {fieldErrors.password ? (
           <p id="password-error" className="text-destructive text-sm">

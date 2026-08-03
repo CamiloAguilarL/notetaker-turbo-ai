@@ -178,7 +178,7 @@ export function NoteEditor({
     <main
       id="main-content"
       tabIndex={-1}
-      className="mx-auto w-full max-w-[82rem] px-4 pt-1 pb-5 sm:px-8 lg:px-10"
+      className="max-w-app mx-auto w-full px-4 pt-1 pb-5 sm:px-8 lg:px-10"
     >
       <h1 className="sr-only">Edit note</h1>
       <div className="flex min-h-14 items-center justify-between gap-4 pb-3">
@@ -193,8 +193,7 @@ export function NoteEditor({
             <AlertDialogTrigger asChild>
               <Button
                 type="button"
-                variant="ghost"
-                className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                variant="destructive-ghost"
                 disabled={isClosing || isDeleting}
               >
                 <Trash2 aria-hidden="true" />
@@ -250,7 +249,7 @@ export function NoteEditor({
         transition={{ duration: 0.28 }}
         data-note-color={selectedColorKey}
         className={cn(
-          "min-h-[calc(100dvh-9rem)] rounded-2xl border-[3px] p-5 transition-colors sm:p-6 lg:p-8",
+          "border-note min-h-[calc(100dvh-9rem)] rounded-2xl p-5 transition-colors sm:p-6 lg:p-8",
           theme.surface,
           theme.border,
         )}
@@ -317,7 +316,7 @@ export function NoteEditor({
             }
             maxLength={120}
             placeholder="Note title"
-            className="placeholder:text-foreground/35 caret-foreground mt-4 h-auto w-full rounded-none border-0 bg-transparent px-0 py-0 font-serif text-3xl leading-tight font-semibold tracking-[-0.025em] shadow-none ring-0 outline-none focus-visible:border-0 focus-visible:ring-0 focus-visible:outline-none sm:mt-6 sm:text-4xl md:text-4xl"
+            variant="editor-title"
           />
 
           <label htmlFor="note-content" className="sr-only">
@@ -333,7 +332,7 @@ export function NoteEditor({
             }
             maxLength={10_000}
             placeholder="Start writing…"
-            className="notebook-scrollbar placeholder:text-foreground/35 caret-foreground mt-5 field-sizing-fixed min-h-[calc(100dvh-24rem)] w-full resize-none overflow-y-auto rounded-none border-0 bg-transparent px-0 py-0 text-base leading-7 shadow-none ring-0 outline-none focus-visible:border-0 focus-visible:ring-0 focus-visible:outline-none sm:mt-7 sm:min-h-[calc(100dvh-25rem)] md:text-base"
+            variant="editor-body"
           />
         </div>
       </motion.div>

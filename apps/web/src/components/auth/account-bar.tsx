@@ -33,7 +33,7 @@ export function AccountBar({ user }: { user: User }) {
   }
 
   return (
-    <header className="mx-auto flex min-h-14 w-full max-w-[82rem] items-center justify-between px-5 py-2 sm:px-8 lg:px-10">
+    <header className="max-w-app mx-auto flex min-h-14 w-full items-center justify-between px-5 py-2 sm:px-8 lg:px-10">
       <div className="flex items-center gap-2 text-sm font-semibold">
         <NotebookPen aria-hidden="true" className="text-primary size-4" />
         Turbo Notes
@@ -46,19 +46,14 @@ export function AccountBar({ user }: { user: User }) {
           {error}
         </p>
         <Tooltip>
-          <TooltipTrigger asChild>
-            <span
-              tabIndex={0}
-              className="text-muted-foreground focus-visible:ring-ring hidden max-w-52 truncate rounded-sm text-xs outline-none focus-visible:ring-2 sm:block"
-            >
-              {user.email}
-            </span>
+          <TooltipTrigger asChild variant="truncated">
+            <span tabIndex={0}>{user.email}</span>
           </TooltipTrigger>
           <TooltipContent
             side="bottom"
             align="end"
             sideOffset={6}
-            className="max-w-[min(22rem,calc(100vw-2rem))] break-all"
+            variant="long-text"
           >
             {user.email}
           </TooltipContent>

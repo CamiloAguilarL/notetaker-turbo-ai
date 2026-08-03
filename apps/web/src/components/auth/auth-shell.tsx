@@ -23,7 +23,7 @@ export function AuthShell({ children, mode }: AuthShellProps) {
           Turbo Notes
         </Link>
         <div className="text-center">
-          <h1 className="font-serif text-4xl leading-none font-semibold tracking-[-0.03em] text-balance sm:text-5xl">
+          <h1 className="tracking-page-title font-serif text-4xl leading-none font-semibold text-balance sm:text-5xl">
             {isLogin ? "Yay, You’re Back!" : "Yay, New Friend!"}
           </h1>
           <div className="mt-8 text-left">{children}</div>
@@ -36,7 +36,7 @@ export function AuthShell({ children, mode }: AuthShellProps) {
         width={1823}
         height={863}
         priority
-        className="pointer-events-none absolute bottom-0 left-1/2 h-auto w-[36rem] max-w-none -translate-x-1/2 select-none sm:w-[68rem] lg:w-[82rem]"
+        className="lg:w-app pointer-events-none absolute bottom-0 left-1/2 h-auto w-[36rem] max-w-none -translate-x-1/2 select-none sm:w-[68rem]"
       />
     </main>
   );

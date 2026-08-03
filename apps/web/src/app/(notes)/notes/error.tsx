@@ -12,7 +12,7 @@ export default function NotesError({ reset }: { reset: () => void }) {
       className="grid min-h-[70dvh] place-items-center px-6 py-16 text-center"
     >
       <div className="max-w-md">
-        <p className="text-destructive font-mono text-xs font-semibold tracking-[0.18em] uppercase">
+        <p className="text-destructive tracking-eyebrow font-mono text-xs font-semibold uppercase">
           Notebook unavailable
         </p>
         <h1 className="mt-4 font-serif text-4xl font-semibold text-balance">

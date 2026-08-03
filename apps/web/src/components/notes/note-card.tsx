@@ -27,7 +27,7 @@ export function NoteCard({
   return (
     <article
       className={cn(
-        "group relative h-full min-h-72 overflow-hidden rounded-2xl border-[3px] transition-transform motion-safe:hover:-translate-y-0.5",
+        "group border-note relative h-full min-h-72 overflow-hidden rounded-2xl transition-transform motion-safe:hover:-translate-y-0.5",
         theme.surface,
         theme.border,
       )}
@@ -38,7 +38,7 @@ export function NoteCard({
       <Link
         href={href}
         aria-label={`Open ${note.title || "untitled note"}`}
-        className="focus-visible:ring-ring/60 flex h-full min-h-72 flex-col rounded-[calc(var(--radius)*1.15)] p-5 outline-none focus-visible:ring-4 focus-visible:ring-inset sm:p-6"
+        className="focus-visible:ring-ring/60 rounded-note-inner flex h-full min-h-72 flex-col p-5 outline-none focus-visible:ring-4 focus-visible:ring-inset sm:p-6"
       >
         <p
           className={cn(
@@ -53,7 +53,7 @@ export function NoteCard({
           <span>{category.name}</span>
         </p>
 
-        <h2 className="mt-4 line-clamp-2 font-serif text-2xl leading-tight font-semibold tracking-[-0.02em] sm:text-[1.7rem]">
+        <h2 className="tracking-note-heading sm:text-note-title mt-4 line-clamp-2 font-serif text-2xl leading-tight font-semibold">
           {note.title || "Untitled note"}
         </h2>
         <p className="text-foreground/85 mt-3 line-clamp-6 text-sm leading-6 whitespace-pre-line">

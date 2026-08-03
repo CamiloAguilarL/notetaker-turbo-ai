@@ -20,6 +20,7 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
+  --color-destructive-hover: var(--destructive-hover);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -37,12 +38,34 @@
   --font-sans: var(--font-geist-sans);
   --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
   --font-mono: var(--font-geist-mono);
+  --container-app: var(--layout-app-max-width);
+  --container-tooltip: var(--layout-tooltip-max-width);
+  --spacing-app: var(--layout-app-max-width);
+  --spacing-category-trigger: var(--category-trigger-width);
+  --spacing-category-visual-inset: var(--category-trigger-visual-inset);
+  --spacing-category-label-inset: var(--category-trigger-label-inset);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) * 1.4);
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-control: var(--control-radius);
+  --radius-control-item: var(--control-item-radius);
+  --radius-note-inner: var(--note-inner-radius);
+  --text-control-caption: var(--control-caption-size);
+  --text-control-caption--line-height: 1;
+  --text-control-compact: var(--control-compact-size);
+  --text-note-title: var(--note-title-size);
+  --text-display: var(--display-size);
+  --leading-display: var(--display-line-height);
+  --tracking-display: var(--display-letter-spacing);
+  --tracking-page-title: var(--page-title-letter-spacing);
+  --tracking-note-heading: var(--note-heading-letter-spacing);
+  --tracking-editor-title: var(--editor-title-letter-spacing);
+  --tracking-eyebrow: var(--eyebrow-letter-spacing);
+  --blur-note-controls: var(--note-controls-blur);
+  --border-width-note: var(--note-border-width);
 }
 
 :root {
@@ -61,6 +84,11 @@
   --accent: #f3b88f;
   --accent-foreground: #2a2118;
   --destructive: #7f2926;
+  --destructive-hover: color-mix(
+    in oklch,
+    var(--destructive),
+    var(--foreground) 12%
+  );
   --border: #9a7959;
   --input: #b69a7c;
   --ring: #8e5d36;
@@ -75,6 +103,26 @@
   --note-personal-border: #6caaa2;
   --note-drama: #c9b8d9;
   --note-drama-border: #9779b3;
+  --layout-app-max-width: 82rem;
+  --layout-tooltip-max-width: 22rem;
+  --category-trigger-width: 12.125rem;
+  --category-trigger-visual-inset: 0.3125rem;
+  --category-trigger-label-inset: 0.8125rem;
+  --control-radius: 0.375rem;
+  --control-item-radius: 0.25rem;
+  --note-inner-radius: calc(var(--radius) * 1.15);
+  --control-caption-size: 0.6875rem;
+  --control-compact-size: 0.8rem;
+  --note-title-size: 1.7rem;
+  --display-size: 5.25rem;
+  --display-line-height: 0.96;
+  --display-letter-spacing: -0.04em;
+  --page-title-letter-spacing: -0.03em;
+  --note-heading-letter-spacing: -0.02em;
+  --editor-title-letter-spacing: -0.025em;
+  --eyebrow-letter-spacing: 0.18em;
+  --note-controls-blur: 2px;
+  --note-border-width: 3px;
   --radius: 0.75rem;
 }
 

@@ -37,16 +37,13 @@ export function NoteOrderingSelect({
           if (nextValue) onValueChange(nextValue);
         }}
       >
-        <SelectTrigger
-          aria-label="Sort notes"
-          className="border-primary/35 text-foreground focus-visible:ring-ring/40 hover:bg-card/45 h-10 min-w-40 rounded-full bg-transparent px-4 focus-visible:ring-3"
-        >
+        <SelectTrigger aria-label="Sort notes" variant="ordering">
           <SelectValue />
         </SelectTrigger>
         <SelectContent
           align="end"
           alignItemWithTrigger={false}
-          className="border-primary/35 bg-control-surface rounded-xl border p-0 shadow-lg ring-0"
+          variant="ordering"
         >
           <SelectGroup>
             {options.map((option) => (

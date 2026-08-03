@@ -111,17 +111,16 @@ export function NotesToolbar({
             onChange={(event) => setSearch(event.currentTarget.value)}
             maxLength={MAX_SEARCH_LENGTH}
             placeholder="Search your notes"
-            className="border-primary/35 bg-transparent pl-10"
+            variant="search"
           />
         </div>
         {search ? (
           <Button
             type="button"
             variant="ghost"
-            size="icon"
+            size="icon-touch"
             aria-label="Clear search"
             onClick={clearSearch}
-            className="size-10"
           >
             <X aria-hidden="true" />
           </Button>

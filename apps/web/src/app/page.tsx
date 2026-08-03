@@ -49,7 +49,7 @@ export default async function Home() {
     <main
       id="main-content"
       tabIndex={-1}
-      className="mx-auto flex min-h-dvh w-full max-w-[82rem] flex-col px-5 pb-10 sm:px-8 lg:px-10"
+      className="max-w-app mx-auto flex min-h-dvh w-full flex-col px-5 pb-10 sm:px-8 lg:px-10"
     >
       <header className="flex min-h-16 items-center justify-between gap-4 py-2">
         <Link
@@ -65,7 +65,7 @@ export default async function Home() {
               <Link href="/login">Sign in</Link>
             </Button>
           ) : null}
-          <Button asChild size="sm" className="sm:h-10 sm:px-4">
+          <Button asChild size="header">
             <Link href={primaryHref}>
               {user ? "Open notebook" : "Get started"}
             </Link>
@@ -83,7 +83,7 @@ export default async function Home() {
           <p className="text-primary text-sm font-semibold">
             A private notebook for everyday thoughts
           </p>
-          <h1 className="mt-5 max-w-xl font-serif text-5xl leading-[0.96] font-semibold tracking-[-0.04em] text-balance sm:text-7xl lg:text-[5.25rem]">
+          <h1 className="leading-display tracking-display lg:text-display mt-5 max-w-xl font-serif text-5xl font-semibold text-balance sm:text-7xl">
             Your thoughts, in a softer place.
           </h1>
           <p className="text-muted-foreground mt-7 max-w-lg text-base leading-7 sm:text-lg sm:leading-8">
@@ -123,7 +123,7 @@ export default async function Home() {
             <article
               key={note.category}
               className={cn(
-                "absolute min-h-52 rounded-2xl border-[3px] p-5 shadow-sm sm:min-h-56 sm:p-6",
+                "border-note absolute min-h-52 rounded-2xl p-5 shadow-sm sm:min-h-56 sm:p-6",
                 note.className,
               )}
             >
@@ -132,7 +132,7 @@ export default async function Home() {
                 <span aria-hidden="true">·</span>
                 <span>{note.category}</span>
               </p>
-              <h2 className="mt-4 max-w-xs font-serif text-2xl leading-tight font-semibold tracking-[-0.02em] sm:text-3xl">
+              <h2 className="tracking-note-heading mt-4 max-w-xs font-serif text-2xl leading-tight font-semibold sm:text-3xl">
                 {note.title}
               </h2>
               <p className="text-foreground/80 mt-3 max-w-sm text-sm leading-6">

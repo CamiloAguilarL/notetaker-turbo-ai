@@ -78,7 +78,7 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
     <main
       id="main-content"
       tabIndex={-1}
-      className="mx-auto w-full max-w-[82rem] px-5 pt-2 pb-10 sm:px-8 lg:px-10 lg:pb-14"
+      className="max-w-app mx-auto w-full px-5 pt-2 pb-10 sm:px-8 lg:px-10 lg:pb-14"
     >
       <h1 className="sr-only">{activeName ?? "All Notes"}</h1>
       <div className="flex min-h-14 items-start justify-end">
