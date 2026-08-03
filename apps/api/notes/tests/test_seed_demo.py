@@ -35,7 +35,7 @@ def test_seed_demo_is_idempotent_and_restores_a_deleted_sample() -> None:
         "personal",
         "drama",
     }
-    assert "Created 6 notes and restored 0" in first_output.getvalue()
+    assert "Created 24 notes and restored 0" in first_output.getvalue()
 
     deleted = notes.order_by("manual_order").first()
     assert deleted is not None
