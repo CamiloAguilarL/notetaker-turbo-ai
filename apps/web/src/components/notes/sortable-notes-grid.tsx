@@ -263,7 +263,7 @@ export function SortableNotesGrid({
         <SortableContext items={ids} strategy={rectSortingStrategy}>
           <ul
             aria-label="All notes in manual order"
-            className="grid min-w-0 gap-5 sm:grid-cols-2 xl:grid-cols-3"
+            className="notes-grid grid min-w-0 gap-4 sm:gap-5"
           >
             {notes.map((item, index) => (
               <SortableNoteCard

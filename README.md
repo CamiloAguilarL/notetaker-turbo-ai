@@ -18,7 +18,7 @@ The complete P0 product journey and its documented quality gate are complete:
 - Next.js 16.2.12, React 19, Tailwind CSS 4, Motion 12.43.0, dnd kit, and customized source-owned shadcn/ui `Button`, `Input`, `Textarea`, `Select`, `Tooltip`, and `AlertDialog` components.
 - Django 6.0.7 and Django REST Framework 3.17.1 with a database-aware health endpoint and a consistent JSON error contract.
 - PostgreSQL 17, Django, and Next.js orchestrated through Docker Compose.
-- Ruff, pytest with enforced backend coverage, ESLint, TypeScript, Vitest with enforced frontend coverage, Playwright E2E plus Axe accessibility scans at three breakpoints, production builds, and npm security auditing.
+- Ruff, pytest with enforced backend coverage, ESLint, TypeScript, Vitest with enforced frontend coverage, Playwright E2E plus Axe accessibility scans at five representative viewports, production builds, and npm security auditing.
 - A GitHub Actions quality gate that reuses the same Dockerized checks as local development.
 - Product requirements, architecture, delivery/evaluation priorities, quality strategy, and provisional design tokens in `docs/`.
 - A source-aligned visual fidelity pass covering authentication, empty/populated dashboards, cards, controls, responsive editor composition, and original transparent stationery illustrations.
@@ -104,7 +104,7 @@ The finalized runtime tree was rebuilt and exercised from a separate clean local
 | `make check` | Passed: zero production npm vulnerabilities; Prettier, ESLint, TypeScript, Ruff, and the Next.js production build are clean. |
 | Frontend tests | 34 passed; 94.89% statements, 87.33% branches, 93.54% functions, and 96.65% lines. |
 | Backend tests | 24 passed; 97.32% coverage, including ownership, CSRF, reorder rollback, and demo-seed behavior. |
-| `make e2e` | 3/3 Playwright projects passed at desktop, tablet, and mobile widths with Axe scans; mobile also verifies reduced motion. |
+| `make e2e` | 5/5 Playwright projects passed at 1440, 820, 650, 480, and 390-pixel widths with Axe scans; the smallest viewport also verifies reduced motion. |
 | Clean-clone smoke test | Fresh Docker images built from the lockfiles; `db`, `api`, and `web` became healthy; web and API health returned HTTP 200. |
 
 No production deployment is part of this challenge scope. The public-repository, video-upload, and form links must be verified from a signed-out browser by the candidate before submission.
@@ -189,7 +189,7 @@ OpenAI Codex was used as an implementation and review assistant to:
 - research current official Next.js, Django/DRF, shadcn/ui, Motion, dnd kit, and Playwright guidance before selecting architecture, component, testing, animation, and accessible drag-and-drop approaches;
 - apply a restrained transform-only Motion language after browser/Axe feedback showed that opacity fades can create transient low-contrast frames, and verify the result with emulated reduced-motion preferences;
 - identify and replace vulnerable transitive PostCSS and Sharp versions with audited overrides;
-- validate the local UI at desktop, tablet, and mobile viewports and smoke-test the Dockerized web, API, and database services;
+- validate the local UI at desktop, tablet, compact-tablet, compact-mobile, and mobile viewports and smoke-test the Dockerized web, API, and database services;
 - detect and fix a server/client timestamp hydration mismatch through live browser diagnostics;
 - exercise the real landing, registration, note creation, autosave, reload persistence, filtering, search, sorting, manual reordering, category change, reversible deletion, logout, route protection, and automated accessibility scans in Playwright;
 - generate two original transparent colored-pencil/watercolor stationery illustrations for authentication and the empty state, remove their chroma backgrounds, and inspect the resulting RGBA assets at desktop and mobile sizes.
@@ -200,7 +200,7 @@ AI accelerated source comparison, scaffolding, implementation, documentation, de
 | --- | --- | --- |
 | Source and product analysis | Traceable requirements, priorities, provisional token map, and scope gates. | Revisited the complete video and public prototype; marked inaccessible Figma variables as provisional. |
 | Architecture and implementation | Docker monorepo, typed API/UI slices, tests, and focused documentation updates. | Reviewed diffs, exercised owner boundaries and failures, and committed only after the relevant gate passed. |
-| Visual and browser QA | Responsive source comparison, original decorative assets, hydration diagnosis, and interaction refinements. | Inspected real browser output, ran three-breakpoint Playwright/Axe checks, and rejected transient low-contrast opacity motion. |
+| Visual and browser QA | Responsive source comparison, original decorative assets, hydration diagnosis, and interaction refinements. | Inspected real browser output, ran five-viewport Playwright/Axe checks, measured responsive grid density, and rejected transient low-contrast opacity motion. |
 | Delivery support | Seeded demo workflow, timed script, and submission preflight. | Kept secrets interactive, tested seed idempotence, and reserved external publication/recording for the candidate. |
 
 Generated work was checked with ESLint, TypeScript, Vitest and enforced coverage, Playwright, a Next.js production build, Ruff, pytest and enforced coverage, `npm audit`, Docker health checks, HTTP smoke tests, and visual browser inspection. AI output is not treated as authoritative: the repository owner remains responsible for reviewing, understanding, and presenting every decision. Material AI-assisted changes must record the inspected source, the decision influenced, and the independent validation performed.

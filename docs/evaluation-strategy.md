@@ -55,7 +55,7 @@ The P1 go/no-go gate passed with the following repository evidence:
 
 Selected P1 work may proceed in the documented order. Manual ordering was initially blocked until deletion, search, and deterministic sorting became stable; its completed interaction contract now opens the Motion gate.
 
-Reversible deletion, search, deterministic sorting, the public landing, and manual ordering are now complete. Evidence includes owner-scoped soft-delete/restore, search/order, reorder-validation, ownership, timestamp-preservation, and transaction-rollback API tests; frontend confirmation/failure/Undo, query-state, optimistic-reorder, and rollback component tests; preservation of the latest draft before deletion; visitor/authenticated landing actions; production builds; and the complete Playwright journey with Axe scans at desktop, tablet, and mobile breakpoints.
+Reversible deletion, search, deterministic sorting, the public landing, and manual ordering are now complete. Evidence includes owner-scoped soft-delete/restore, search/order, reorder-validation, ownership, timestamp-preservation, and transaction-rollback API tests; frontend confirmation/failure/Undo, query-state, optimistic-reorder, and rollback component tests; preservation of the latest draft before deletion; visitor/authenticated landing actions; production builds; and the complete Playwright journey with Axe scans at five viewports from desktop through compact mobile.
 
 The manual-order gate passed: the API atomically validates the owner's complete active-note set, leaves content-edit timestamps unchanged, and rejects duplicate, incomplete, or foreign identifiers. The responsive client provides pointer/touch drag activation, explicit keyboard move controls, screen-reader instructions and live announcements, optimistic persistence, failure rollback, and durable URL/reload state.
 
@@ -67,7 +67,7 @@ The complete local submission gate passes with the following evidence:
 
 1. `make check` reports zero production npm vulnerabilities and passes Prettier, ESLint, TypeScript, Ruff, 34 frontend tests, 24 backend tests, enforced coverage thresholds, and the Next.js production build.
 2. Frontend coverage reaches 94.89% statements, 87.33% branches, 93.54% functions, and 96.65% lines; backend coverage reaches 97.32%.
-3. The final Playwright journey passes in all 3 configured projects with Axe scans at desktop, tablet, and mobile widths; the mobile project also asserts the reduced-motion behavior.
+3. The final Playwright journey passes in all 5 configured projects at 1440, 820, 650, 480, and 390-pixel widths with responsive geometry assertions and Axe scans; the smallest project also asserts reduced-motion behavior.
 4. Anonymous authentication mutations reject missing CSRF tokens, authenticated writes preserve the same protection, and cross-user note access remains owner-scoped without leaking object existence.
 5. A separate clean clone of the final runtime tree built fresh Docker images from committed lockfiles, passed the complete quality and E2E gates, reached healthy status for PostgreSQL, Django, and Next.js, and returned HTTP 200 from the web and API health endpoints.
 6. The final interface audit covers a focused skip link, invalid-field focus, modal overflow, touch targets, native control contrast, responsive layouts, and the reference-aligned soft visual treatment.

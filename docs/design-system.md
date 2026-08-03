@@ -64,6 +64,7 @@ The serif family visible in the source cannot be identified reliably without des
 - Category cards use a three-pixel category border and a large radius rather than a generic shadow-only container. These dimensions were visually matched to the public prototype and remain tokenized estimates.
 - The product UI uses `--radius: 0.75rem` as its provisional base; note cards and the editor intentionally compose larger semantic radii from it.
 - Repeated source-matched geometry and typography use named Tailwind theme tokens: `--layout-app-max-width`, `--note-border-width`, compact-control width/insets/radii, tooltip width, display sizes, and display letter spacing. Arbitrary values remain only for isolated responsive composition or calculated viewport layout.
+- Dashboard density uses named tokens for the 15.5-rem minimum grid column and a fluid card height clamped between 13 and 18 rem. The shared `notes-grid` class owns the fluid grid algorithm for animated, sortable, and loading states.
 - The editor uses tighter responsive padding and a wider writing measure than its initial implementation so note content, rather than empty inset space, remains dominant.
 - The title and writing area compose shadcn `Input` and `Textarea` primitives but remain visually unframed in every state. The visible text caret communicates editing focus without adding a box inside the note surface.
 - The writing area owns a thin, rounded scrollbar whose thumb derives from the active category border token; the track stays transparent so it reads as part of the note rather than browser chrome.
@@ -99,11 +100,12 @@ Both were generated with OpenAI image generation from prompts requesting a warm 
 
 The source primarily shows a laptop-width frame. Implementation must add intentional behavior:
 
-- **Small**: one-column note list; categories become a horizontally scrollable filter or compact sheet; editor fills the viewport.
-- **Medium**: two-column grid with persistent or collapsible category navigation.
-- **Large**: sidebar plus three-column grid matching the reference composition.
+- **Compact (below 35 rem)**: one-column note list with cards bounded at a 13-rem minimum, tighter preview clamping, horizontally scrollable categories, and a viewport-filling editor.
+- **Intermediate (35 rem and above)**: the grid automatically fills 15.5-rem minimum columns, card height continues growing fluidly with available viewport space, and the toolbar stays stacked until 48 rem so controls do not compete for width around 650 pixels.
+- **Wide (80 rem and above)**: cards reach the full 18-rem reference height; the existing large-screen sidebar and available grid width generally produce the three-column source composition.
 - Long titles and bodies wrap or clamp safely at every width.
 - Filter state, note counts, editor status, and primary actions remain visible without horizontal page overflow.
+- Responsive browser coverage exercises 1440, 820, 650, 480, and 390-pixel viewports, asserting grid columns, card height, and document overflow in addition to the full user journey and Axe scans.
 
 ## Accessibility and motion
 

@@ -71,11 +71,11 @@ P1 work is blocked until the gate in `evaluation-strategy.md` passes.
 
 Implement in this order and stop when the protected submission buffer would be affected:
 
-1. Soft deletion with accessible undo. **Complete:** owner-scoped persistence/API, latest-draft flush, confirmation, temporary Undo, recoverable errors, component coverage, and three-breakpoint E2E/Axe evidence.
-2. Search plus recently edited, oldest edited, and category sorting. **Complete:** allowlisted API queries, URL-composed filters, explicit no-results behavior, deterministic tie-breakers, API/component coverage, and three-breakpoint E2E/Axe evidence.
+1. Soft deletion with accessible undo. **Complete:** owner-scoped persistence/API, latest-draft flush, confirmation, temporary Undo, recoverable errors, component coverage, and five-viewport E2E/Axe evidence.
+2. Search plus recently edited, oldest edited, and category sorting. **Complete:** allowlisted API queries, URL-composed filters, explicit no-results behavior, deterministic tie-breakers, API/component coverage, and five-viewport E2E/Axe evidence.
 3. Minimal public landing using real product visuals and authentication actions. **Complete:** visitor and authenticated CTAs, source-aligned product composition, responsive layout, production build, and E2E/Axe coverage.
-4. Manual ordering with accessible drag-and-drop. **Complete:** owner-scoped transactional persistence, exact-set validation, optimistic rollback, pointer/touch sensor, keyboard controls, live position announcements, and three-breakpoint E2E/Axe evidence.
-5. One restrained Motion-based interaction language. **Complete:** global user-preference policy, transform-only landing/editor entrances, grid layout transitions, autosave-state feedback, reduced-motion E2E evidence, and three-breakpoint Axe coverage.
+4. Manual ordering with accessible drag-and-drop. **Complete:** owner-scoped transactional persistence, exact-set validation, optimistic rollback, pointer/touch sensor, keyboard controls, live position announcements, and five-viewport E2E/Axe evidence.
+5. One restrained Motion-based interaction language. **Complete:** global user-preference policy, transform-only landing/editor entrances, grid layout transitions, autosave-state feedback, reduced-motion E2E evidence, and five-viewport Axe coverage.
 
 Each enhancement is a complete vertical slice: persistence and API contract, responsive UI, loading/error/empty states, tests, documentation, and a focused commit. Do not install dnd kit or Motion before its slice starts.
 
@@ -83,7 +83,7 @@ Each enhancement is a complete vertical slice: persistence and API contract, res
 
 - README process/decisions update, demo seed data, and five-minute English walkthrough script. **Complete.**
 - Final AI-use and scope-decision record with only verified claims. **Complete.**
-- Clean-clone Docker setup, full quality gate, production build, health checks, and three-breakpoint E2E/Axe run. **Complete:** the finalized runtime tree passed from a separate clone built directly from committed lockfiles.
+- Clean-clone Docker setup, full quality gate, production build, health checks, and five-viewport E2E/Axe run. **Complete:** the finalized runtime tree passed from a separate clone built directly from committed lockfiles.
 - Local Git history, ignored-artifact scan, documentation links, and submission checklist. **Complete.** Public GitHub publication, signed-out link verification, video recording/upload, and form submission remain candidate-owned external actions.
 
 ## Suggested schedule

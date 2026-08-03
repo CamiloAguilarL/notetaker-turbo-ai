@@ -30,7 +30,7 @@ export function AnimatedNotesGrid({
   return (
     <section
       aria-label={label}
-      className="grid min-w-0 gap-5 sm:grid-cols-2 xl:grid-cols-3"
+      className="notes-grid grid min-w-0 gap-4 sm:gap-5"
     >
       {notes.map(({ note, category, displayDate }, index) => (
         <motion.div

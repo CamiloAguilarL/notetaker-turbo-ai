@@ -7,7 +7,7 @@ Use this list after implementation freezes. It separates repository readiness fr
 - [x] `git status --short` is empty after the final documentation commit and no local `.env`, database, coverage output, Playwright artifact, or editor state is tracked.
 - [x] `docker compose config --quiet` succeeds from a fresh `.env` copied from `.env.example`.
 - [x] `make check` passes from the supported Docker environment.
-- [x] `make e2e` passes for desktop, tablet, and mobile.
+- [x] `make e2e` passes at 1440, 820, 650, 480, and 390-pixel viewports.
 - [x] `docker compose ps` shows healthy `db`, `api`, and `web` services.
 - [x] Web, API health, and Django admin respond on ports 3000, 8000, and 8000 respectively; PostgreSQL maps to 5432.
 - [x] The README quick start, environment tables, feature status, AI-use claims, and deferred scope match the code.

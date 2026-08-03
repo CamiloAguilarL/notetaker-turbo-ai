@@ -91,9 +91,9 @@ export function NotesToolbar({
   return (
     <section
       aria-label="Find and sort notes"
-      className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center"
+      className="mb-6 flex flex-col gap-3 md:flex-row md:items-center"
     >
-      <div className="flex min-w-0 flex-1 gap-1 sm:max-w-md">
+      <div className="flex min-w-0 flex-1 gap-1 md:max-w-md">
         <div className="relative min-w-0 flex-1">
           <label htmlFor="note-search" className="sr-only">
             Search notes
@@ -127,7 +127,7 @@ export function NotesToolbar({
         ) : null}
       </div>
 
-      <div className="flex items-center justify-between gap-3 sm:justify-end">
+      <div className="flex items-center justify-between gap-3 md:justify-end">
         <p aria-live="polite" className="text-muted-foreground text-sm">
           {isPending
             ? "Updating notes…"
