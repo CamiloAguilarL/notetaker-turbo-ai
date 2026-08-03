@@ -1,10 +1,12 @@
 """Create an idempotent local account with a complete demo notebook."""
 
+from datetime import timedelta
 from getpass import getpass
 from uuid import NAMESPACE_URL, uuid5
 
 from django.core.management.base import BaseCommand, CommandError, CommandParser
 from django.db import transaction
+from django.utils import timezone
 
 from accounts.models import User
 from notes.models import Category, Note
@@ -186,6 +188,35 @@ DEMO_NOTES = REPRESENTATIVE_NOTES + tuple(
     for key, title, content in entries
 )
 
+# Keep the walkthrough visually useful by covering Today, Yesterday, dates from
+# this year, and dates from previous years instead of stamping every note now.
+DEMO_NOTE_AGE_DAYS = (
+    0,
+    0,
+    1,
+    2,
+    3,
+    5,
+    7,
+    10,
+    14,
+    21,
+    30,
+    45,
+    60,
+    75,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    365,
+    450,
+)
+
 
 class Command(BaseCommand):
     """Seed a safe, local-only notebook for the recorded walkthrough."""
@@ -228,9 +259,10 @@ class Command(BaseCommand):
         user.save(update_fields=("password",))
 
         next_order = next_manual_order(user)
+        reference_time = timezone.now()
         created_count = 0
         restored_count = 0
-        for key, category_slug, title, content in DEMO_NOTES:
+        for index, (key, category_slug, title, content) in enumerate(DEMO_NOTES):
             note_id = uuid5(NAMESPACE_URL, f"turbo-notes-demo:{email}:{key}")
             note, note_created = Note.objects.get_or_create(
                 id=note_id,
@@ -253,6 +285,10 @@ class Command(BaseCommand):
                 note.save(update_fields=("deleted_at", "manual_order"))
                 restored_count += 1
                 next_order += 1
+
+            Note.objects.filter(id=note.id).update(
+                updated_at=reference_time - timedelta(days=DEMO_NOTE_AGE_DAYS[index]),
+            )
 
         account_action = "created" if user_created else "updated"
         self.stdout.write(

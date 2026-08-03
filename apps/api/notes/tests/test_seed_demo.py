@@ -35,6 +35,13 @@ def test_seed_demo_is_idempotent_and_restores_a_deleted_sample() -> None:
         "personal",
         "drama",
     }
+    edited_dates = {
+        timezone.localdate(updated_at)
+        for updated_at in notes.values_list("updated_at", flat=True)
+    }
+    assert len(edited_dates) >= 4
+    assert timezone.localdate() in edited_dates
+    assert min(edited_dates) < timezone.localdate()
     assert "Created 24 notes and restored 0" in first_output.getvalue()
 
     deleted = notes.order_by("manual_order").first()

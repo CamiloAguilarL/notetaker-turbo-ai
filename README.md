@@ -111,8 +111,11 @@ developer's local PostgreSQL volume. Never reuse it for a real account or a
 non-local environment. The command creates 24 deterministic notes—six per
 category—so the first 12-note API page can load a second page through infinite
 scroll while filters, ordering, category counts, and long card layouts remain
-easy to review. It is idempotent: running it again refreshes the password,
-preserves the sample notes, and restores any deleted sample.
+easy to review. Their edit timestamps are intentionally distributed across
+Today, Yesterday, this year, and previous years to exercise the contextual date
+formatting. It is idempotent: running it again refreshes the password,
+preserves the sample notes, restores any deleted sample, and reapplies the
+demo timestamp distribution.
 
 To choose a different email and enter a private password interactively instead:
 
