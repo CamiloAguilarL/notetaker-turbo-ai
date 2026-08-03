@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { BrandMark } from "@/components/brand/brand-mark";
+
 type AuthShellProps = {
   children: React.ReactNode;
   mode: "login" | "register";
@@ -18,8 +20,9 @@ export function AuthShell({ children, mode }: AuthShellProps) {
       <section className="relative z-10 w-full max-w-sm">
         <Link
           href="/"
-          className="focus-visible:ring-ring/40 text-muted-foreground mx-auto mb-10 block w-fit rounded-full text-sm font-semibold focus-visible:ring-3 focus-visible:outline-none"
+          className="focus-visible:ring-ring/40 text-muted-foreground mx-auto mb-10 inline-flex w-fit items-center gap-2 rounded-full text-sm font-semibold focus-visible:ring-3 focus-visible:outline-none"
         >
+          <BrandMark size="md" priority />
           Turbo Notes
         </Link>
         <div className="text-center">

@@ -23,6 +23,7 @@ The complete P0 product journey and its documented quality gate are complete:
 - Product requirements, architecture, delivery/evaluation priorities, quality strategy, and provisional design tokens in `docs/`.
 - A source-aligned visual fidelity pass covering authentication, empty/populated dashboards, cards, controls, responsive editor composition, and original transparent stationery illustrations.
 - A public Server Component landing page with visitor registration/login actions and a personalized return-to-notes action for authenticated users.
+- The generated paper-and-pencil app mark is reused consistently in the landing header, authentication shell, and authenticated notebook header.
 - Complete App Router metadata, route-specific browser titles, crawler privacy rules for authenticated screens, a web app manifest, and original multi-size favicon/app icons.
 
 The selected P1 enhancements—reversible deletion, search/deterministic sorting, the public landing, accessible manual ordering, and purposeful motion—are complete across their relevant API, responsive UI, failure handling, unit tests, E2E, and accessibility checks. The local submission package and clean-clone verification are also complete; publishing the repository, recording the walkthrough, and submitting the form intentionally remain candidate-owned external actions.
@@ -103,7 +104,7 @@ The finalized runtime tree was rebuilt and exercised from a separate clean local
 | Gate | Result |
 | --- | --- |
 | `make check` | Passed: zero production npm vulnerabilities; Prettier, ESLint, TypeScript, Ruff, and the Next.js production build are clean. |
-| Frontend tests | 37 passed; 95.04% statements, 87.44% branches, 94% functions, and 96.76% lines. |
+| Frontend tests | 38 passed; 95.04% statements, 87.44% branches, 94% functions, and 96.76% lines. |
 | Backend tests | 24 passed; 97.32% coverage, including ownership, CSRF, reorder rollback, and demo-seed behavior. |
 | `make e2e` | 5/5 Playwright projects passed at 1440, 820, 650, 480, and 390-pixel widths with Axe scans; the smallest viewport also verifies reduced motion. |
 | Clean-clone smoke test | Fresh Docker images built from the lockfiles; `db`, `api`, and `web` became healthy; web and API health returned HTTP 200. |

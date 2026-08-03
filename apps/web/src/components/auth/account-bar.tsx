@@ -1,9 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { LogOut, NotebookPen } from "lucide-react";
+import { LogOut } from "lucide-react";
 
+import { BrandMark } from "@/components/brand/brand-mark";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -34,10 +36,13 @@ export function AccountBar({ user }: { user: User }) {
 
   return (
     <header className="max-w-app mx-auto flex min-h-14 w-full items-center justify-between px-5 py-2 sm:px-8 lg:px-10">
-      <div className="flex items-center gap-2 text-sm font-semibold">
-        <NotebookPen aria-hidden="true" className="text-primary size-4" />
+      <Link
+        href="/notes"
+        className="focus-visible:ring-ring/40 flex items-center gap-2 rounded-full text-sm font-semibold outline-none focus-visible:ring-3"
+      >
+        <BrandMark priority />
         Turbo Notes
-      </div>
+      </Link>
       <div className="flex items-center gap-3">
         <p
           role={error ? "alert" : undefined}

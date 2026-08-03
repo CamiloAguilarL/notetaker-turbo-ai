@@ -1,9 +1,10 @@
 import type { LucideIcon } from "lucide-react";
-import { Check, NotebookPen, Palette, Search } from "lucide-react";
+import { Check, Palette, Search } from "lucide-react";
 import * as motion from "motion/react-client";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
+import { BrandMark } from "@/components/brand/brand-mark";
 import { getCurrentUser } from "@/lib/api/server";
 import { cn } from "@/lib/utils";
 
@@ -56,7 +57,7 @@ export default async function Home() {
           href="/"
           className="focus-visible:ring-ring/40 inline-flex items-center gap-2 rounded-full text-sm font-semibold outline-none focus-visible:ring-3"
         >
-          <NotebookPen aria-hidden="true" className="text-primary size-4" />
+          <BrandMark priority />
           Turbo Notes
         </Link>
         <div className="flex items-center gap-1 sm:gap-2">
