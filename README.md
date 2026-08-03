@@ -90,13 +90,36 @@ PostgreSQL data is stored in the named `postgres_data` volume.
 
 ### Prepare demo data
 
-With the stack running:
+The repository does not commit database data or a prebuilt user. With the stack
+running, create the documented local-only walkthrough account:
+
+```bash
+docker compose exec api python manage.py seed_demo \
+  --email demo@example.com \
+  --password 'TurboNotesDemo2026!'
+```
+
+| Field | Local demo value |
+| --- | --- |
+| Email | `demo@example.com` |
+| Password | `TurboNotesDemo2026!` |
+
+The password is intentionally public because this account exists only in the
+developer's local PostgreSQL volume. Never reuse it for a real account or a
+non-local environment. The command creates six representative notes across all
+four categories and is idempotent: running it again refreshes the password,
+preserves the sample notes, and restores any deleted sample.
+
+To choose a different email and enter a private password interactively instead:
 
 ```bash
 make seed-demo DEMO_EMAIL=demo@example.com
 ```
 
-The command prompts for a password instead of storing one. It creates an idempotent local account with six representative notes, and it can be run repeatedly.
+The automated browser suite creates disposable
+`playwright-<uuid>@example.com` accounts. Their random emails are not stable
+manual-review credentials, so use the documented demo account for the
+walkthrough.
 
 ## Commands
 
