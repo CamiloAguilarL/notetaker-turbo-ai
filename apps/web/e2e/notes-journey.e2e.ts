@@ -85,7 +85,10 @@ async function expectConsistentDashboardControls(page: Page) {
     ),
   );
 
-  expect(new Set(styles.map(({ height }) => height))).toEqual(new Set([44]));
+  expect(
+    new Set(styles.map(({ height }) => height)),
+    JSON.stringify(styles),
+  ).toEqual(new Set([44]));
   expect(
     new Set(styles.map(({ backgroundColor }) => backgroundColor)).size,
     JSON.stringify(styles),

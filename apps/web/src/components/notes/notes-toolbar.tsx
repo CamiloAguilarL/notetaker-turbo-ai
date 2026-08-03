@@ -98,7 +98,7 @@ export function NotesToolbar({
         data-slot="notes-toolbar-controls"
         className="flex flex-col gap-3 sm:flex-row sm:items-center"
       >
-        <InputGroup className="min-w-0 flex-1 sm:max-w-md">
+        <InputGroup className="min-w-0 sm:max-w-md sm:flex-1">
           <label htmlFor="note-search" className="sr-only">
             Search notes
           </label>
