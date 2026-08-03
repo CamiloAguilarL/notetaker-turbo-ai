@@ -9,6 +9,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from notes.models import Category, Note
+from notes.pagination import NotePageNumberPagination
 from notes.serializers import (
     CategorySerializer,
     NoteReorderSerializer,
@@ -95,6 +96,24 @@ class NoteViewSet(
     def perform_destroy(self, instance: Note) -> None:
         instance.deleted_at = timezone.now()
         instance.save(update_fields=("deleted_at", "updated_at"))
+
+    @action(detail=False, methods=("get",), url_path="page")
+    def page(self, request: Request) -> Response:
+        """Return one page for progressive list rendering."""
+        if request.query_params.get("ordering") == "manual":
+            raise serializers.ValidationError(
+                {
+                    "ordering": [
+                        "Manual order requires the complete unpaginated collection."
+                    ]
+                }
+            )
+
+        paginator = NotePageNumberPagination()
+        notes = paginator.paginate_queryset(self.get_queryset(), request, view=self)
+        return paginator.get_paginated_response(
+            self.get_serializer(notes, many=True).data
+        )
 
     @action(detail=True, methods=("post",))
     def restore(self, request: Request, pk: str | None = None) -> Response:

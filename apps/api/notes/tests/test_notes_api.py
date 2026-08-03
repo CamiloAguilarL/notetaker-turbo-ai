@@ -116,6 +116,76 @@ def test_list_is_private_filterable_and_recently_updated_first(
     assert unknown.status_code == status.HTTP_400_BAD_REQUEST
 
 
+def test_paginated_list_is_private_and_exposes_stable_page_metadata(
+    client: APIClient, user: User, other_user: User
+) -> None:
+    active = [
+        Note.objects.create(
+            owner=user,
+            category=category("school"),
+            title=f"Page note {index:02d}",
+        )
+        for index in range(13)
+    ]
+    Note.objects.create(
+        owner=user,
+        category=category("school"),
+        title="Deleted",
+        deleted_at=timezone.now(),
+    )
+    Note.objects.create(
+        owner=other_user,
+        category=category("school"),
+        title="Private",
+    )
+
+    first_page = client.get(reverse("note-page"))
+    second_page = client.get(reverse("note-page"), {"page": 2})
+
+    assert first_page.status_code == status.HTTP_200_OK
+    assert first_page.json()["count"] == 13
+    assert first_page.json()["next_page"] == 2
+    assert first_page.json()["previous_page"] is None
+    assert len(first_page.json()["results"]) == 12
+    assert second_page.status_code == status.HTTP_200_OK
+    assert second_page.json()["count"] == 13
+    assert second_page.json()["next_page"] is None
+    assert second_page.json()["previous_page"] == 1
+    assert len(second_page.json()["results"]) == 1
+    assert {
+        item["id"]
+        for response in (first_page, second_page)
+        for item in response.json()["results"]
+    } == {str(note.id) for note in active}
+
+
+def test_paginated_list_composes_filters_and_rejects_manual_order(
+    client: APIClient, user: User
+) -> None:
+    match = Note.objects.create(
+        owner=user,
+        category=category("school"),
+        title="Distributed systems",
+    )
+    Note.objects.create(
+        owner=user,
+        category=category("personal"),
+        title="Distributed tracing",
+    )
+
+    filtered = client.get(
+        reverse("note-page"),
+        {"category": "school", "q": "distributed", "ordering": "updated_at"},
+    )
+    manual = client.get(reverse("note-page"), {"ordering": "manual"})
+
+    assert filtered.status_code == status.HTTP_200_OK
+    assert filtered.json()["count"] == 1
+    assert [item["id"] for item in filtered.json()["results"]] == [str(match.id)]
+    assert manual.status_code == status.HTTP_400_BAD_REQUEST
+    assert "ordering" in manual.json()["error"]["fields"]
+
+
 def test_search_is_case_insensitive_private_and_composes_with_category(
     client: APIClient, user: User, other_user: User
 ) -> None:
