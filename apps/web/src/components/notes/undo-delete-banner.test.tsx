@@ -47,7 +47,9 @@ describe("UndoDeleteBanner", () => {
 
     expect(mockedRestoreNote).toHaveBeenCalledWith(noteId);
     await waitFor(() =>
-      expect(replace).toHaveBeenCalledWith("/notes?category=school"),
+      expect(replace).toHaveBeenCalledWith("/notes?category=school", {
+        scroll: false,
+      }),
     );
     expect(refresh).toHaveBeenCalledOnce();
   });
@@ -77,6 +79,6 @@ describe("UndoDeleteBanner", () => {
 
     expect(screen.queryByText("Note deleted")).not.toBeInTheDocument();
     expect(mockedRestoreNote).not.toHaveBeenCalled();
-    expect(replace).toHaveBeenCalledWith("/notes");
+    expect(replace).toHaveBeenCalledWith("/notes", { scroll: false });
   });
 });

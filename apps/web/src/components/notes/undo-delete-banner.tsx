@@ -27,7 +27,7 @@ export function UndoDeleteBanner({
     if (isPending) return;
     const timer = window.setTimeout(() => {
       setIsVisible(false);
-      router.replace(destination);
+      router.replace(destination, { scroll: false });
     }, UNDO_WINDOW);
     return () => window.clearTimeout(timer);
   }, [destination, isPending, router]);
@@ -37,7 +37,7 @@ export function UndoDeleteBanner({
     setError(undefined);
     try {
       await restoreNote(noteId);
-      router.replace(destination);
+      router.replace(destination, { scroll: false });
       router.refresh();
     } catch {
       setError("We couldn’t restore the note. Please try again.");
@@ -79,7 +79,7 @@ export function UndoDeleteBanner({
         aria-label="Dismiss undo"
         onClick={() => {
           setIsVisible(false);
-          router.replace(destination);
+          router.replace(destination, { scroll: false });
         }}
       >
         <X aria-hidden="true" />
