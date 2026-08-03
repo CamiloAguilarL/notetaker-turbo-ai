@@ -43,6 +43,7 @@ Tokens live in `apps/web/src/app/globals.css` and are exposed to Tailwind throug
 | `--note-drama` | `#c9b8d9` | Drama surface. |
 | `--note-drama-border` | `#9779b3` | Drama emphasis. |
 | `--destructive` | `#7f2926` | Destructive actions and errors. |
+| `--destructive-hover` | derived from `--destructive` and `--foreground` | Higher-contrast destructive hover state. |
 | `--ring` | `#8e5d36` | Visible keyboard focus. |
 
 Do not use raw color values in React components. A category returned by the API maps to an approved semantic token key; it must not inject arbitrary CSS from stored user data.
@@ -61,6 +62,7 @@ The serif family visible in the source cannot be identified reliably without des
 
 - Category cards use a three-pixel category border and a large radius rather than a generic shadow-only container. These dimensions were visually matched to the public prototype and remain tokenized estimates.
 - The product UI uses `--radius: 0.75rem` as its provisional base; note cards and the editor intentionally compose larger semantic radii from it.
+- Repeated source-matched geometry and typography use named Tailwind theme tokens: `--layout-app-max-width`, `--note-border-width`, compact-control width/insets/radii, tooltip width, display sizes, and display letter spacing. Arbitrary values remain only for isolated responsive composition or calculated viewport layout.
 - The editor uses tighter responsive padding and a wider writing measure than its initial implementation so note content, rather than empty inset space, remains dominant.
 - The title and writing area compose shadcn `Input` and `Textarea` primitives but remain visually unframed in every state. The visible text caret communicates editing focus without adding a box inside the note surface.
 - The writing area owns a thin, rounded scrollbar whose thumb derives from the active category border token; the track stays transparent so it reads as part of the note rather than browser chrome.
@@ -75,10 +77,12 @@ shadcn/ui is a source-code supplier, not a fixed theme or runtime dependency cat
 - Add a component only when a current product slice uses it.
 - Review generated code and adapt its tokens, radius, focus, size, and interaction states to Figma.
 - Keep ownership in `src/components/ui` and product composition outside that folder.
+- Product compositions choose explicit component variants such as `auth`, `search`, `editor-title`, `category`, `ordering`, and `long-text`. They must not patch reusable control cosmetics with call-site Tailwind classes; call-site classes are reserved for local layout and non-reusable positioning.
+- ESLint rejects raw `button`, `input`, `textarea`, `select`, and `option` elements outside `src/components/ui`, preserving the shadcn ownership boundary automatically.
 - The installed source-owned UI components are `Button`, `Input`, `Textarea`, `Select`, `Tooltip`, and `AlertDialog`; each was added with the slice that first needed it and adapted to the notebook theme.
 - Truncated identity text in the authenticated header uses the shadcn `Tooltip` composition. It reveals the complete email on hover or keyboard focus without changing the compact header layout.
 - `AlertDialog` was added for destructive note confirmation. Its content scales without an opacity fade so text meets contrast requirements from the first animation frame, and its destructive action uses the semantic high-contrast token on every category surface.
-- Category and ordering controls compose the shadcn `Select` built on Base UI. The category trigger's 194-by-34-pixel visual box, six-pixel radius, inset category dot, warm outline, and wide hand-drawn-style chevron follow the inspected reference; the underlying trigger remains 44 pixels tall for touch input. Product styling remains outside the source-owned primitive.
+- Category and ordering controls compose the shadcn `Select` built on Base UI. The category trigger's 194-by-34-pixel visual box, six-pixel radius, inset category dot, warm outline, and wide hand-drawn-style chevron follow the inspected reference; the underlying trigger remains 44 pixels tall for touch input. Their cosmetics live in named variants of the source-owned primitive, while product components provide only data and behavior.
 - Prefer Lucide icons only when the glyph faithfully matches Figma; export and commit the exact Figma asset otherwise.
 
 ## Original illustration provenance
