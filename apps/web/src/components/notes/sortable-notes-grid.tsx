@@ -32,6 +32,7 @@ import { cn } from "@/lib/utils";
 type SortableNote = {
   note: Note;
   category: Category;
+  displayDate: string;
 };
 
 type SortableNotesGridProps = {
@@ -85,6 +86,7 @@ function SortableNoteCard({
       <NoteCard
         note={item.note}
         category={item.category}
+        displayDate={item.displayDate}
         returnQuery={returnQuery}
         action={
           <div className="bg-background/55 backdrop-blur-note-controls flex rounded-full p-0.5">

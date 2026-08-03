@@ -8,6 +8,7 @@ import type { Category, Note } from "@/lib/api/types";
 type NotesGridItem = {
   note: Note;
   category: Category;
+  displayDate: string;
 };
 
 type AnimatedNotesGridProps = {
@@ -31,7 +32,7 @@ export function AnimatedNotesGrid({
       aria-label={label}
       className="grid min-w-0 gap-5 sm:grid-cols-2 xl:grid-cols-3"
     >
-      {notes.map(({ note, category }, index) => (
+      {notes.map(({ note, category, displayDate }, index) => (
         <motion.div
           layout="position"
           key={note.id}
@@ -43,7 +44,12 @@ export function AnimatedNotesGrid({
           }}
           className="h-full"
         >
-          <NoteCard note={note} category={category} returnQuery={returnQuery} />
+          <NoteCard
+            note={note}
+            category={category}
+            displayDate={displayDate}
+            returnQuery={returnQuery}
+          />
         </motion.div>
       ))}
     </section>

@@ -73,6 +73,11 @@ test("a user can capture, organize, and reopen a private note", async ({
   await expect(
     page.getByRole("link", { name: "Open An end-to-end thought" }),
   ).toBeVisible();
+  await expect(
+    page
+      .getByRole("link", { name: "Open An end-to-end thought" })
+      .locator("time"),
+  ).toHaveText("Today");
   await expect(page.getByRole("link", { name: /Personal\s*1/ })).toBeVisible();
   await expectNoAccessibilityViolations(page);
 

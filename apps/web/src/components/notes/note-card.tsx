@@ -3,12 +3,12 @@ import type { ReactNode } from "react";
 
 import type { Category, Note } from "@/lib/api/types";
 import { categoryThemes } from "@/lib/category-theme";
-import { formatNoteDate } from "@/lib/format-date";
 import { cn } from "@/lib/utils";
 
 type NoteCardProps = {
   note: Note;
   category: Category;
+  displayDate: string;
   returnQuery?: string;
   action?: ReactNode;
 };
@@ -16,6 +16,7 @@ type NoteCardProps = {
 export function NoteCard({
   note,
   category,
+  displayDate,
   returnQuery,
   action,
 }: NoteCardProps) {
@@ -47,7 +48,7 @@ export function NoteCard({
           )}
         >
           <time dateTime={note.updated_at} className="font-bold">
-            {formatNoteDate(note.updated_at)}
+            {displayDate}
           </time>
           <span aria-hidden="true">·</span>
           <span>{category.name}</span>

@@ -43,7 +43,7 @@ Password reset, email verification, social login, and profile management are not
 | ID | Priority | Requirement | Evidence | Acceptance criteria |
 | --- | --- | --- | --- | --- |
 | DASH-01 | P0 | Show a useful empty state when the user has no notes. | Video | The dashboard keeps category navigation and the “New Note” action available while presenting clear empty-state guidance. |
-| DASH-02 | P0 | Show notes as a responsive card grid. | Video, Prototype | Every card shows a human-readable date, category, title, and a content preview; long text is safely truncated without breaking the layout. |
+| DASH-02 | P0 | Show notes as a responsive card grid. | Video, Prototype | Every card shows a human-readable date, category, title, and a content preview; dates use `Today`/`Yesterday`, omit the year during the current UTC year, and include it for older years; long text is safely truncated without breaking the layout. |
 | DASH-03 | P0 | Order notes by most recently updated first. | Decision | A newly created or edited note appears first and ordering is deterministic for identical timestamps. |
 | CAT-01 | P0 | Show the category list and per-category note counts. | Video, Prototype | Counts reflect the authenticated user's current notes and update after create or category change. |
 | CAT-02 | P0 | Filter notes by category and return to all notes. | Video, Prototype | The selected filter is visually and semantically identified; the grid contains only matching notes; “All Categories” restores the complete list. |

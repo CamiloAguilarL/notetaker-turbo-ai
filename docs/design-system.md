@@ -55,6 +55,7 @@ Current foundation:
 - **Body and controls**: Geist Sans through `next/font`.
 - **Note titles and display text**: system serif stack exposed as `font-serif`.
 - **Metadata**: Geist Mono sparingly for timestamps, counts, and technical status.
+- **Card dates**: use `Today` and `Yesterday` first, abbreviated month plus day for the current UTC year, and add the year only for older dates. The Server Component fixes the reference instant so hydration cannot change the label.
 
 The serif family visible in the source cannot be identified reliably without design context. Replace the provisional stack after Figma access, preserving clear body/display roles and local font optimization through `next/font` when applicable.
 

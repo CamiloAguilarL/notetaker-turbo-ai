@@ -62,6 +62,7 @@ describe("AnimatedNotesGrid", () => {
         notes={notes.map((note, index) => ({
           note,
           category: categories[index],
+          displayDate: index === 0 ? "Yesterday" : "Today",
         }))}
         returnQuery="ordering=category"
       />,

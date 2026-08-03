@@ -7,6 +7,7 @@ import { NotesToolbar } from "@/components/notes/notes-toolbar";
 import { SortableNotesGrid } from "@/components/notes/sortable-notes-grid";
 import { UndoDeleteBanner } from "@/components/notes/undo-delete-banner";
 import { getCategories, getNotes } from "@/lib/api/server";
+import { formatNoteDate } from "@/lib/format-date";
 import {
   buildNotesHref,
   buildNotesSearchParams,
@@ -69,9 +70,18 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
     search: searchQuery,
     ordering,
   });
+  const dateReference = new Date();
   const noteItems = notes.flatMap((note) => {
     const category = categoryBySlug.get(note.category);
-    return category ? [{ note, category }] : [];
+    return category
+      ? [
+          {
+            note,
+            category,
+            displayDate: formatNoteDate(note.updated_at, dateReference),
+          },
+        ]
+      : [];
   });
 
   return (

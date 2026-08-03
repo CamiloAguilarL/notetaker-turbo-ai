@@ -166,6 +166,7 @@ function renderGrid() {
       notes={notes.map((note) => ({
         note,
         category: categories.find(({ slug }) => slug === note.category)!,
+        displayDate: "Yesterday",
       }))}
       returnQuery="ordering=manual"
     />,

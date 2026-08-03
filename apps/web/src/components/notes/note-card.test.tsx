@@ -28,11 +28,13 @@ describe("NoteCard", () => {
       <NoteCard
         note={note}
         category={category}
+        displayDate="Yesterday"
         returnQuery="category=school&q=architecture&ordering=updated_at"
       />,
     );
 
     expect(screen.getByText("School")).toBeVisible();
+    expect(screen.getByRole("time")).toHaveTextContent("Yesterday");
     expect(screen.getByText("Read the architecture chapter")).toBeVisible();
     expect(
       screen.getByText("Capture the important tradeoffs before Friday."),
@@ -56,6 +58,7 @@ describe("NoteCard", () => {
       <NoteCard
         note={{ ...note, title: "", content: "" }}
         category={category}
+        displayDate="Aug 3"
       />,
     );
 

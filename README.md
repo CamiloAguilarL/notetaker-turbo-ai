@@ -12,6 +12,7 @@ The complete P0 product journey and its documented quality gate are complete:
 - Debounced full-text note search plus recently edited, oldest edited, and category ordering; every view composes through durable URL state and deterministic API ordering.
 - Atomic manual ordering in the unfiltered notebook with optimistic updates, rollback feedback, pointer/touch drag handles, keyboard move controls, position announcements, and reload persistence.
 - Restrained Motion-based landing, grid-layout, editor, and autosave-state transitions with a global user-preference policy and an automated reduced-motion check.
+- Human-readable note-card dates with `Today`/`Yesterday`, concise current-year labels, historical years when needed, and hydration-safe server formatting.
 - Plain-text editor with category changes, serialized debounced autosave, saving/error/retry states, last-edited metadata, and close-time flush.
 - Accessible delete confirmation and an eight-second Undo action that restores the complete note without losing its category or latest draft.
 - Next.js 16.2.12, React 19, Tailwind CSS 4, Motion 12.43.0, dnd kit, and customized source-owned shadcn/ui `Button`, `Input`, `Textarea`, `Select`, `Tooltip`, and `AlertDialog` components.
@@ -101,7 +102,7 @@ The finalized runtime tree was rebuilt and exercised from a separate clean local
 | Gate | Result |
 | --- | --- |
 | `make check` | Passed: zero production npm vulnerabilities; Prettier, ESLint, TypeScript, Ruff, and the Next.js production build are clean. |
-| Frontend tests | 33 passed; 94.72% statements, 86.99% branches, 93.47% functions, and 96.55% lines. |
+| Frontend tests | 34 passed; 94.89% statements, 87.33% branches, 93.54% functions, and 96.65% lines. |
 | Backend tests | 24 passed; 97.32% coverage, including ownership, CSRF, reorder rollback, and demo-seed behavior. |
 | `make e2e` | 3/3 Playwright projects passed at desktop, tablet, and mobile widths with Axe scans; mobile also verifies reduced motion. |
 | Clean-clone smoke test | Fresh Docker images built from the lockfiles; `db`, `api`, and `web` became healthy; web and API health returned HTTP 200. |

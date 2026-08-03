@@ -1,4 +1,10 @@
-const noteDate = new Intl.DateTimeFormat("en-US", {
+const noteDateThisYear = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  day: "numeric",
+  timeZone: "UTC",
+});
+
+const noteDatePreviousYear = new Intl.DateTimeFormat("en-US", {
   month: "short",
   day: "numeric",
   year: "numeric",
@@ -15,8 +21,25 @@ const noteTimestamp = new Intl.DateTimeFormat("en-US", {
   timeZoneName: "short",
 });
 
-export function formatNoteDate(value: string): string {
-  return noteDate.format(new Date(value));
+const MILLISECONDS_PER_DAY = 86_400_000;
+
+function utcDay(date: Date): number {
+  return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+}
+
+export function formatNoteDate(value: string, referenceValue: Date): string {
+  const date = new Date(value);
+  const dayDifference = Math.round(
+    (utcDay(referenceValue) - utcDay(date)) / MILLISECONDS_PER_DAY,
+  );
+
+  if (dayDifference === 0) return "Today";
+  if (dayDifference === 1) return "Yesterday";
+  if (date.getUTCFullYear() === referenceValue.getUTCFullYear()) {
+    return noteDateThisYear.format(date);
+  }
+
+  return noteDatePreviousYear.format(date);
 }
 
 export function formatNoteTimestamp(value: string): string {
