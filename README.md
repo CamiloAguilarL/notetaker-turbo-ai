@@ -23,6 +23,7 @@ The complete P0 product journey and its documented quality gate are complete:
 - Product requirements, architecture, delivery/evaluation priorities, quality strategy, and provisional design tokens in `docs/`.
 - A source-aligned visual fidelity pass covering authentication, empty/populated dashboards, cards, controls, responsive editor composition, and original transparent stationery illustrations.
 - A public Server Component landing page with visitor registration/login actions and a personalized return-to-notes action for authenticated users.
+- Complete App Router metadata, route-specific browser titles, crawler privacy rules for authenticated screens, a web app manifest, and original multi-size favicon/app icons.
 
 The selected P1 enhancements—reversible deletion, search/deterministic sorting, the public landing, accessible manual ordering, and purposeful motion—are complete across their relevant API, responsive UI, failure handling, unit tests, E2E, and accessibility checks. The local submission package and clean-clone verification are also complete; publishing the repository, recording the walkthrough, and submitting the form intentionally remain candidate-owned external actions.
 
@@ -192,7 +193,7 @@ OpenAI Codex was used as an implementation and review assistant to:
 - validate the local UI at desktop, tablet, compact-tablet, compact-mobile, and mobile viewports and smoke-test the Dockerized web, API, and database services;
 - detect and fix a server/client timestamp hydration mismatch through live browser diagnostics;
 - exercise the real landing, registration, note creation, autosave, reload persistence, filtering, search, sorting, manual reordering, category change, reversible deletion, logout, route protection, and automated accessibility scans in Playwright;
-- generate two original transparent colored-pencil/watercolor stationery illustrations for authentication and the empty state, remove their chroma backgrounds, and inspect the resulting RGBA assets at desktop and mobile sizes.
+- generate two original transparent colored-pencil/watercolor stationery illustrations for authentication and the empty state, plus an original stationery-style favicon; derive the required browser and app-icon sizes and inspect the assets at their intended scales.
 
 AI accelerated source comparison, scaffolding, implementation, documentation, dependency review, original illustration creation, and repetitive verification. It was not used to invent unavailable Figma values, present generated illustrations as Figma exports, or justify unverified completion claims.
 

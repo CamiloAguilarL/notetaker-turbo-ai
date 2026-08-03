@@ -66,6 +66,25 @@ test("a user can capture, organize, and reopen a private note", async ({
   const email = `playwright-${crypto.randomUUID()}@example.com`;
 
   await page.goto("/");
+  await expect(page).toHaveTitle(
+    "Turbo Notes — A softer place for your thoughts",
+  );
+  await expect(page.locator('link[rel="manifest"]')).toHaveAttribute(
+    "href",
+    "/manifest.webmanifest",
+  );
+  const manifest = await page.evaluate(async () => {
+    const response = await fetch("/manifest.webmanifest");
+    if (!response.ok) throw new Error("Manifest could not be loaded.");
+    return response.json();
+  });
+  expect(manifest).toMatchObject({
+    name: "Turbo Notes",
+    icons: [
+      { src: "/icons/turbo-notes-192.png", sizes: "192x192" },
+      { src: "/icons/turbo-notes-512.png", sizes: "512x512" },
+    ],
+  });
   await expect(
     page.getByRole("heading", { name: "Your thoughts, in a softer place." }),
   ).toBeVisible();
@@ -77,12 +96,14 @@ test("a user can capture, organize, and reopen a private note", async ({
   await expectNoAccessibilityViolations(page);
   await page.getByRole("link", { name: "Get started" }).click();
   await expect(page).toHaveURL(/\/register$/);
+  await expect(page).toHaveTitle("Create account · Turbo Notes");
   await expectNoAccessibilityViolations(page);
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill("playwright-secure-password-2026");
   await page.getByRole("button", { name: "Create account" }).click();
 
   await expect(page).toHaveURL(/\/notes$/);
+  await expect(page).toHaveTitle("Notes · Turbo Notes");
   await expect(
     page.getByRole("heading", {
       name: "I’m just here waiting for your charming notes…",
@@ -99,6 +120,7 @@ test("a user can capture, organize, and reopen a private note", async ({
 
   await page.getByRole("button", { name: "New Note" }).click();
   await expect(page).toHaveURL(/\/notes\/[0-9a-f-]+$/);
+  await expect(page).toHaveTitle("Edit note · Turbo Notes");
 
   await page.getByLabel("Note title").fill("An end-to-end thought");
   await page

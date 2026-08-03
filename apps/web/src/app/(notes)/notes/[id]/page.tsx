@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { NoteEditor } from "@/components/notes/note-editor";
@@ -7,6 +8,11 @@ import {
   normalizeNoteOrdering,
   normalizeSearchQuery,
 } from "@/lib/notes-query";
+
+export const metadata: Metadata = {
+  title: "Edit note",
+  description: "Edit a private note in Turbo Notes.",
+};
 
 type NotePageProps = {
   params: Promise<{ id: string }>;

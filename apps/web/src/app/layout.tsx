@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import { MotionProvider } from "@/components/motion-provider";
@@ -16,9 +16,69 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const siteDescription =
+  "A private, thoughtfully organized notebook for capturing ideas and keeping them close.";
+
 export const metadata: Metadata = {
-  title: "Turbo Notes",
-  description: "A focused notes application built with Next.js and Django.",
+  applicationName: "Turbo Notes",
+  title: {
+    default: "Turbo Notes — A softer place for your thoughts",
+    template: "%s · Turbo Notes",
+  },
+  description: siteDescription,
+  keywords: [
+    "notes",
+    "private notebook",
+    "note taking",
+    "personal organization",
+  ],
+  authors: [{ name: "Turbo Notes" }],
+  creator: "Turbo Notes",
+  publisher: "Turbo Notes",
+  category: "productivity",
+  referrer: "origin-when-cross-origin",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  manifest: "/manifest.webmanifest",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "32x32" },
+      { url: "/icon.png", type: "image/png", sizes: "512x512" },
+    ],
+    apple: [{ url: "/apple-icon.png", sizes: "180x180" }],
+  },
+  appleWebApp: {
+    capable: true,
+    title: "Turbo Notes",
+    statusBarStyle: "default",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    siteName: "Turbo Notes",
+    title: "Turbo Notes — A softer place for your thoughts",
+    description: siteDescription,
+  },
+  twitter: {
+    card: "summary",
+    title: "Turbo Notes — A softer place for your thoughts",
+    description: siteDescription,
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  colorScheme: "light",
+  themeColor: "#f7efdf",
 };
 
 export default function RootLayout({

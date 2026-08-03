@@ -88,14 +88,15 @@ shadcn/ui is a source-code supplier, not a fixed theme or runtime dependency cat
 - Category and ordering controls compose the shadcn `Select` built on Base UI. The category trigger's 194-by-34-pixel visual box, six-pixel radius, inset category dot, warm outline, and wide hand-drawn-style chevron follow the inspected reference; the underlying trigger remains 44 pixels tall for touch input. Their cosmetics live in named variants of the source-owned primitive, while product components provide only data and behavior.
 - Prefer Lucide icons only when the glyph faithfully matches Figma; export and commit the exact Figma asset otherwise.
 
-## Original illustration provenance
+## Original asset provenance
 
-The Figma integration could not export the decorative source assets because the connected account lacks edit access. Two original, non-source illustrations were therefore generated for this challenge and are clearly treated as replacements rather than Figma exports:
+The Figma integration could not export the decorative source assets because the connected account lacks edit access. Three original, non-source assets were therefore generated for this challenge and are clearly treated as replacements rather than Figma exports:
 
 - `apps/web/public/illustrations/auth-friends.png`: transparent colored-pencil/watercolor cactus and sleeping cat composition for authentication.
 - `apps/web/public/illustrations/empty-boba.png`: transparent smiling boba illustration for the empty dashboard.
+- `apps/web/src/app/icon.png`: flat hand-drawn paper-and-pencil favicon source, with derived ICO, Apple Touch Icon, and 192/512-pixel web-app variants.
 
-Both were generated with OpenAI image generation from prompts requesting a warm hand-drawn stationery style, rendered against a chroma background, converted to transparent RGBA assets, and visually checked at desktop and mobile sizes. They contain no logos, source screenshots, or copied interface text. If Turbo supplies exportable source assets, replace these files without changing the component layout contract.
+The illustrations were generated with OpenAI image generation from prompts requesting a warm hand-drawn stationery style, rendered against a chroma background, converted to transparent RGBA assets, and visually checked at desktop and mobile sizes. The favicon was generated as a high-contrast flat icon and downsampled to its delivery sizes to verify its silhouette. None of these assets contains logos, source screenshots, or copied interface text. If Turbo supplies exportable source assets, replace these files without changing the component layout contract.
 
 ## Responsive behavior
 
