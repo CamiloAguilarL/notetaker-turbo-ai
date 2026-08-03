@@ -12,8 +12,8 @@ const inputVariants = cva(
         auth: "border-auth-border placeholder:text-foreground focus-visible:border-auth-border focus-visible:ring-auth-border/25 h-auth-input !rounded-auth-control bg-transparent px-3 py-0 !text-auth-copy",
         "auth-password":
           "border-auth-border placeholder:text-foreground focus-visible:border-auth-border focus-visible:ring-auth-border/25 h-auth-input !rounded-auth-control bg-transparent py-0 pr-10 pl-3 !text-auth-copy",
-        search:
-          "border-control-border bg-control-surface hover:border-ring hover:bg-control-hover focus-visible:border-ring focus-visible:bg-control-surface focus-visible:ring-ring/25 h-dashboard-control rounded-control pr-10 pl-10 text-sm",
+        "group-search":
+          "h-full min-w-0 flex-1 rounded-none border-0 bg-transparent px-3 py-0 text-sm shadow-none focus-visible:border-0 focus-visible:ring-0",
         "editor-title":
           "placeholder:text-foreground/35 caret-foreground mt-4 h-auto rounded-none border-0 px-0 py-0 font-serif text-3xl leading-tight font-semibold tracking-editor-title shadow-none ring-0 focus-visible:border-0 focus-visible:ring-0 sm:mt-6 sm:text-4xl md:text-4xl",
       },

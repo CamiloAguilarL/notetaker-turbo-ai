@@ -74,13 +74,15 @@ describe("NotesToolbar", () => {
     );
     const count = toolbar.querySelector('[data-slot="notes-result-count"]');
     const search = screen.getByRole("searchbox", { name: "Search notes" });
+    const searchGroup = toolbar.querySelector('[data-slot="input-group"]');
     const ordering = screen.getByRole("combobox", { name: "Sort notes" });
 
     expect(controls).not.toBeNull();
     expect(count).toHaveTextContent("4 notes");
     expect(count?.previousElementSibling).toBe(controls);
-    expect(search.className).toContain("h-dashboard-control");
-    expect(search.className).toContain("border-control-border");
+    expect(search).toHaveAttribute("data-slot", "input-group-control");
+    expect(searchGroup?.className).toContain("h-dashboard-control");
+    expect(searchGroup?.className).toContain("border-control-border");
     expect(ordering.className).toContain(
       "data-[size=default]:h-dashboard-control",
     );

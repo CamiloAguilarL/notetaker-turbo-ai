@@ -5,7 +5,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState, useTransition } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import { NoteOrderingSelect } from "@/components/notes/note-ordering-select";
 import {
   buildNotesHref,
@@ -94,24 +98,23 @@ export function NotesToolbar({
         data-slot="notes-toolbar-controls"
         className="flex flex-col gap-3 sm:flex-row sm:items-center"
       >
-        <div className="relative min-w-0 flex-1 sm:max-w-md">
+        <InputGroup className="min-w-0 flex-1 sm:max-w-md">
           <label htmlFor="note-search" className="sr-only">
             Search notes
           </label>
-          <Search
-            aria-hidden="true"
-            className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2"
-          />
-          <Input
+          <InputGroupAddon>
+            <Search aria-hidden="true" />
+          </InputGroupAddon>
+          <InputGroupInput
             id="note-search"
             name="note-search"
-            type="search"
+            type="text"
+            role="searchbox"
             autoComplete="off"
             value={search}
             onChange={(event) => setSearch(event.currentTarget.value)}
             maxLength={MAX_SEARCH_LENGTH}
             placeholder="Search your notes"
-            variant="search"
           />
           {search ? (
             <Button
@@ -119,13 +122,13 @@ export function NotesToolbar({
               variant="ghost"
               size="icon-sm"
               aria-label="Clear search"
-              className="absolute top-1/2 right-2 -translate-y-1/2"
+              className="mr-2"
               onClick={clearSearch}
             >
               <X aria-hidden="true" />
             </Button>
           ) : null}
-        </div>
+        </InputGroup>
         <NoteOrderingSelect
           options={availableOrderings}
           value={ordering}
