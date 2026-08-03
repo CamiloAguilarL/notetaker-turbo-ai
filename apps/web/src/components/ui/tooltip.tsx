@@ -88,7 +88,10 @@ function TooltipContent({
         {...props}
       >
         {children}
-        <TooltipPrimitive.Arrow className="fill-card z-50 size-2.5 translate-y-[calc(-50%_-_1px)] rotate-45 rounded-xs" />
+        <TooltipPrimitive.Arrow
+          aria-hidden="true"
+          className="fill-card stroke-primary/35 stroke-1"
+        />
       </TooltipPrimitive.Content>
     </TooltipPrimitive.Portal>
   );
