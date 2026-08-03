@@ -61,7 +61,7 @@ Next.js notes that async Server Components are better covered end to end while e
 - Seed migration is deterministic and category counts include only the authenticated user's active notes.
 - Create, retrieve, list, and patch cover valid input, required fields, length bounds, whitespace policy, and missing objects.
 - Every detail and collection operation proves that user A cannot read, infer, update, delete, restore, or reorder user B's notes.
-- Filtering, search, and each allowlisted order compose correctly and use deterministic tie-breakers; unknown ordering is rejected or handled by the documented contract.
+- Filtering, search, pagination metadata, and each allowlisted order compose correctly and use deterministic tie-breakers; page reads exclude deleted and foreign notes, while unknown ordering is rejected or handled by the documented contract.
 - Autosave updates only supplied fields and returns the persisted `updated_at` value.
 - Soft deletion excludes a note from normal reads; restore preserves content and cannot cross ownership boundaries.
 - Reorder validates the complete active identifier set, rejects duplicates/foreign IDs, rolls back on error, and persists atomically.
@@ -71,6 +71,7 @@ Next.js notes that async Server Components are better covered end to end while e
 
 - Register, create a note, change category, autosave, close, reload, and observe persisted content.
 - Filter, search, sort, and return through browser history without losing URL state.
+- Render the first note page on the server, then cover automatic loading, explicit fallback, retry, completion, deduplication, and the full filtered total.
 - Simulate recoverable autosave, delete/restore, and reorder failures without losing the last confirmed state.
 - Reorder with pointer and keyboard; announce lift, position change, drop, and cancellation.
 - Sign out and verify protected routes no longer render private data.

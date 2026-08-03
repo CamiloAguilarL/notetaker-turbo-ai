@@ -72,6 +72,7 @@ These requirements are deliberately sequenced after the complete P0 workflow. Th
 | NOTE-08 | P1 | Delete a note with a reversible grace period. | Owner, Recommendation | The action requires clear intent, removes the note from normal views, offers an accessible undo action, and can restore the note without losing content or category. |
 | SEARCH-01 | P1 | Search the authenticated user's notes. | Recommendation | A debounced, case-insensitive query matches title and content, composes with category filters and sort order, exposes a clear button, and has an explicit no-results state. |
 | SORT-01 | P1 | Sort notes by last edited, oldest edited, category, or manual order. | Owner | The selected order is visible, stable across reloads through URL state, and uses deterministic tie-breakers. Category ordering is unavailable when it would be redundant. |
+| PAGE-01 | P1 | Load large note collections progressively. | Owner, Recommendation | Ordinary list modes server-render the first 12 notes, load subsequent pages automatically near the grid end, expose an accessible load/retry fallback and completion state, and keep the displayed total equal to the complete filtered result. Manual ordering retains the complete active set required by its atomic contract. |
 | LAND-01 | P1 | Present a minimal public landing page. | Owner | Visitors understand the product in one viewport and can register or sign in; authenticated users can continue to their notes; the page adds no product-only dependency. |
 | ORDER-01 | P1 conditional | Reorder notes manually with drag-and-drop. | Owner | Manual mode works with pointer, touch, and keyboard; announces position changes; persists atomically; rolls back optimistic state after failure; and is enabled only in the unfiltered “All Categories” view. |
 | MOTION-01 | P1 conditional | Use purposeful interface motion. | Owner, Recommendation | One restrained motion language communicates editor transitions, card reordering, and successful state changes; it never delays input and respects reduced-motion preferences. |
@@ -101,6 +102,7 @@ The P1 conditional items have explicit go/no-go gates in `delivery-plan.md`. Ric
 - Create migrations for schema and seed categories deterministically.
 - Store timestamps in UTC and expose ISO 8601 values through the API.
 - Keep note-list responses sufficient for cards and detail responses sufficient for editing.
+- Provide owner-scoped page metadata without changing the existing complete-list contract required by manual ordering.
 - Prevent avoidable N+1 queries for category and owner relationships.
 - Allowlist search and ordering parameters; never interpolate request values into raw SQL.
 - Apply reorder operations in a transaction and reject identifiers not owned by the current user.

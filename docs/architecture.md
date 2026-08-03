@@ -68,7 +68,7 @@ src/
     └── notes-query.ts        # Canonical URL query state
 ```
 
-React Server Components own route guards and initial data. Client Components are limited to forms, debounced search, drag-and-drop, browser APIs, and editor state. All visible form controls are based on local shadcn/ui files rather than native one-off implementations. Tailwind CSS 4 semantic tokens and controlled component variants hold reusable cosmetics; layouts compose those primitives without duplicating a shadow design system.
+React Server Components own route guards and initial data. Client Components are limited to forms, debounced search, progressive page loading, drag-and-drop, browser APIs, and editor state. All visible form controls are based on local shadcn/ui files rather than native one-off implementations. Tailwind CSS 4 semantic tokens and controlled component variants hold reusable cosmetics; layouts compose those primitives without duplicating a shadow design system.
 
 ### Backend: `apps/api`
 
@@ -129,6 +129,7 @@ All product routes are versioned under `/api/v1/`.
 | `GET` | `/auth/me/` | Returns the current identity. |
 | `GET` | `/categories/` | Returns stable categories with owner-scoped active-note counts. |
 | `GET`, `POST` | `/notes/` | Lists scoped notes or creates a note. |
+| `GET` | `/notes/page/` | Returns an owner-scoped 12-note page with total and adjacent-page metadata. |
 | `GET`, `PATCH`, `DELETE` | `/notes/{id}/` | Reads, edits, or soft-deletes an owned active note. |
 | `POST` | `/notes/{id}/restore/` | Restores an owned deleted note. |
 | `POST` | `/notes/reorder/` | Atomically persists the complete active-note order. |
@@ -161,6 +162,12 @@ The deliberate conflict policy is last accepted write wins. Optimistic concurren
 
 Category, search, and ordering live in URL search parameters. Server rendering, refresh, browser navigation, and local link sharing therefore use one canonical state. Search is debounced in the client but executed by the API with case-insensitive title/content matching and deterministic tie-breakers.
 
+### Progressive note loading
+
+Ordinary date and category sorts request `/notes/page/`. The Server Component renders page one, its total, and a serialized date reference; a focused Client Component observes a sentinel and appends later pages without replacing the already-visible cards. The observer starts within 320 pixels of the list end, while a real “Load more notes” button remains available when observation is unsupported or the user prefers explicit control. Failure exposes a retry state and the final page announces completion. IDs are deduplicated defensively.
+
+Manual ordering continues to use `/notes/` because the reorder service requires every active UUID in one atomic request. This deliberate exception avoids presenting a partially loaded list as a complete global order.
+
 ### Reversible deletion
 
 `DELETE` sets `deleted_at`; active list/detail querysets exclude that row. The dashboard receives the deleted UUID in its return URL and exposes Undo for eight seconds. Restore remains owner-scoped, clears `deleted_at`, assigns the last manual position, and returns the complete resource. Permanent cleanup and a trash screen are deferred.
@@ -171,9 +178,9 @@ The UI enables manual ordering only for the complete, unsearched notebook. It se
 
 ## Reliability and quality
 
-- Backend API tests cover authentication, CSRF, validation, ownership, filtering, ordering, deletion/restore, transaction behavior, and seed idempotence.
-- Frontend tests cover interactive components and pure query/date transformations without distorting Server Component boundaries.
-- Playwright exercises the real user journey across five viewports and runs Axe scans.
+- Backend API tests cover authentication, CSRF, validation, ownership, filtering, pagination, ordering, deletion/restore, transaction behavior, and seed idempotence.
+- Frontend tests cover interactive components, progressive loading states, and pure query/date transformations without distorting Server Component boundaries.
+- Playwright exercises the real user journey, 12-to-13 note loading, control geometry, and Axe scans across five viewports.
 - Coverage thresholds, formatters, linters, TypeScript, dependency auditing, builds, Docker health checks, and smoke tests form the remaining gate.
 - GitHub Actions runs `make check` and `make e2e` in Docker, matching the supported local workflow.
 

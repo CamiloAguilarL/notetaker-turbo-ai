@@ -9,6 +9,7 @@ Turbo Notes is a private, responsive notes application built for Turbo AI's Seni
 - Responsive empty and populated dashboards inspired by the supplied Figma and video.
 - Plain-text editing with a 650 ms debounced, serialized autosave queue, retry feedback, and close-time flushing.
 - URL-backed category filters, debounced search, and deterministic date/category sorting.
+- Server-rendered 12-note pages with automatic infinite loading, accessible retry/fallback controls, and an accurate filtered total.
 - Accessible manual ordering with pointer, touch, keyboard controls, announcements, optimistic updates, and rollback.
 - Reversible soft deletion with confirmation and an eight-second Undo window.
 - Human-readable dates, long-text wrapping, route-specific skeletons, reduced-motion support, and Axe-checked accessibility.
@@ -36,7 +37,7 @@ flowchart LR
   API -->|"Django ORM"| DB[("PostgreSQL 17")]
 ```
 
-The frontend uses React Server Components for route-level reads and small Client Component boundaries for forms, search, drag-and-drop, and the editor. Server reads forward the Django session cookie through the internal Docker URL; browser mutations use the public API URL, include credentials, and attach Django's CSRF token. The API applies authentication and ownership before every note lookup and is the only service with database access.
+The frontend uses React Server Components for route-level reads and small Client Component boundaries for forms, search, progressive loading, drag-and-drop, and the editor. The first ordinary note page is rendered on the server; later 12-note pages load in the browser as the user approaches the grid end. Server reads forward the Django session cookie through the internal Docker URL; browser mutations use the public API URL, include credentials, and attach Django's CSRF token. The API applies authentication and ownership before every note lookup and is the only service with database access.
 
 The backend is split by domain instead of technical layer alone: `accounts` owns the custom email user and session endpoints, `notes` owns persistence and note workflows, and `core` owns operational concerns and the normalized error contract. Non-trivial reorder behavior lives in a transaction-aware service rather than in a view.
 
@@ -168,9 +169,9 @@ The final runtime was rebuilt and exercised from a separate clean local clone as
 | Gate | Verified result |
 | --- | --- |
 | Static and build gate | Prettier, ESLint, TypeScript, Ruff, and the Next.js production build passed; production npm audit reported zero vulnerabilities. |
-| Frontend tests | 42 passed; 95.07% statements, 88.98% branches, 94.11% functions, 96.77% lines. |
-| Backend tests | 24 passed; 97.32% coverage, including authorization, CSRF, reorder rollback, and seed behavior. |
-| Browser tests | 5/5 Playwright projects passed at 1440, 820, 650, 480, and 390 px with Axe scans; the smallest viewport also verifies reduced motion. |
+| Frontend tests | 46 passed; 95.34% statements, 87.92% branches, 94.73% functions, 97.11% lines. |
+| Backend tests | 26 passed; 97.47% coverage, including authorization, CSRF, pagination, reorder rollback, and seed behavior. |
+| Browser tests | 5/5 Playwright projects passed at 1440, 820, 650, 480, and 390 px with Axe scans; they verify shared control geometry and progressive 12-to-13 note loading, while the smallest viewport also verifies reduced motion. |
 | Clean-clone smoke test | Fresh images built from lockfiles; `db`, `api`, and `web` became healthy; UI and API health returned HTTP 200. |
 
 The test strategy focuses on observable risk rather than coverage alone: ownership isolation, validation failures, anonymous and authenticated CSRF, autosave sequencing, optimistic rollback, URL-state composition, responsive geometry, accessibility, and the complete user journey.
@@ -179,6 +180,7 @@ The test strategy focuses on observable risk rather than coverage alone: ownersh
 
 - **Session authentication over JWT:** this is one first-party browser client, so Django sessions keep credential and session lifecycle centralized without adding token storage and rotation.
 - **Server reads and client writes:** App Router pages fetch private data on the server, while interactive mutations use one typed client transport with credentials, CSRF, and a normalized `ApiError`.
+- **Server-first progressive lists:** ordinary sorts render the first page in the Server Component and extend it through a small infinite-grid Client Component; manual ordering intentionally retains the complete collection because its transaction validates one exact global set.
 - **Source-owned shadcn/ui:** only required primitives were added; every visible control starts from a repository-owned shadcn component and is styled through semantic design tokens and controlled variants.
 - **Simple search before infrastructure:** case-insensitive PostgreSQL queries are sufficient for the challenge dataset; no search service is introduced without scale evidence.
 - **Soft deletion before permanent deletion:** Undo protects the high-risk action without requiring a complete trash product.
@@ -208,7 +210,7 @@ Codex acted as both assistant and code executor during the larger implementation
 
 ### 5. QA and refinement
 
-The final phase repeatedly exercised the real application and compared it with the source material at desktop, tablet, and mobile sizes. It produced technical, functional, and visual corrections including stricter CSRF handling, hydration-safe dates, shadcn control boundaries, long-word wrapping, responsive density, skeleton geometry, authentic view-specific artwork, transparent assets, selector proportions, metadata, and accessibility-safe motion.
+The final phase repeatedly exercised the real application and compared it with the source material at desktop, tablet, and mobile sizes. It produced technical, functional, and visual corrections including stricter CSRF handling, hydration-safe dates, shadcn control boundaries, shared 44-pixel dashboard controls, long-word wrapping, responsive density, skeleton geometry, progressive list loading, authentic view-specific artwork, transparent assets, selector proportions, metadata, and accessibility-safe motion.
 
 ## How AI was used
 
