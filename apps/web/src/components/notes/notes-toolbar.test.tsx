@@ -43,7 +43,9 @@ describe("NotesToolbar", () => {
       await vi.advanceTimersByTimeAsync(350);
     });
 
-    expect(replace).toHaveBeenCalledWith("/notes?q=architecture");
+    expect(replace).toHaveBeenCalledWith("/notes?q=architecture", {
+      scroll: false,
+    });
   });
 
   it("clears search immediately", async () => {
@@ -60,7 +62,7 @@ describe("NotesToolbar", () => {
     await user.click(screen.getByRole("button", { name: "Clear search" }));
 
     expect(screen.getByLabelText("Search notes")).toHaveValue("");
-    expect(replace).toHaveBeenCalledWith("/notes");
+    expect(replace).toHaveBeenCalledWith("/notes", { scroll: false });
   });
 
   it("places the total below controls that share one visual contract", () => {
@@ -110,6 +112,7 @@ describe("NotesToolbar", () => {
 
     expect(replace).toHaveBeenCalledWith(
       "/notes?category=school&ordering=updated_at",
+      { scroll: false },
     );
   });
 
@@ -126,7 +129,9 @@ describe("NotesToolbar", () => {
     expect(screen.queryByRole("option", { name: "Manual order" })).toBeNull();
 
     await waitFor(() =>
-      expect(replace).toHaveBeenCalledWith("/notes?q=browser"),
+      expect(replace).toHaveBeenCalledWith("/notes?q=browser", {
+        scroll: false,
+      }),
     );
   });
 });

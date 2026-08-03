@@ -225,6 +225,10 @@ test("a user can capture, organize, and reopen a private note", async ({
   await expect(skipLink).toBeVisible();
   await skipLink.press("Enter");
   await expect(page.locator("#main-content")).toBeFocused();
+  await expect(page.locator("#main-content")).toHaveCSS(
+    "outline-style",
+    "none",
+  );
   await expectNoAccessibilityViolations(page);
   await page.getByRole("link", { name: "Get started" }).click();
   await expect(page).toHaveURL(/\/register$/);

@@ -53,6 +53,7 @@ export function NotesToolbar({
             search: nextSearch,
             ordering: safeOrdering,
           }),
+          { scroll: false },
         );
       });
     },
