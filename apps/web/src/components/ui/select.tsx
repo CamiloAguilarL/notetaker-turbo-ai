@@ -15,10 +15,8 @@ const selectTriggerVariants = cva(
     variants: {
       variant: {
         default: "",
-        category:
-          "text-foreground before:border-control-border before:bg-control-surface hover:before:bg-card focus-visible:before:border-ring focus-visible:before:ring-ring/25 [&_[data-slot=select-icon]]:text-control-icon relative h-11 w-category-trigger rounded-control border-0 py-0 pr-1.5 pl-category-label-inset text-control-caption font-normal shadow-none before:pointer-events-none before:absolute before:inset-x-0 before:inset-y-category-visual-inset before:rounded-control before:border before:transition-colors hover:bg-transparent focus-visible:border-0 focus-visible:ring-0 focus-visible:before:ring-2 *:data-[slot=select-value]:relative *:data-[slot=select-value]:z-10 [&_[data-slot=select-icon]]:relative [&_[data-slot=select-icon]]:z-10 [&_[data-slot=select-icon]]:size-8 [&_[data-slot=select-icon]]:stroke-[1.5]",
-        ordering:
-          "border-primary/35 text-foreground focus-visible:ring-ring/40 hover:bg-card/45 h-10 min-w-40 rounded-full px-4 focus-visible:ring-3",
+        notebook:
+          "text-foreground before:border-control-border before:bg-control-surface hover:before:bg-card focus-visible:before:border-ring focus-visible:before:ring-ring/25 [&_[data-slot=select-icon]]:text-control-icon relative w-notebook-select rounded-control border-0 py-0 pr-1.5 pl-select-label-inset text-control-caption font-normal shadow-none before:pointer-events-none before:absolute before:inset-x-0 before:inset-y-select-visual-inset before:rounded-control before:border before:transition-colors hover:bg-transparent focus-visible:border-0 focus-visible:ring-0 focus-visible:before:ring-2 data-[size=default]:h-11 *:data-[slot=select-value]:relative *:data-[slot=select-value]:z-10 [&_[data-slot=select-icon]]:relative [&_[data-slot=select-icon]]:z-10 [&_[data-slot=select-icon]]:size-8 [&_[data-slot=select-icon]]:stroke-[1.5]",
       },
     },
     defaultVariants: {
@@ -33,10 +31,8 @@ const selectContentVariants = cva(
     variants: {
       variant: {
         default: "",
-        category:
-          "border-control-border bg-control-surface rounded-control border p-0 shadow-lg ring-0",
-        ordering:
-          "border-primary/35 bg-control-surface rounded-xl border p-0 shadow-lg ring-0",
+        notebook:
+          "border-control-popup-border bg-control-surface shadow-notebook-select rounded-control border p-0 ring-0",
       },
     },
     defaultVariants: {
@@ -51,7 +47,8 @@ const selectItemVariants = cva(
     variants: {
       variant: {
         default: "",
-        category: "min-h-9 rounded-control-item px-2.5 py-1.5 text-xs",
+        notebook:
+          "data-selected:bg-accent data-selected:text-accent-foreground min-h-8 rounded-control-item py-1 pr-8 pl-2.5 text-xs",
       },
     },
     defaultVariants: {

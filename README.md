@@ -104,7 +104,7 @@ The finalized runtime tree was rebuilt and exercised from a separate clean local
 | Gate | Result |
 | --- | --- |
 | `make check` | Passed: zero production npm vulnerabilities; Prettier, ESLint, TypeScript, Ruff, and the Next.js production build are clean. |
-| Frontend tests | 38 passed; 95.04% statements, 87.44% branches, 94% functions, and 96.76% lines. |
+| Frontend tests | 39 passed; 95.02% statements, 88.79% branches, 94% functions, and 96.75% lines. |
 | Backend tests | 24 passed; 97.32% coverage, including ownership, CSRF, reorder rollback, and demo-seed behavior. |
 | `make e2e` | 5/5 Playwright projects passed at 1440, 820, 650, 480, and 390-pixel widths with Axe scans; the smallest viewport also verifies reduced motion. |
 | Clean-clone smoke test | Fresh Docker images built from the lockfiles; `db`, `api`, and `web` became healthy; web and API health returned HTTP 200. |

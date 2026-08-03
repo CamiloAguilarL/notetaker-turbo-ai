@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { NotebookSelect } from "@/components/notes/notebook-select";
 import type { NoteOrdering } from "@/lib/notes-query";
 
 type OrderingOption = {
@@ -29,31 +22,14 @@ export function NoteOrderingSelect({
   return (
     <div className="flex items-center gap-2 text-sm font-medium">
       <span className="sr-only sm:not-sr-only">Sort by</span>
-      <Select
+      <NotebookSelect
+        align="end"
+        ariaLabel="Sort notes"
         name="note-ordering"
-        items={options}
+        options={options}
         value={value}
-        onValueChange={(nextValue) => {
-          if (nextValue) onValueChange(nextValue);
-        }}
-      >
-        <SelectTrigger aria-label="Sort notes" variant="ordering">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent
-          align="end"
-          alignItemWithTrigger={false}
-          variant="ordering"
-        >
-          <SelectGroup>
-            {options.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
+        onValueChange={onValueChange}
+      />
     </div>
   );
 }

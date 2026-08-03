@@ -4,7 +4,7 @@ export function NoteEditorSkeleton() {
   return (
     <div aria-hidden="true" data-slot="note-editor-skeleton">
       <div className="flex min-h-14 items-center justify-between gap-4 pb-3">
-        <div className="border-skeleton-border bg-skeleton-surface w-category-trigger rounded-control flex h-11 items-center gap-2 border px-3">
+        <div className="border-skeleton-border bg-skeleton-surface w-notebook-select rounded-control flex h-11 items-center gap-2 border px-3">
           <Skeleton shape="line" tone="ink" className="size-2.5" />
           <Skeleton shape="line" tone="ink" className="h-3 w-24" />
           <Skeleton shape="line" tone="ink" className="ml-auto h-3 w-5" />

@@ -26,6 +26,7 @@
   --color-ring: var(--ring);
   --color-control-surface: var(--control-surface);
   --color-control-border: var(--control-border);
+  --color-control-popup-border: var(--control-popup-border);
   --color-control-icon: var(--control-icon);
   --color-note-random: var(--note-random);
   --color-note-random-border: var(--note-random-border);
@@ -45,9 +46,9 @@
   --container-app: var(--layout-app-max-width);
   --container-tooltip: var(--layout-tooltip-max-width);
   --spacing-app: var(--layout-app-max-width);
-  --spacing-category-trigger: var(--category-trigger-width);
-  --spacing-category-visual-inset: var(--category-trigger-visual-inset);
-  --spacing-category-label-inset: var(--category-trigger-label-inset);
+  --spacing-notebook-select: var(--notebook-select-width);
+  --spacing-select-visual-inset: var(--select-trigger-visual-inset);
+  --spacing-select-label-inset: var(--select-trigger-label-inset);
   --spacing-note-card: var(--note-card-min-height);
   --breakpoint-compact: 35rem;
   --radius-sm: calc(var(--radius) * 0.6);
@@ -72,6 +73,7 @@
   --tracking-eyebrow: var(--eyebrow-letter-spacing);
   --blur-note-controls: var(--note-controls-blur);
   --border-width-note: var(--note-border-width);
+  --shadow-notebook-select: var(--notebook-select-shadow);
 }
 
 :root {
@@ -100,6 +102,11 @@
   --ring: #8e5d36;
   --control-surface: #fbf2e3;
   --control-border: #ad7841;
+  --control-popup-border: color-mix(
+    in srgb,
+    var(--control-border) 28%,
+    transparent
+  );
   --control-icon: #956326;
   --note-random: #f3b88f;
   --note-random-border: #e88e54;
@@ -115,9 +122,9 @@
   --skeleton-border: color-mix(in srgb, var(--border) 30%, transparent);
   --layout-app-max-width: 82rem;
   --layout-tooltip-max-width: 22rem;
-  --category-trigger-width: 12.125rem;
-  --category-trigger-visual-inset: 0.3125rem;
-  --category-trigger-label-inset: 0.8125rem;
+  --notebook-select-width: 12.125rem;
+  --select-trigger-visual-inset: 0.3125rem;
+  --select-trigger-label-inset: 0.8125rem;
   --note-grid-min-column: 15.5rem;
   --note-card-min-height: clamp(13rem, calc(10rem + 10vw), 18rem);
   --control-radius: 0.375rem;
@@ -135,6 +142,8 @@
   --eyebrow-letter-spacing: 0.18em;
   --note-controls-blur: 2px;
   --note-border-width: 3px;
+  --notebook-select-shadow: 0 0.4rem 0.9rem
+    color-mix(in srgb, var(--foreground) 9%, transparent);
   --radius: 0.75rem;
 }
 
