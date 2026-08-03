@@ -89,12 +89,12 @@ export function NotesToolbar({
   });
 
   return (
-    <section
-      aria-label="Find and sort notes"
-      className="mb-6 flex flex-col gap-3 md:flex-row md:items-center"
-    >
-      <div className="flex min-w-0 flex-1 gap-1 md:max-w-md">
-        <div className="relative min-w-0 flex-1">
+    <section aria-label="Find and sort notes" className="mb-6">
+      <div
+        data-slot="notes-toolbar-controls"
+        className="flex flex-col gap-3 sm:flex-row sm:items-center"
+      >
+        <div className="relative min-w-0 flex-1 sm:max-w-md">
           <label htmlFor="note-search" className="sr-only">
             Search notes
           </label>
@@ -113,32 +113,34 @@ export function NotesToolbar({
             placeholder="Search your notes"
             variant="search"
           />
+          {search ? (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-sm"
+              aria-label="Clear search"
+              className="absolute top-1/2 right-2 -translate-y-1/2"
+              onClick={clearSearch}
+            >
+              <X aria-hidden="true" />
+            </Button>
+          ) : null}
         </div>
-        {search ? (
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-touch"
-            aria-label="Clear search"
-            onClick={clearSearch}
-          >
-            <X aria-hidden="true" />
-          </Button>
-        ) : null}
-      </div>
-
-      <div className="flex items-center justify-between gap-3 md:justify-end">
-        <p aria-live="polite" className="text-muted-foreground text-sm">
-          {isPending
-            ? "Updating notes…"
-            : `${resultCount} ${resultCount === 1 ? "note" : "notes"}`}
-        </p>
         <NoteOrderingSelect
           options={availableOrderings}
           value={ordering}
           onValueChange={changeOrdering}
         />
       </div>
+      <p
+        data-slot="notes-result-count"
+        aria-live="polite"
+        className="text-muted-foreground mt-2 text-xs"
+      >
+        {isPending
+          ? "Updating notes…"
+          : `${resultCount} ${resultCount === 1 ? "note" : "notes"}`}
+      </p>
     </section>
   );
 }

@@ -7,7 +7,7 @@ export function NotesDashboardSkeleton() {
   return (
     <div aria-hidden="true" data-slot="notes-dashboard-skeleton">
       <div className="flex min-h-14 justify-end">
-        <div className="border-skeleton-border bg-skeleton-surface flex h-11 w-32 items-center justify-center gap-2 rounded-full border">
+        <div className="border-skeleton-border bg-skeleton-surface h-dashboard-control flex w-32 items-center justify-center gap-2 rounded-full border">
           <Skeleton shape="line" tone="ink" className="size-3.5" />
           <Skeleton shape="line" tone="ink" className="h-3.5 w-16" />
         </div>

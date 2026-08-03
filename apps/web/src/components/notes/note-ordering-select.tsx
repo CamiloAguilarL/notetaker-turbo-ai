@@ -20,7 +20,7 @@ export function NoteOrderingSelect({
   onValueChange,
 }: NoteOrderingSelectProps) {
   return (
-    <div className="flex items-center gap-2 text-sm font-medium">
+    <div className="flex shrink-0 items-center gap-2 text-sm font-medium sm:ml-auto">
       <span className="sr-only sm:not-sr-only">Sort by</span>
       <NotebookSelect
         align="end"

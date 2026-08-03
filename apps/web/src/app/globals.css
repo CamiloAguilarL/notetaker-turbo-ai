@@ -25,6 +25,7 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-control-surface: var(--control-surface);
+  --color-control-hover: var(--control-hover);
   --color-control-border: var(--control-border);
   --color-control-popup-border: var(--control-popup-border);
   --color-control-icon: var(--control-icon);
@@ -52,8 +53,7 @@
   --container-auth: var(--layout-auth-width);
   --spacing-app: var(--layout-app-max-width);
   --spacing-notebook-select: var(--notebook-select-width);
-  --spacing-select-visual-inset: var(--select-trigger-visual-inset);
-  --spacing-select-label-inset: var(--select-trigger-label-inset);
+  --spacing-dashboard-control: var(--dashboard-control-height);
   --spacing-note-card: var(--note-card-min-height);
   --spacing-auth-top: var(--auth-top-space);
   --spacing-auth-art-stage: var(--auth-art-stage-height);
@@ -123,6 +123,11 @@
   --ring: #8e5d36;
   --control-surface: #fbf2e3;
   --control-border: #ad7841;
+  --control-hover: color-mix(
+    in srgb,
+    var(--control-surface) 72%,
+    var(--secondary)
+  );
   --control-popup-border: color-mix(
     in srgb,
     var(--control-border) 28%,
@@ -148,8 +153,7 @@
   --layout-tooltip-max-width: 22rem;
   --layout-auth-width: 24rem;
   --notebook-select-width: 12.125rem;
-  --select-trigger-visual-inset: 0.3125rem;
-  --select-trigger-label-inset: 0.8125rem;
+  --dashboard-control-height: 2.75rem;
   --note-grid-min-column: 15.5rem;
   --note-card-min-height: clamp(13rem, calc(10rem + 10vw), 18rem);
   --auth-top-space: clamp(4rem, 23.2dvh, 12.0625rem);

@@ -37,7 +37,8 @@ export function NewNoteButton({
     <div className="flex flex-col items-end gap-2">
       <Button
         type="button"
-        size="lg"
+        variant="notebook"
+        size="notebook"
         onClick={handleCreate}
         disabled={isPending}
       >

@@ -35,7 +35,10 @@ describe("NewNoteButton", () => {
     });
 
     render(<NewNoteButton category="school" returnQuery="category=school" />);
-    await user.click(screen.getByRole("button", { name: "New Note" }));
+    const button = screen.getByRole("button", { name: "New Note" });
+    expect(button).toHaveAttribute("data-variant", "notebook");
+    expect(button).toHaveAttribute("data-size", "notebook");
+    await user.click(button);
 
     expect(mockedCreateNote).toHaveBeenCalledWith("school");
     await waitFor(() =>

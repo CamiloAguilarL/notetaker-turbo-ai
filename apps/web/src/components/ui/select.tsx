@@ -16,7 +16,7 @@ const selectTriggerVariants = cva(
       variant: {
         default: "",
         notebook:
-          "text-foreground before:border-control-border before:bg-control-surface hover:before:bg-card focus-visible:before:border-ring focus-visible:before:ring-ring/25 [&_[data-slot=select-icon]]:text-control-icon relative w-notebook-select rounded-control border-0 py-0 pr-1.5 pl-select-label-inset text-control-caption font-normal shadow-none before:pointer-events-none before:absolute before:inset-x-0 before:inset-y-select-visual-inset before:rounded-control before:border before:transition-colors hover:bg-transparent focus-visible:border-0 focus-visible:ring-0 focus-visible:before:ring-2 data-[size=default]:h-11 *:data-[slot=select-value]:relative *:data-[slot=select-value]:z-10 [&_[data-slot=select-icon]]:relative [&_[data-slot=select-icon]]:z-10 [&_[data-slot=select-icon]]:size-8 [&_[data-slot=select-icon]]:stroke-[1.5]",
+          "border-control-border bg-control-surface text-foreground hover:border-ring hover:bg-control-hover focus-visible:border-ring focus-visible:bg-control-surface focus-visible:ring-ring/25 aria-expanded:border-ring aria-expanded:bg-control-hover [&_[data-slot=select-icon]]:text-control-icon w-notebook-select rounded-control py-0 pr-2 pl-3 text-control-caption font-normal shadow-none data-[size=default]:h-dashboard-control [&_[data-slot=select-icon]]:size-6 [&_[data-slot=select-icon]]:stroke-[1.5]",
       },
     },
     defaultVariants: {

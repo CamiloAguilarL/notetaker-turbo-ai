@@ -11,6 +11,8 @@ const buttonVariants = cva(
       variant: {
         default:
           "border-primary/65 bg-transparent text-primary hover:border-primary hover:bg-secondary/60",
+        notebook:
+          "border-control-border bg-control-surface text-foreground hover:border-ring hover:bg-control-hover focus-visible:border-ring focus-visible:bg-control-surface focus-visible:ring-ring/25 aria-expanded:border-ring aria-expanded:bg-control-hover",
         outline:
           "border-input bg-transparent text-foreground hover:border-primary/55 hover:bg-secondary/45 aria-expanded:border-primary/55 aria-expanded:bg-secondary/45",
         secondary:
@@ -34,6 +36,8 @@ const buttonVariants = cva(
         xs: "h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
         sm: "h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-control-compact in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
         lg: "h-11 gap-2 px-5 has-data-[icon=inline-end]:pr-4 has-data-[icon=inline-start]:pl-4",
+        notebook:
+          "h-dashboard-control gap-2 px-5 has-data-[icon=inline-end]:pr-4 has-data-[icon=inline-start]:pl-4",
         header: "h-11 gap-1 px-3 sm:h-10 sm:px-4",
         auth: "h-auth-button px-4 !text-auth-copy",
         icon: "size-8",

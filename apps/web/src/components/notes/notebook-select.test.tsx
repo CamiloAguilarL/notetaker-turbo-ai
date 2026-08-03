@@ -61,7 +61,11 @@ describe("NotebookSelect", () => {
     expect(categoryTrigger).toHaveAttribute("data-variant", "notebook");
     expect(orderingTrigger).toHaveAttribute("data-variant", "notebook");
     expect(categoryTrigger.className).toBe(orderingTrigger.className);
-    expect(categoryTrigger.className).toContain("data-[size=default]:h-11");
+    expect(categoryTrigger.className).toContain(
+      "data-[size=default]:h-dashboard-control",
+    );
+    expect(categoryTrigger.className).toContain("border-control-border");
+    expect(categoryTrigger.className).toContain("bg-control-surface");
     expect(selectContentVariants({ variant: "notebook" })).toContain(
       "bg-control-surface",
     );

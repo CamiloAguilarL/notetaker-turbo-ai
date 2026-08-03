@@ -63,6 +63,30 @@ describe("NotesToolbar", () => {
     expect(replace).toHaveBeenCalledWith("/notes");
   });
 
+  it("places the total below controls that share one visual contract", () => {
+    render(
+      <NotesToolbar initialSearch="" ordering="-updated_at" resultCount={4} />,
+    );
+
+    const toolbar = screen.getByRole("region", { name: "Find and sort notes" });
+    const controls = toolbar.querySelector(
+      '[data-slot="notes-toolbar-controls"]',
+    );
+    const count = toolbar.querySelector('[data-slot="notes-result-count"]');
+    const search = screen.getByRole("searchbox", { name: "Search notes" });
+    const ordering = screen.getByRole("combobox", { name: "Sort notes" });
+
+    expect(controls).not.toBeNull();
+    expect(count).toHaveTextContent("4 notes");
+    expect(count?.previousElementSibling).toBe(controls);
+    expect(search.className).toContain("h-dashboard-control");
+    expect(search.className).toContain("border-control-border");
+    expect(ordering.className).toContain(
+      "data-[size=default]:h-dashboard-control",
+    );
+    expect(ordering.className).toContain("border-control-border");
+  });
+
   it("removes redundant category sorting inside a category", async () => {
     const user = userEvent.setup();
     currentParams = new URLSearchParams("category=school");
