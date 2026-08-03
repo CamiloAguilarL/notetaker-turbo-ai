@@ -29,3 +29,6 @@ dist/
 playwright-report/
 test-results/
 tmp/
+
+# Candidate-only preparation notes (never publish)
+.candidate-guide/

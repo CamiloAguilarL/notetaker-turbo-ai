@@ -1,190 +1,189 @@
 # Architecture
 
-## Goals
+## Purpose and constraints
 
-- Deliver the challenge's core note workflow quickly without sacrificing authorization, tests, or maintainability.
-- Keep frontend and backend boundaries explicit so each can evolve and be reviewed independently.
-- Use production-shaped technology locally while postponing deployment-specific infrastructure.
-- Prefer a small number of clear modules over a speculative framework inside the framework.
+Turbo Notes is a local-first challenge application, not a production deployment. Its architecture optimizes for a complete, secure, reviewable vertical slice within a short timebox:
 
-## System context
+- explicit frontend, API, and database boundaries;
+- reproducible local setup through Docker Compose;
+- server-owned authentication and authorization;
+- a small domain model with deterministic behavior;
+- tests at the boundary where each failure is most visible;
+- no speculative services or abstractions without a requirement.
+
+## Runtime context
 
 ```mermaid
 flowchart LR
-  Browser["Browser"] -->|"HTTP :3000"| Web["Next.js web"]
-  Browser -->|"JSON + session cookie :8000"| API["Django REST API"]
-  Web -->|"Server-side API calls"| API
-  API -->|"SQL"| DB[("PostgreSQL 17")]
+  Browser["Browser"] -->|"HTML and RSC :3000"| Web["Next.js 16"]
+  Browser -->|"JSON, session cookie, CSRF :8000"| API["Django REST API"]
+  Web -->|"private server reads"| API
+  API -->|"Django ORM"| DB[("PostgreSQL 17")]
 ```
 
-Docker Compose provides the local network and health ordering. The browser uses `NEXT_PUBLIC_API_URL`; Next.js server code uses `API_INTERNAL_URL`; Django is the only application that connects to PostgreSQL.
+Docker Compose supplies a private network, persistent database volume, service health checks, and dependency ordering. The browser uses `NEXT_PUBLIC_API_URL`; Next.js server code uses `API_INTERNAL_URL`; only Django connects to PostgreSQL.
+
+## Request paths
+
+### Route-level read
+
+1. The browser requests a Next.js route.
+2. A Server Component reads the incoming cookie store.
+3. `src/lib/api/server.ts` forwards the `Cookie` header to Django over `http://api:8000/api/v1`.
+4. Django authenticates the session, scopes the queryset to `request.user`, and returns JSON.
+5. Next.js renders the initial result without exposing an API credential to client JavaScript.
+
+Every private server fetch uses `cache: "no-store"`; a user's notes are never reused as shared route cache.
+
+### Interactive mutation
+
+1. A Client Component calls the typed transport in `src/lib/api/client.ts`.
+2. The transport includes browser credentials and obtains Django's CSRF cookie when needed.
+3. Unsafe requests attach `X-CSRFToken` and use the browser-facing API URL.
+4. Non-success responses become one consistent `ApiError` with status, code, message, and field errors.
+5. The feature reconciles local state or refreshes the relevant Server Component route.
+
+This split keeps server rendering simple while centralizing mutation security and error translation.
 
 ## Monorepo boundaries
 
-### `apps/web`
-
-- Next.js App Router and React Server Components by default.
-- Client Components only for forms, filters, editor state, autosave, and browser APIs.
-- Tailwind CSS v4 with CSS-first semantic tokens.
-- shadcn/ui components added on demand and customized in-repository.
-- Typed API modules isolate transport concerns from presentational components.
-
-Suggested feature structure as slices are implemented:
+### Frontend: `apps/web`
 
 ```text
 src/
 ├── app/
-│   ├── (auth)/
-│   └── (notes)/
+│   ├── (auth)/               # Login and registration routes
+│   ├── (notes)/notes/        # Protected dashboard and editor routes
+│   ├── layout.tsx            # Metadata, fonts, global providers
+│   └── page.tsx              # Public landing
 ├── components/
-│   ├── notes/
-│   └── ui/
-├── features/
-│   ├── auth/
-│   └── notes/
+│   ├── auth/                 # Authentication compositions
+│   ├── brand/                # Reusable product mark
+│   ├── notes/                # Notes feature components
+│   └── ui/                   # Source-owned shadcn primitives
 └── lib/
-    ├── api/
-    └── env/
+    ├── api/                  # Server/client transports and contracts
+    ├── category-theme.ts     # Semantic category mapping
+    ├── format-date.ts        # Stable human-readable dates
+    └── notes-query.ts        # Canonical URL query state
 ```
 
-### `apps/api`
+React Server Components own route guards and initial data. Client Components are limited to forms, debounced search, drag-and-drop, browser APIs, and editor state. All visible form controls are based on local shadcn/ui files rather than native one-off implementations. Tailwind CSS 4 semantic tokens and controlled component variants hold reusable cosmetics; layouts compose those primitives without duplicating a shadow design system.
 
-- Django configuration and versioned DRF routes.
-- Domain apps should own models, migrations, serializers, services, URLs, and tests.
-- Views handle HTTP translation; serializers validate payloads; services/model methods hold non-trivial domain decisions.
-- Querysets enforce ownership before object lookup.
-
-Suggested evolution:
+### Backend: `apps/api`
 
 ```text
 apps/api/
-├── config/
-├── core/       # Operational concerns such as health
-├── accounts/   # Registration and session endpoints
-└── notes/      # Categories, notes, domain services, and tests
+├── config/                   # Settings and root URL configuration
+├── accounts/                 # Custom user and session API
+├── notes/                    # Models, serializers, views, services, tests
+├── core/                     # Health endpoint and error contract
+└── scripts/start.sh          # Migrate then start local server
 ```
 
-## Data model direction
+Views translate HTTP, serializers validate payloads, querysets enforce ownership, and `notes/services.py` contains the transaction-sensitive reorder operation. The separation is intentionally shallow: Django and DRF already provide the repository, validation, and routing abstractions needed by this scope.
+
+## Domain model
 
 ### User
 
-Use Django's swappable user model contract from the first domain migration. If email is the login identifier, introduce a custom user model before product data migrations rather than changing it later.
+The project created a custom user model before product migrations. Email is the unique login identifier; Django owns password hashing, validators, session creation, and session invalidation.
 
 ### Category
 
-| Field | Type | Notes |
+| Field | Constraint | Purpose |
 | --- | --- | --- |
-| `id` | integer or UUID | Internal identity. |
-| `name` | string | Human-readable label. |
-| `slug` | unique string | Stable API and UI mapping key. |
-| `color_key` | constrained string | Maps to an approved frontend semantic token. |
-| `sort_order` | positive integer | Deterministic navigation order. |
+| `name` | 50 characters | Visible label. |
+| `slug` | unique | Stable API and URL value. |
+| `color_key` | enum | Maps API data to approved UI tokens. |
+| `sort_order` | unique positive integer | Stable navigation and category ordering. |
 
-Categories should be seeded through a data migration. Do not hard-code the visible list in API views or React components.
+The four design categories are inserted through a data migration, so API views and React components do not duplicate the list.
 
 ### Note
 
-| Field | Type | Notes |
+| Field | Constraint | Purpose |
 | --- | --- | --- |
-| `id` | UUID | Non-sequential public identifier. |
-| `owner` | foreign key to user | Mandatory authorization boundary. |
-| `category` | protected foreign key | Required by the reviewed editor. |
-| `title` | bounded string | Plain text; whitespace normalized deliberately. |
-| `content` | text | Plain text with line breaks preserved. |
-| `manual_order` | positive integer | Global manual order for the owner's active notes. |
-| `deleted_at` | nullable timestamp | Supports reversible deletion; excluded from normal queries. |
-| `created_at` | timestamp | UTC, server controlled. |
-| `updated_at` | timestamp | UTC, drives display and ordering. |
+| `id` | UUID primary key | Non-sequential public identity. |
+| `owner` | required user foreign key, cascade | Authorization boundary. |
+| `category` | required protected foreign key | Stable visual classification. |
+| `title` | up to 120 characters, blank allowed | Plain-text title. |
+| `content` | API limit of 10,000 characters | Plain text with line breaks. |
+| `manual_order` | positive integer | Global order for active owner notes. |
+| `deleted_at` | nullable timestamp | Reversible deletion. |
+| `created_at`, `updated_at` | server-controlled UTC | History and deterministic ordering. |
 
-Indexes support `(owner, -updated_at)`, `(owner, category, -updated_at)`, and `(owner, manual_order, id)`. The reorder service owns positional consistency: it locks the owner's active set, requires every identifier exactly once, assigns zero-based positions, and bulk-updates only `manual_order` so a move does not masquerade as a content edit. Manual ordering applies only to the complete, unfiltered active-note set; this keeps one position per note and avoids a speculative per-filter ordering model.
+Indexes support owner/date, owner/category/date, and owner/manual-order access paths.
 
-## API direction
+## API contract
 
-The exact contract will be finalized with the first product slice. Expected minimal routes:
+All product routes are versioned under `/api/v1/`.
 
-| Method | Route | Purpose |
+| Method | Route | Behavior |
 | --- | --- | --- |
-| `GET` | `/api/v1/health/` | API and database readiness; implemented. |
-| `POST` | `/api/v1/auth/register/` | Create an account and session. |
-| `POST` | `/api/v1/auth/login/` | Authenticate credentials. |
-| `POST` | `/api/v1/auth/logout/` | Invalidate the session. |
-| `GET` | `/api/v1/auth/me/` | Return the current identity. |
-| `GET` | `/api/v1/auth/csrf/` | Issue or refresh the CSRF cookie used for unsafe browser requests. |
-| `GET` | `/api/v1/categories/` | Categories with current user's note counts. |
-| `GET` | `/api/v1/notes/` | Current user's notes with allowlisted search, category, and ordering parameters. |
-| `POST` | `/api/v1/notes/` | Create a note. |
-| `GET` | `/api/v1/notes/{id}/` | Load full note content. |
-| `PATCH` | `/api/v1/notes/{id}/` | Autosave changed fields. |
-| `DELETE` | `/api/v1/notes/{id}/` | Soft-delete a note owned by the current user. |
-| `POST` | `/api/v1/notes/{id}/restore/` | Restore a soft-deleted note during undo or from a future trash view. |
-| `POST` | `/api/v1/notes/reorder/` | Validate and atomically persist the complete manual order. |
+| `GET` | `/health/` | Checks API and database readiness. |
+| `GET` | `/auth/csrf/` | Issues or refreshes the CSRF cookie. |
+| `POST` | `/auth/register/` | Creates an account and authenticated session. |
+| `POST` | `/auth/login/` | Authenticates an existing account. |
+| `POST` | `/auth/logout/` | Invalidates the session. |
+| `GET` | `/auth/me/` | Returns the current identity. |
+| `GET` | `/categories/` | Returns stable categories with owner-scoped active-note counts. |
+| `GET`, `POST` | `/notes/` | Lists scoped notes or creates a note. |
+| `GET`, `PATCH`, `DELETE` | `/notes/{id}/` | Reads, edits, or soft-deletes an owned active note. |
+| `POST` | `/notes/{id}/restore/` | Restores an owned deleted note. |
+| `POST` | `/notes/reorder/` | Atomically persists the complete active-note order. |
 
-Expected list parameters are `category`, `q`, and an allowlisted `ordering` value such as `-updated_at`, `updated_at`, `category`, or `manual`. Keep category-write endpoints deferred until the product scope confirms that users manage categories.
+The note list accepts `category`, `q`, and `ordering`. Ordering is allowlisted to `-updated_at`, `updated_at`, `category`, or `manual`; manual order rejects category/search filters because the domain stores one global position per active note.
 
-## Enhancement boundaries
+## Critical workflows
 
-### Search and sorting
+### Authentication, ownership, and CSRF
 
-- Use PostgreSQL-backed case-insensitive matching for the small challenge dataset; do not introduce a search service.
-- Apply deterministic secondary ordering by `updated_at` and `id` where required.
-- Keep filter and sort state in URL search parameters so reload, browser navigation, and shared local URLs behave predictably.
-- Keep data retrieval in Server Components or typed server modules; isolate only search input, sort controls, and optimistic feedback in Client Components.
+- Django sessions are appropriate for one first-party web client and avoid unnecessary JWT storage and rotation.
+- Browser calls include credentials; CORS and trusted origins are explicit environment values.
+- Django REST Framework protects authenticated unsafe requests. A custom permission also enforces CSRF on anonymous registration and login before a session exists.
+- Every normal and restore queryset includes the authenticated owner before object lookup, so another user's UUID behaves as not found.
+- API errors do not reveal which credential field was correct.
+
+### Autosave
+
+1. Title, content, and category change in a local draft.
+2. A signature marks the draft dirty relative to the last accepted response.
+3. A 650 ms debounce schedules a `PATCH`.
+4. A promise queue serializes writes; a failed write does not poison later retries.
+5. The UI exposes dirty, saving, saved, and recoverable error states.
+6. Close and delete clear the timer, await the queue, and flush the latest draft before navigation.
+7. `beforeunload` protects a draft that has not reached the saved state.
+
+The deliberate conflict policy is last accepted write wins. Optimistic concurrency is deferred until there is a demonstrated multi-device editing requirement.
+
+### Query state
+
+Category, search, and ordering live in URL search parameters. Server rendering, refresh, browser navigation, and local link sharing therefore use one canonical state. Search is debounced in the client but executed by the API with case-insensitive title/content matching and deterministic tie-breakers.
 
 ### Reversible deletion
 
-- `DELETE` records `deleted_at` instead of destroying content immediately.
-- Default managers and API querysets exclude deleted notes; restore queries opt in explicitly and remain owner-scoped.
-- Undo calls the restore endpoint and reconciles the dashboard response.
-- Permanent cleanup and a full trash-management policy are P2, so P1 does not require a background worker.
+`DELETE` sets `deleted_at`; active list/detail querysets exclude that row. The dashboard receives the deleted UUID in its return URL and exposes Undo for eight seconds. Restore remains owner-scoped, clears `deleted_at`, assigns the last manual position, and returns the complete resource. Permanent cleanup and a trash screen are deferred.
 
 ### Manual ordering
 
-- Manual ordering is available only for “All Categories” with the manual sort selected.
-- The client sends the complete ordered list of active note identifiers after a drop.
-- The API validates ownership and set equality, then updates positions inside one transaction.
-- The client may update optimistically but restores the last server-confirmed order after failure.
-- The client uses `@dnd-kit/core` and `@dnd-kit/sortable` with an explicit activator, pointer/touch support, keyboard movement controls, screen-reader instructions, and live announcements.
+The UI enables manual ordering only for the complete, unsearched notebook. It sends every active note UUID after a move. The service starts a database transaction, locks the owner's active set, requires exact set equality and unique IDs, then bulk-updates only `manual_order`. The client applies the move optimistically and rolls back to the last confirmed order on failure. Pointer, touch, keyboard, screen-reader instructions, and live position announcements share the same feature.
 
-## Authentication and CSRF
+## Reliability and quality
 
-Use Django session authentication for the local web application. This keeps credentials and session lifecycle in Django, but cross-origin local development requires deliberate handling:
+- Backend API tests cover authentication, CSRF, validation, ownership, filtering, ordering, deletion/restore, transaction behavior, and seed idempotence.
+- Frontend tests cover interactive components and pure query/date transformations without distorting Server Component boundaries.
+- Playwright exercises the real user journey across five viewports and runs Axe scans.
+- Coverage thresholds, formatters, linters, TypeScript, dependency auditing, builds, Docker health checks, and smoke tests form the remaining gate.
+- GitHub Actions runs `make check` and `make e2e` in Docker, matching the supported local workflow.
 
-- browser requests include credentials;
-- CORS allows only configured frontend origins;
-- every unsafe request includes Django's CSRF token; a dedicated permission enforces it for anonymous login and registration before a session exists;
-- session and CSRF cookies use secure production settings before deployment;
-- API errors never reveal whether a password or a particular credential field was correct.
+Coverage is evidence, not the goal. Authorization, failure paths, asynchronous ordering, responsive behavior, and accessibility receive explicit assertions even when a happy-path test would increase the number faster.
 
-JWT is unnecessary for the current first-party browser client and would add token storage and rotation work without a demonstrated requirement.
+## Trade-offs and deferred production work
 
-## Autosave strategy
-
-1. Keep title, content, and category in local editor state.
-2. Mark the editor dirty after a meaningful change.
-3. Debounce `PATCH` requests for a short interval.
-4. Cancel or supersede stale pending requests where possible.
-5. Show `Saving`, `Saved`, or a recoverable error.
-6. Flush or await a pending save before closing.
-
-MVP conflict behavior is last accepted write wins. The API's `updated_at` response becomes the displayed “Last edited” value. Optimistic concurrency can be added later if a real multi-device requirement appears.
-
-## Testing strategy
-
-- **Backend unit/API tests**: model constraints, serializer validation, authentication, ownership, filtering, ordering, counts, autosave patches, and query behavior.
-- **Frontend component tests**: forms, category selection, empty/error states, note previews, and autosave state transitions.
-- **Integration tests**: critical authenticated workflow against API boundaries.
-- **End-to-end tests**: register, create, filter, edit, reload, sign out, and authorization redirect.
-- **Enhancement tests**: search/filter composition, deterministic sorting, soft-delete/restore, reorder validation and atomicity, keyboard dragging, and optimistic rollback.
-- **Infrastructure smoke test**: Compose health checks plus HTTP verification of ports 3000 and 8000.
-
-Coverage is a feedback signal, not a substitute for boundary-focused tests. The current backend threshold is 80%.
-
-## Deferred production concerns
-
-Deployment is intentionally out of current scope. A production milestone must select an application server, static asset strategy, HTTPS termination, managed PostgreSQL, secret storage, backups, observability, cookie policy, and CI/CD environment before release.
-
-## Researched implementation references
-
-- [dnd kit React quickstart](https://dndkit.com/react/quickstart/) and [sortable state management](https://dndkit.com/react/guides/sortable-state-management/) for the current API.
-- [dnd kit sensors](https://dndkit.com/react/guides/sensors/) and [accessibility plugin](https://dndkit.com/extend/plugins/accessibility/) for equivalent pointer, touch, keyboard, and screen-reader behavior.
-- [Motion reduced-motion guidance](https://motion.dev/docs/react-use-reduced-motion) for accessible animation decisions.
+- PostgreSQL `icontains` is intentionally sufficient for the small dataset; full-text search infrastructure is premature.
+- Categories are shared seeded values; user-managed categories require new authorization, mutation, and migration rules.
+- The plain-text editor follows the challenge; rich text and collaboration would materially change persistence and security.
+- One global manual order keeps the model coherent; per-filter order would require a separate position entity or ordering policy.
+- No background cleanup permanently deletes soft-deleted notes yet.
+- Deployment is outside scope. A production milestone must choose application servers, HTTPS, managed PostgreSQL, secrets, static assets, backups, observability, cookie/domain policy, and CI/CD destinations.

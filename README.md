@@ -1,173 +1,223 @@
 # Turbo Notes
 
-Turbo Notes is a private notes-taking hiring challenge built as a local-first monorepo with Next.js, Django REST Framework, and PostgreSQL. It includes session authentication, category-based organization, search and sorting, accessible manual ordering, a responsive notes dashboard, an autosaving editor, reversible note deletion, and a minimal public landing.
+Turbo Notes is a private, responsive notes application built for Turbo AI's Senior Full Stack Engineer challenge. The repository combines a Next.js frontend, a Django REST API, and PostgreSQL in one Docker-based monorepo. The implementation follows a spec-driven workflow: source material was converted into traceable requirements, those requirements became delivery and quality gates, and each vertical slice was verified before the next one was added.
 
-## Current status
+## Product at a glance
 
-The complete P0 product journey and its documented quality gate are complete:
+- Email/password registration, login, session persistence, protected routes, and logout.
+- Private user-scoped notes with four seeded categories and category counts.
+- Responsive empty and populated dashboards inspired by the supplied Figma and video.
+- Plain-text editing with a 650 ms debounced, serialized autosave queue, retry feedback, and close-time flushing.
+- URL-backed category filters, debounced search, and deterministic date/category sorting.
+- Accessible manual ordering with pointer, touch, keyboard controls, announcements, optimistic updates, and rollback.
+- Reversible soft deletion with confirmation and an eight-second Undo window.
+- Human-readable dates, long-text wrapping, route-specific skeletons, reduced-motion support, and Axe-checked accessibility.
+- A minimal public landing page and Figma-aligned registration and login screens.
 
-- Email/password registration, login, session persistence, route protection, and logout with Django sessions; CSRF is enforced on every unsafe request, including anonymous login and registration.
-- Private user-scoped note creation, retrieval, updates, deterministic ordering, reversible soft deletion, and four seeded categories with scoped counts.
-- Responsive empty/populated dashboards, URL-backed category filters, semantic category colors, geometry-matched dashboard/editor loading skeletons, error states, and accessible note cards.
-- Debounced full-text note search plus recently edited, oldest edited, and category ordering; every view composes through durable URL state and deterministic API ordering.
-- Atomic manual ordering in the unfiltered notebook with optimistic updates, rollback feedback, pointer/touch drag handles, keyboard move controls, position announcements, and reload persistence.
-- Restrained Motion-based landing, grid-layout, editor, and autosave-state transitions with a global user-preference policy and an automated reduced-motion check.
-- Human-readable note-card dates with `Today`/`Yesterday`, concise current-year labels, historical years when needed, and hydration-safe server formatting.
-- Plain-text editor with category changes, serialized debounced autosave, saving/error/retry states, last-edited metadata, and close-time flush.
-- Accessible delete confirmation and an eight-second Undo action that restores the complete note without losing its category or latest draft.
-- Next.js 16.2.12, React 19, Tailwind CSS 4, Motion 12.43.0, dnd kit, and customized source-owned shadcn/ui `Button`, `Input`, `Textarea`, `Select`, `Tooltip`, `AlertDialog`, and `Skeleton` components.
-- Django 6.0.7 and Django REST Framework 3.17.1 with a database-aware health endpoint and a consistent JSON error contract.
-- PostgreSQL 17, Django, and Next.js orchestrated through Docker Compose.
-- Ruff, pytest with enforced backend coverage, ESLint, TypeScript, Vitest with enforced frontend coverage, Playwright E2E plus Axe accessibility scans at five representative viewports, production builds, and npm security auditing.
-- A GitHub Actions quality gate that reuses the same Dockerized checks as local development.
-- Product requirements, architecture, delivery/evaluation priorities, quality strategy, and provisional design tokens in `docs/`.
-- A source-aligned visual fidelity pass covering authentication, empty/populated dashboards, cards, controls, responsive editor composition, and original transparent stationery illustrations.
-- A public Server Component landing page with visitor registration/login actions and a personalized return-to-notes action for authenticated users.
-- The generated paper-and-pencil app mark is reused consistently in the landing header, authentication shell, and authenticated notebook header.
-- Complete App Router metadata, route-specific browser titles, crawler privacy rules for authenticated screens, a web app manifest, and original multi-size favicon/app icons.
+Selected enhancements were added only after the complete required journey was stable: deletion with undo, search and sorting, the landing page, accessible manual ordering, and restrained motion. Pinning, keyboard shortcuts, a trash-management screen, and deployment remain intentionally out of scope.
 
-The selected P1 enhancements—reversible deletion, search/deterministic sorting, the public landing, accessible manual ordering, and purposeful motion—are complete across their relevant API, responsive UI, failure handling, unit tests, E2E, and accessibility checks. The local submission package and clean-clone verification are also complete; publishing the repository, recording the walkthrough, and submitting the form intentionally remain candidate-owned external actions.
+## Technology
+
+| Layer | Main choices |
+| --- | --- |
+| Frontend | Next.js 16 App Router, React 19, TypeScript, Tailwind CSS 4, customized source-owned shadcn/ui components, Motion, dnd kit |
+| Backend | Python 3.13, Django 6, Django REST Framework 3.17, Django sessions and CSRF |
+| Data | PostgreSQL 17, Django ORM, migrations, deterministic indexes |
+| Testing | pytest, pytest-cov, Vitest, Testing Library, Playwright, Axe |
+| Tooling | Docker Compose, Make, Ruff, ESLint, Prettier, TypeScript, GitHub Actions |
+
+## Architecture
+
+```mermaid
+flowchart LR
+  Browser["Browser"] -->|"pages :3000"| Web["Next.js"]
+  Browser -->|"JSON + session cookie :8000"| API["Django REST API"]
+  Web -->|"server reads over Compose network"| API
+  API -->|"Django ORM"| DB[("PostgreSQL 17")]
+```
+
+The frontend uses React Server Components for route-level reads and small Client Component boundaries for forms, search, drag-and-drop, and the editor. Server reads forward the Django session cookie through the internal Docker URL; browser mutations use the public API URL, include credentials, and attach Django's CSRF token. The API applies authentication and ownership before every note lookup and is the only service with database access.
+
+The backend is split by domain instead of technical layer alone: `accounts` owns the custom email user and session endpoints, `notes` owns persistence and note workflows, and `core` owns operational concerns and the normalized error contract. Non-trivial reorder behavior lives in a transaction-aware service rather than in a view.
+
+See [Architecture](docs/architecture.md) for request paths, data constraints, critical workflows, and trade-offs.
 
 ## Repository structure
 
 ```text
 .
 ├── apps/
-│   ├── api/                  # Django and Django REST Framework
-│   └── web/                  # Next.js App Router, Vitest, and Playwright
-├── docs/
-│   ├── architecture.md
-│   ├── delivery-plan.md
-│   ├── design-system.md
-│   ├── evaluation-strategy.md
-│   ├── quality-strategy.md
-│   └── requirements.md
-├── .env.example              # Local environment contract
-├── AGENTS.md                 # Engineering and AI contribution rules
+│   ├── api/                  # Django project and domain apps
+│   └── web/                  # Next.js App Router application and browser tests
+├── docs/                     # Public product and engineering specifications
+├── .env.example              # Documented local environment contract
+├── .github/workflows/ci.yml  # Dockerized quality gate
+├── AGENTS.md                 # Repository-wide engineering and AI rules
 ├── docker-compose.yml
 └── Makefile
 ```
 
-## Quick start
+## Run locally
 
-Prerequisites:
+### Prerequisites
 
 - Docker Desktop with Docker Compose v2
 - `make`
 
-Start all services:
+### Start the stack
 
 ```bash
 cp .env.example .env
 make up
 ```
 
-Open:
+The `api` container applies pending migrations before starting. Compose waits for PostgreSQL to become healthy before Django starts, then waits for Django before starting Next.js.
 
-- Web: [http://localhost:3000](http://localhost:3000)
-- API health: [http://localhost:8000/api/v1/health/](http://localhost:8000/api/v1/health/)
-- Django admin: [http://localhost:8000/admin/](http://localhost:8000/admin/)
+| Service | Local address | Purpose |
+| --- | --- | --- |
+| Next.js | [http://localhost:3000](http://localhost:3000) | Product UI |
+| Django API | [http://localhost:8000/api/v1/health/](http://localhost:8000/api/v1/health/) | Versioned API and readiness check |
+| Django admin | [http://localhost:8000/admin/](http://localhost:8000/admin/) | Local administration |
+| PostgreSQL | `localhost:5432` | Local database connection |
 
-Stop services without deleting PostgreSQL data:
+Stop the containers without deleting database data:
 
 ```bash
 make down
 ```
 
-The API container applies pending Django migrations before starting the development server. PostgreSQL data persists in a named Docker volume.
+PostgreSQL data is stored in the named `postgres_data` volume.
 
-## Common commands
+### Prepare demo data
+
+With the stack running:
+
+```bash
+make seed-demo DEMO_EMAIL=demo@example.com
+```
+
+The command prompts for a password instead of storing one. It creates an idempotent local account with six representative notes, and it can be run repeatedly.
+
+## Commands
 
 | Command | Purpose |
 | --- | --- |
-| `make bootstrap` | Create `.env` when absent and build containers. |
-| `make up` | Build and start the complete local stack. |
-| `make down` | Stop the stack while preserving local database data. |
+| `make bootstrap` | Create `.env` when absent and build the images. |
+| `make up` | Build and start PostgreSQL, Django, and Next.js. |
+| `make down` | Stop the stack while preserving database data. |
 | `make logs` | Follow logs from all services. |
 | `make ps` | Show container and health status. |
-| `make seed-demo` | Prompt for a password and seed an idempotent local walkthrough account. |
+| `make seed-demo` | Seed the idempotent local walkthrough account. |
+| `make lint` | Run Prettier, ESLint, TypeScript, Ruff format, and Ruff lint checks. |
+| `make test` | Run frontend and backend suites with enforced coverage. |
+| `make e2e` | Run the real browser journey in the Playwright container. |
 | `make audit` | Audit production frontend dependencies. |
-| `make lint` | Run ESLint, TypeScript, and Ruff checks. |
-| `make test` | Run frontend and backend tests with enforced coverage. |
-| `make e2e` | Build the official Playwright image and run the core browser journey. |
-| `make build` | Create the Next.js production build. |
-| `make check` | Run the local quality gate. |
+| `make build` | Produce the Next.js production build. |
+| `make check` | Run audit, lint, unit/integration tests, and production build. |
 
-The Make targets run their checks inside the project containers, so they use the same dependency and database environment on every machine. The applications can also be run independently from `apps/web` with npm and `apps/api` with uv, but Docker Compose remains the supported local integration path because it supplies PostgreSQL and the correct service-to-service URLs.
+Run both `make check` and `make e2e` for the complete local gate. CI runs the same two Dockerized targets.
 
-For a prepared walkthrough, start the stack and run `make seed-demo DEMO_EMAIL=demo@example.com`. The command prompts for a password without storing it, creates six representative notes across all categories, restores any deleted seed note, and is safe to run repeatedly. See the [five-minute demo script](docs/demo-script.md) and [submission checklist](docs/submission-checklist.md).
+## Environment contract
 
-## Final verification
+Copy `.env.example` to `.env`; the real file is ignored. The committed defaults are local-only and must not be reused in another environment.
 
-The finalized runtime tree was rebuilt and exercised from a separate clean local clone, not only from the working development checkout:
+| Variable | Consumer | Meaning |
+| --- | --- | --- |
+| `POSTGRES_DB` | PostgreSQL, Compose | Database name. |
+| `POSTGRES_USER` | PostgreSQL, Compose | Database user. |
+| `POSTGRES_PASSWORD` | PostgreSQL, Compose | Local database password. |
+| `POSTGRES_PORT` | Compose | Host port mapped to container port 5432. |
+| `DATABASE_URL` | Django | Complete PostgreSQL connection string; Compose targets host `db`. |
+| `DJANGO_SECRET_KEY` | Django | Session and signing secret. |
+| `DJANGO_DEBUG` | Django | Local debug behavior. |
+| `DJANGO_ALLOWED_HOSTS` | Django | Comma-separated accepted hosts. |
+| `DJANGO_CORS_ALLOWED_ORIGINS` | Django | Frontend origins allowed to call the API. |
+| `DJANGO_CSRF_TRUSTED_ORIGINS` | Django | Trusted origins for unsafe session requests. |
+| `NEXT_PUBLIC_API_URL` | Browser | Public versioned API URL; bundled into client code. |
+| `API_INTERNAL_URL` | Next.js server | API URL on the private Compose network. |
 
-| Gate | Result |
+For non-local use, production servers, HTTPS termination, managed secrets, allowed origins, backups, observability, and deployment automation still need to be selected explicitly.
+
+## Quality evidence
+
+The final runtime was rebuilt and exercised from a separate clean local clone as well as the development checkout.
+
+| Gate | Verified result |
 | --- | --- |
-| `make check` | Passed: zero production npm vulnerabilities; Prettier, ESLint, TypeScript, Ruff, and the Next.js production build are clean. |
-| Frontend tests | 42 passed; 95.07% statements, 88.98% branches, 94.11% functions, and 96.77% lines. |
-| Backend tests | 24 passed; 97.32% coverage, including ownership, CSRF, reorder rollback, and demo-seed behavior. |
-| `make e2e` | 5/5 Playwright projects passed at 1440, 820, 650, 480, and 390-pixel widths with Axe scans; the smallest viewport also verifies reduced motion. |
-| Clean-clone smoke test | Fresh Docker images built from the lockfiles; `db`, `api`, and `web` became healthy; web and API health returned HTTP 200. |
+| Static and build gate | Prettier, ESLint, TypeScript, Ruff, and the Next.js production build passed; production npm audit reported zero vulnerabilities. |
+| Frontend tests | 42 passed; 95.07% statements, 88.98% branches, 94.11% functions, 96.77% lines. |
+| Backend tests | 24 passed; 97.32% coverage, including authorization, CSRF, reorder rollback, and seed behavior. |
+| Browser tests | 5/5 Playwright projects passed at 1440, 820, 650, 480, and 390 px with Axe scans; the smallest viewport also verifies reduced motion. |
+| Clean-clone smoke test | Fresh images built from lockfiles; `db`, `api`, and `web` became healthy; UI and API health returned HTTP 200. |
 
-No production deployment is part of this challenge scope. The public-repository, video-upload, and form links must be verified from a signed-out browser by the candidate before submission.
+The test strategy focuses on observable risk rather than coverage alone: ownership isolation, validation failures, anonymous and authenticated CSRF, autosave sequencing, optimistic rollback, URL-state composition, responsive geometry, accessibility, and the complete user journey.
 
-## Evaluation-driven delivery
+## Engineering decisions
 
-The implementation order is intentionally tied to Turbo AI's four assessment criteria:
+- **Session authentication over JWT:** this is one first-party browser client, so Django sessions keep credential and session lifecycle centralized without adding token storage and rotation.
+- **Server reads and client writes:** App Router pages fetch private data on the server, while interactive mutations use one typed client transport with credentials, CSRF, and a normalized `ApiError`.
+- **Source-owned shadcn/ui:** only required primitives were added; every visible control starts from a repository-owned shadcn component and is styled through semantic design tokens and controlled variants.
+- **Simple search before infrastructure:** case-insensitive PostgreSQL queries are sufficient for the challenge dataset; no search service is introduced without scale evidence.
+- **Soft deletion before permanent deletion:** Undo protects the high-risk action without requiring a complete trash product.
+- **Atomic global manual order:** the API locks and validates the complete active set, then updates positions without changing content timestamps.
+- **Reliable autosave:** drafts remain local, requests are debounced and serialized, stale responses cannot silently overwrite newer drafts, and close/delete flush pending state.
+- **KISS and SOLID at actual boundaries:** HTTP, domains, stateful interactions, and database transactions have explicit owners; no speculative abstraction layer wraps Django or React primitives.
 
-- **Functionality**: finish the source-derived authentication, dashboard, category, editor, persistence, and autosave journey before optional work.
-- **Code quality**: deliver each vertical slice with ownership, validation, error behavior, tests, responsive behavior, and documentation rather than postponing quality to the end.
-- **Creativity**: demonstrate AI-assisted research and verification, then add useful product differentiation such as reversible deletion, search/sorting, accessible manual ordering, and one restrained motion language when the core is stable.
-- **Time management**: protect the P0 gate and submission buffer; cut P2, Motion, and drag-and-drop before cutting security, tests, accessibility, or demo readiness.
+## Development process
 
-The planned time allocation is 55% P0 slices, 25% quality work performed alongside them, 10% selected P1 enhancements, and 10% submission verification and presentation. These percentages are prioritization guardrails, not retrospective time claims.
+### 1. Discovery and specification
 
-Selected P1 work was completed in the protected order: deletion with undo, search and sorting, a minimal landing, accessible manual ordering, then purposeful motion. Pinning, keyboard shortcuts, and a complete trash screen remain intentionally deferred P2 scope. See the [evaluation strategy](docs/evaluation-strategy.md) for scoring and go/no-go conditions.
+The challenge brief, public Figma design/prototype, and full reference video were reviewed before product code was written. Codex helped turn those sources into functional and non-functional requirements, acceptance criteria, visual tokens, open questions, and P0/P1/P2 priorities. Evidence-backed requirements were kept separate from inferred enhancements so optional creativity could not displace the required workflow.
 
-## Environment variables
+### 2. Architecture and executable setup
 
-Copy `.env.example` to `.env`. The committed example contains local-only values; `.env` is ignored by Git.
+The documented constraints and evaluation criteria drove the choice of a Dockerized monorepo with Next.js, Django REST Framework, and PostgreSQL. The specification was refined into architecture, environment, contribution, delivery, design-system, and quality documents before the first major implementation loop. This made the repository itself the durable prompt: the agent could reread stable decisions instead of relying only on chat history.
 
-### PostgreSQL
+### 3. Quality gates before scale-up
 
-| Variable | Used by | Description |
-| --- | --- | --- |
-| `POSTGRES_DB` | PostgreSQL, Compose | Local database name. |
-| `POSTGRES_USER` | PostgreSQL, Compose | Local database user. |
-| `POSTGRES_PASSWORD` | PostgreSQL, Compose | Local database password; never reuse outside local development. |
-| `POSTGRES_PORT` | Compose | Host port mapped to PostgreSQL port 5432. |
-| `DATABASE_URL` | Django | Complete database connection URL. Compose rewrites the host to `db`. |
+The critical behaviors became explicit gates: authentication, ownership, CSRF, persistence, autosave, responsive layouts, errors, accessibility, and production builds. Backend API tests, frontend component tests, Playwright journeys, coverage thresholds, linting, auditing, and Docker health checks were added alongside features rather than postponed to the end.
 
-### Django API
+### 4. Vertical implementation loop
 
-| Variable | Visibility | Description |
-| --- | --- | --- |
-| `DJANGO_SECRET_KEY` | Secret | Signs Django sessions and security-sensitive values. |
-| `DJANGO_DEBUG` | Server-only | Enables Django debug behavior locally. |
-| `DJANGO_ALLOWED_HOSTS` | Server-only | Comma-separated hosts Django may serve. |
-| `DJANGO_CORS_ALLOWED_ORIGINS` | Server-only | Browser origins allowed to call the API. |
-| `DJANGO_CSRF_TRUSTED_ORIGINS` | Server-only | Origins trusted for unsafe session-authenticated requests. |
+Work progressed in coherent commits: repository rules and infrastructure, session authentication, the user-scoped notes domain, dashboard, editor/autosave, the complete P0 E2E gate, and then selected P1 improvements. The commit history is intentionally granular enough to show decisions and completed milestones. Its timestamps are evidence of workflow sequencing, not a claim of exact human labor time.
 
-### Next.js
+Codex acted as both assistant and code executor during the larger implementation run, which allowed the candidate to work on other responsibilities in parallel while retaining review and product ownership. A multi-hour gap in the history separates that run from the later visual iterations because the candidate had to step away; the subsequent commits show the human-guided QA and refinement cycle.
 
-| Variable | Visibility | Description |
-| --- | --- | --- |
-| `NEXT_PUBLIC_API_URL` | Public/browser | Browser-facing, versioned API base URL. It is bundled into client code. |
-| `API_INTERNAL_URL` | Server-only | API base URL reachable from Next.js inside the Docker network. |
+### 5. QA and refinement
 
-No deployment environment is defined yet. Django refuses to start without an explicit secret when debug mode is disabled and automatically marks session/CSRF cookies secure, but allowed hosts, trusted origins, production servers, and secret management still require explicit non-local configuration.
+The final phase repeatedly exercised the real application and compared it with the source material at desktop, tablet, and mobile sizes. It produced technical, functional, and visual corrections including stricter CSRF handling, hydration-safe dates, shadcn control boundaries, long-word wrapping, responsive density, skeleton geometry, authentic view-specific artwork, transparent assets, selector proportions, metadata, and accessibility-safe motion.
 
-## Product and technical documentation
+## How AI was used
 
-- [Requirements](docs/requirements.md): evidence-backed behavior, acceptance criteria, exclusions, and open questions.
-- [Architecture](docs/architecture.md): service boundaries, data model, API direction, and security decisions.
-- [Design system](docs/design-system.md): Tailwind v4 token contract, shadcn/ui policy, and Figma access status.
-- [Delivery plan](docs/delivery-plan.md): priority order for the challenge timebox.
-- [Evaluation strategy](docs/evaluation-strategy.md): criteria mapping, enhancement scoring, gates, and demo evidence.
-- [Quality strategy](docs/quality-strategy.md): KISS/SOLID boundaries, test matrix, coverage policy, and review gate.
-- [Demo script](docs/demo-script.md): timed English walkthrough and recording preparation.
-- [Submission checklist](docs/submission-checklist.md): repository, GitHub, video, and form preflight.
-- [Engineering rules](AGENTS.md): coding, testing, Git, security, frontend, backend, and AI rules.
+OpenAI Codex was the primary AI environment. The work switched between Codex's Luna and Sol model profiles and adjusted reasoning effort to match the task: faster passes for bounded mechanical work and deeper reasoning for architecture, asynchronous state, security, debugging, and final QA. Plan mode was used to decompose and review the work; Goal mode was used for persistent, outcome-oriented implementation and verification loops.
+
+AI contributed to:
+
+- extracting and documenting requirements from the written brief, Figma, prototype, and 3:52 video;
+- inspecting design layers and previews, identifying tokens, and exporting available source artwork;
+- attempting structured Figma MCP context/variable extraction and documenting the integration's edit-access limitation;
+- proposing and implementing the monorepo, Docker, PostgreSQL, API, App Router, design-system, and testing structure;
+- researching current primary documentation for Next.js, Django/DRF, shadcn/ui, Motion, dnd kit, and Playwright;
+- implementing vertical slices and creating tests from the documented acceptance criteria;
+- controlling a browser for visual comparison, responsive checks, interaction QA, and runtime debugging;
+- generating original fallback artwork only when the required source asset could not be exported;
+- auditing dependencies, running Dockerized gates, reviewing diffs, and maintaining meaningful Conventional Commit history.
+
+Skills and integrations were selected by task rather than applied indiscriminately: Figma and browser tooling supported source inspection, frontend and App Router guidance informed implementation, and terminal/Git/Docker tooling supplied reproducible verification. Exact source exports are distinguished from estimates and generated assets.
+
+AI output was never treated as authoritative. The candidate defined priorities, challenged visual and product decisions, reviewed results, requested iterative corrections, and remains responsible for understanding and presenting the code. This workflow demonstrates AI as leverage: it accelerates research, execution, and repetitive verification while human judgment owns scope, quality, and the final result.
+
+## Documentation
+
+- [Requirements](docs/requirements.md): sources, priorities, acceptance criteria, exclusions, and open questions.
+- [Architecture](docs/architecture.md): runtime boundaries, request paths, data model, workflows, security, and trade-offs.
+- [Design system](docs/design-system.md): Tailwind v4 token contract, component policy, and source confidence.
+- [Delivery plan](docs/delivery-plan.md): timeboxed milestones and enhancement order.
+- [Evaluation strategy](docs/evaluation-strategy.md): challenge criteria, gates, evidence, and go/no-go rules.
+- [Quality strategy](docs/quality-strategy.md): code principles, test matrix, coverage policy, and review gate.
+- [Engineering rules](AGENTS.md): code, Git, security, frontend, backend, documentation, and AI rules.
+
+Candidate-only study notes and recording aids are deliberately stored in a Git-ignored local directory and are not part of the public deliverable.
 
 ## Source material
 
@@ -175,34 +225,6 @@ No deployment environment is defined yet. Django refuses to start without an exp
 - [Interactive Figma prototype](https://www.figma.com/proto/nIqpRyEWKPYqYsW7RMfi3S/Notes-Taking-App-Challenge?node-id=1-2&p=f&m=dev&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=34%3A889&show-proto-sidebar=1)
 - [Reference walkthrough video](https://drive.google.com/file/d/1yexyRO8qCElTYBFR9wrJCfZsqsBcTZgQ/view)
 
-The public design, prototype, and full 3:52 video were reviewed. Structured Figma design-context and variable access remains unavailable because the connected integration requires edit access, but browser inspection exposed exact layer properties and export previews for the authentication frames. Exact values and exported assets are distinguished from visually estimated tokens in the design-system document.
+## Submission boundary
 
-## AI-assisted development
-
-OpenAI Codex was used as an implementation and review assistant to:
-
-- translate the written brief into traceable functional and non-functional requirements;
-- inspect the public Figma prototype interactively through browser control, including empty, populated, filtered, editor, and category-selector states;
-- review the full 3:52 Google Drive walkthrough through browser control to capture registration, login, empty dashboard, creation, category switching, filtering, and editing behavior;
-- revisit source frames for a dedicated visual-fidelity pass that removed unnecessary dashboard chrome, corrected rounded note geometry, softened controls, and moved editor controls outside its colored writing surface;
-- attempt structured Figma design-context and variable extraction through the Figma MCP integration, document the edit-access limitation, and use browser-accessible layer properties and previews to capture exact authentication geometry, typography, colors, and source artwork;
-- scaffold and configure the Next.js and Django workspaces;
-- define Docker, environment, testing, linting, and documentation contracts;
-- research current official Next.js, Django/DRF, shadcn/ui, Motion, dnd kit, and Playwright guidance before selecting architecture, component, testing, animation, and accessible drag-and-drop approaches;
-- apply a restrained transform-only Motion language after browser/Axe feedback showed that opacity fades can create transient low-contrast frames, and verify the result with emulated reduced-motion preferences;
-- identify and replace vulnerable transitive PostCSS and Sharp versions with audited overrides;
-- validate the local UI at desktop, tablet, compact-tablet, compact-mobile, and mobile viewports and smoke-test the Dockerized web, API, and database services;
-- detect and fix a server/client timestamp hydration mismatch through live browser diagnostics;
-- exercise the real landing, registration, note creation, autosave, reload persistence, filtering, search, sorting, manual reordering, category change, reversible deletion, logout, route protection, and automated accessibility scans in Playwright;
-- export the original cat and cactus source layers from the public Figma preview, keep each illustration exclusive to its corresponding authentication view, and generate only the unavailable empty-state illustration and original stationery-style favicon.
-
-AI accelerated source comparison, scaffolding, implementation, documentation, dependency review, asset extraction, original illustration creation, and repetitive verification. Exact exports and inspected values are identified separately from visual estimates; generated assets are never presented as Figma originals.
-
-| AI-assisted activity | Concrete output | Independent verification |
-| --- | --- | --- |
-| Source and product analysis | Traceable requirements, priorities, measured authentication composition, provisional token map, and scope gates. | Revisited the complete video and public design; recorded exact visible layer properties while marking inaccessible variables as provisional. |
-| Architecture and implementation | Docker monorepo, typed API/UI slices, tests, and focused documentation updates. | Reviewed diffs, exercised owner boundaries and failures, and committed only after the relevant gate passed. |
-| Visual and browser QA | Responsive source comparison, exact authentication artwork, original unavailable decorative assets, hydration diagnosis, and interaction refinements. | Compared rendered views with source frames, inspected exported assets at delivery scale, ran five-viewport Playwright/Axe checks, measured responsive grid density, and rejected transient low-contrast opacity motion. |
-| Delivery support | Seeded demo workflow, timed script, and submission preflight. | Kept secrets interactive, tested seed idempotence, and reserved external publication/recording for the candidate. |
-
-Generated work was checked with ESLint, TypeScript, Vitest and enforced coverage, Playwright, a Next.js production build, Ruff, pytest and enforced coverage, `npm audit`, Docker health checks, HTTP smoke tests, and visual browser inspection. AI output is not treated as authoritative: the repository owner remains responsible for reviewing, understanding, and presenting every decision. Material AI-assisted changes must record the inspected source, the decision influenced, and the independent validation performed.
+This repository is ready for local review. Publishing it to a public GitHub repository, uploading the candidate's five-minute English walkthrough, and submitting both links through Turbo AI's form are intentionally candidate-owned external actions. Before submission, verify every public link from a signed-out browser and confirm that no local `.env`, candidate notes, credentials, or generated test artifacts are tracked.
