@@ -64,6 +64,80 @@ async function expectCardCopyContained(page: Page, accessibleName: string) {
   expect(Math.max(...horizontalOverflow)).toBeLessThanOrEqual(8);
 }
 
+async function expectConsistentDashboardControls(page: Page) {
+  await page.mouse.move(0, 0);
+  await page.waitForTimeout(200);
+  const controls = [
+    page.getByRole("button", { name: "New Note" }),
+    page.locator('[data-slot="input-group"]'),
+    page.getByRole("combobox", { name: "Sort notes" }),
+  ];
+  const styles = await Promise.all(
+    controls.map((control) =>
+      control.evaluate((element) => {
+        const style = getComputedStyle(element);
+        return {
+          height: Math.round(element.getBoundingClientRect().height),
+          backgroundColor: style.backgroundColor,
+          borderColor: style.borderColor,
+        };
+      }),
+    ),
+  );
+
+  expect(new Set(styles.map(({ height }) => height))).toEqual(new Set([44]));
+  expect(
+    new Set(styles.map(({ backgroundColor }) => backgroundColor)).size,
+    JSON.stringify(styles),
+  ).toBe(1);
+  expect(new Set(styles.map(({ borderColor }) => borderColor)).size).toBe(1);
+
+  const controlBoxes = await Promise.all(
+    controls.slice(1).map((control) => control.boundingBox()),
+  );
+  const countBox = await page
+    .locator('[data-slot="notes-result-count"]')
+    .boundingBox();
+  expect(controlBoxes.every(Boolean)).toBe(true);
+  expect(countBox).not.toBeNull();
+  const controlsBottom = Math.max(
+    ...controlBoxes.map((box) => (box?.y ?? 0) + (box?.height ?? 0)),
+  );
+  expect(countBox?.y ?? 0).toBeGreaterThanOrEqual(controlsBottom);
+}
+
+async function createNotesThroughApi(page: Page, count: number) {
+  await page.evaluate(async (noteCount) => {
+    const csrfToken = document.cookie
+      .split(";")
+      .map((value) => value.trim())
+      .find((value) => value.startsWith("csrftoken="))
+      ?.slice("csrftoken=".length);
+    if (!csrfToken) throw new Error("The authenticated CSRF token is missing.");
+
+    const responses = await Promise.all(
+      Array.from({ length: noteCount }, (_, index) =>
+        fetch("http://localhost:8000/api/v1/notes/", {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-CSRFToken": decodeURIComponent(csrfToken),
+          },
+          body: JSON.stringify({
+            title: `Progressive note ${index + 1}`,
+            content: "Created through the authenticated API for pagination QA.",
+          }),
+        }),
+      ),
+    );
+    if (responses.some((response) => !response.ok)) {
+      throw new Error("A progressive-loading fixture could not be created.");
+    }
+  }, count);
+}
+
 test("a user can capture, organize, and reopen a private note", async ({
   page,
 }, testInfo) => {
@@ -151,6 +225,7 @@ test("a user can capture, organize, and reopen a private note", async ({
       .locator("time"),
   ).toHaveText("Today");
   await expectResponsiveDashboard(page);
+  await expectConsistentDashboardControls(page);
   await expectCardCopyContained(page, "Open An end-to-end thought");
   await expect(page.getByRole("link", { name: /Personal\s*1/ })).toBeVisible();
   await expectNoAccessibilityViolations(page);
@@ -295,6 +370,17 @@ test("a user can capture, organize, and reopen a private note", async ({
   await expectNoAccessibilityViolations(page);
   await page.getByRole("link", { name: "Open notebook" }).click();
   await expect(page).toHaveURL(/\/notes$/);
+
+  await createNotesThroughApi(page, 11);
+  await page.reload();
+  await expect(page.locator("article")).toHaveCount(12);
+  await expect(page.getByText("13 notes", { exact: true })).toBeVisible();
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await expect(page.locator("article")).toHaveCount(13);
+  await expect(
+    page.getByText("All 13 notes loaded.", { exact: true }),
+  ).toBeVisible();
+  await expectNoAccessibilityViolations(page);
 
   await page.getByRole("button", { name: "Sign out" }).click();
   await expect(page).toHaveURL(/\/login$/);
