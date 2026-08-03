@@ -28,7 +28,7 @@ export function NoteCard({
   return (
     <article
       className={cn(
-        "group border-note min-h-note-card relative h-full overflow-hidden rounded-2xl transition-transform motion-safe:hover:-translate-y-0.5",
+        "group border-note min-h-note-card relative h-full min-w-0 overflow-hidden rounded-2xl transition-transform motion-safe:hover:-translate-y-0.5",
         theme.surface,
         theme.border,
       )}
@@ -39,7 +39,7 @@ export function NoteCard({
       <Link
         href={href}
         aria-label={`Open ${note.title || "untitled note"}`}
-        className="focus-visible:ring-ring/60 rounded-note-inner min-h-note-card compact:p-5 flex h-full flex-col p-4 outline-none focus-visible:ring-4 focus-visible:ring-inset xl:p-6"
+        className="focus-visible:ring-ring/60 rounded-note-inner min-h-note-card compact:p-5 flex h-full min-w-0 flex-col p-4 outline-none focus-visible:ring-4 focus-visible:ring-inset xl:p-6"
       >
         <p
           className={cn(
@@ -51,13 +51,13 @@ export function NoteCard({
             {displayDate}
           </time>
           <span aria-hidden="true">·</span>
-          <span>{category.name}</span>
+          <span className="min-w-0 wrap-anywhere">{category.name}</span>
         </p>
 
-        <h2 className="tracking-note-heading xl:text-note-title mt-4 line-clamp-2 font-serif text-2xl leading-tight font-semibold">
+        <h2 className="tracking-note-heading xl:text-note-title mt-4 line-clamp-2 min-w-0 font-serif text-2xl leading-tight font-semibold wrap-anywhere">
           {note.title || "Untitled note"}
         </h2>
-        <p className="text-foreground/85 compact:line-clamp-4 compact:leading-6 mt-3 line-clamp-3 text-sm leading-5 whitespace-pre-line xl:line-clamp-6">
+        <p className="text-foreground/85 compact:line-clamp-4 compact:leading-6 mt-3 line-clamp-3 min-w-0 text-sm leading-5 wrap-anywhere whitespace-pre-line xl:line-clamp-6">
           {note.content || "No content yet. Open this note and start writing."}
         </p>
       </Link>

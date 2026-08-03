@@ -81,7 +81,7 @@ function SortableNoteCard({
         transition,
         zIndex: isDragging ? 20 : undefined,
       }}
-      className={cn("relative", isDragging && "opacity-70 select-none")}
+      className={cn("relative min-w-0", isDragging && "opacity-70 select-none")}
     >
       <NoteCard
         note={item.note}

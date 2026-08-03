@@ -104,7 +104,7 @@ The source primarily shows a laptop-width frame. Implementation must add intenti
 - **Compact (below 35 rem)**: one-column note list with cards bounded at a 13-rem minimum, tighter preview clamping, horizontally scrollable categories, and a viewport-filling editor.
 - **Intermediate (35 rem and above)**: the grid automatically fills 15.5-rem minimum columns, card height continues growing fluidly with available viewport space, and the toolbar stays stacked until 48 rem so controls do not compete for width around 650 pixels.
 - **Wide (80 rem and above)**: cards reach the full 18-rem reference height; the existing large-screen sidebar and available grid width generally produce the three-column source composition.
-- Long titles and bodies wrap or clamp safely at every width.
+- Long titles, category labels, and bodies wrap or clamp safely at every width, including unbroken URLs and identifier-like strings.
 - Filter state, note counts, editor status, and primary actions remain visible without horizontal page overflow.
 - Responsive browser coverage exercises 1440, 820, 650, 480, and 390-pixel viewports, asserting grid columns, card height, and document overflow in addition to the full user journey and Axe scans.
 

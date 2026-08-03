@@ -42,7 +42,7 @@ export function AnimatedNotesGrid({
             ...cardTransition,
             delay: Math.min(index * 0.035, 0.14),
           }}
-          className="h-full"
+          className="h-full min-w-0"
         >
           <NoteCard
             note={note}

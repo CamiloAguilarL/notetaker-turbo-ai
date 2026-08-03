@@ -1,6 +1,8 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
+const LONG_UNBROKEN_TOKEN = "thought".repeat(30);
+
 async function expectNoAccessibilityViolations(page: Page) {
   const results = await new AxeBuilder({ page })
     .exclude("nextjs-portal")
@@ -42,6 +44,20 @@ async function expectResponsiveDashboard(page: Page) {
     Math.max(208, 160 + viewport.width * 0.1),
   );
   expect(Math.round(cardBox?.height ?? 0)).toBe(expectedCardHeight);
+}
+
+async function expectCardCopyContained(page: Page, accessibleName: string) {
+  const horizontalOverflow = await page
+    .getByRole("link", { name: accessibleName })
+    .locator("h2, p")
+    .evaluateAll((elements) =>
+      elements.map((element) => element.scrollWidth - element.clientWidth),
+    );
+
+  // Chromium includes a few internal pixels reserved by line-clamp's ellipsis
+  // in scrollWidth. A long unbroken word without wrapping exceeds this margin
+  // by hundreds of pixels.
+  expect(Math.max(...horizontalOverflow)).toBeLessThanOrEqual(8);
 }
 
 test("a user can capture, organize, and reopen a private note", async ({
@@ -87,7 +103,9 @@ test("a user can capture, organize, and reopen a private note", async ({
   await page.getByLabel("Note title").fill("An end-to-end thought");
   await page
     .getByLabel("Note content")
-    .fill("The core notebook journey is covered by a real browser.");
+    .fill(
+      `The core notebook journey is covered by a real browser. ${LONG_UNBROKEN_TOKEN}`,
+    );
   await chooseSelectOption(page, "Category", "Personal");
 
   await expect(
@@ -107,6 +125,7 @@ test("a user can capture, organize, and reopen a private note", async ({
       .locator("time"),
   ).toHaveText("Today");
   await expectResponsiveDashboard(page);
+  await expectCardCopyContained(page, "Open An end-to-end thought");
   await expect(page.getByRole("link", { name: /Personal\s*1/ })).toBeVisible();
   await expectNoAccessibilityViolations(page);
 
