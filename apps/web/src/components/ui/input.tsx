@@ -9,7 +9,9 @@ const inputVariants = cva(
     variants: {
       variant: {
         default: "",
-        auth: "border-primary/45 bg-card/20 focus-visible:border-primary h-11",
+        auth: "border-auth-border placeholder:text-foreground focus-visible:border-auth-border focus-visible:ring-auth-border/25 h-auth-input !rounded-auth-control bg-transparent px-3 py-0 !text-auth-copy",
+        "auth-password":
+          "border-auth-border placeholder:text-foreground focus-visible:border-auth-border focus-visible:ring-auth-border/25 h-auth-input !rounded-auth-control bg-transparent py-0 pr-10 pl-3 !text-auth-copy",
         search: "border-primary/35 pl-10",
         "editor-title":
           "placeholder:text-foreground/35 caret-foreground mt-4 h-auto rounded-none border-0 px-0 py-0 font-serif text-3xl leading-tight font-semibold tracking-editor-title shadow-none ring-0 focus-visible:border-0 focus-visible:ring-0 sm:mt-6 sm:text-4xl md:text-4xl",

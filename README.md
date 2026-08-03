@@ -104,7 +104,7 @@ The finalized runtime tree was rebuilt and exercised from a separate clean local
 | Gate | Result |
 | --- | --- |
 | `make check` | Passed: zero production npm vulnerabilities; Prettier, ESLint, TypeScript, Ruff, and the Next.js production build are clean. |
-| Frontend tests | 39 passed; 95.02% statements, 88.79% branches, 94% functions, and 96.75% lines. |
+| Frontend tests | 42 passed; 95.07% statements, 88.98% branches, 94.11% functions, and 96.77% lines. |
 | Backend tests | 24 passed; 97.32% coverage, including ownership, CSRF, reorder rollback, and demo-seed behavior. |
 | `make e2e` | 5/5 Playwright projects passed at 1440, 820, 650, 480, and 390-pixel widths with Axe scans; the smallest viewport also verifies reduced motion. |
 | Clean-clone smoke test | Fresh Docker images built from the lockfiles; `db`, `api`, and `web` became healthy; web and API health returned HTTP 200. |
@@ -175,7 +175,7 @@ No deployment environment is defined yet. Django refuses to start without an exp
 - [Interactive Figma prototype](https://www.figma.com/proto/nIqpRyEWKPYqYsW7RMfi3S/Notes-Taking-App-Challenge?node-id=1-2&p=f&m=dev&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=34%3A889&show-proto-sidebar=1)
 - [Reference walkthrough video](https://drive.google.com/file/d/1yexyRO8qCElTYBFR9wrJCfZsqsBcTZgQ/view)
 
-The public prototype and the full 3:52 video were reviewed. The connected Figma account can view the public prototype but cannot read design variables because the MCP integration requires edit access. Current color values are therefore visually estimated and explicitly marked provisional in the design-system document.
+The public design, prototype, and full 3:52 video were reviewed. Structured Figma design-context and variable access remains unavailable because the connected integration requires edit access, but browser inspection exposed exact layer properties and export previews for the authentication frames. Exact values and exported assets are distinguished from visually estimated tokens in the design-system document.
 
 ## AI-assisted development
 
@@ -185,7 +185,7 @@ OpenAI Codex was used as an implementation and review assistant to:
 - inspect the public Figma prototype interactively through browser control, including empty, populated, filtered, editor, and category-selector states;
 - review the full 3:52 Google Drive walkthrough through browser control to capture registration, login, empty dashboard, creation, category switching, filtering, and editing behavior;
 - revisit source frames for a dedicated visual-fidelity pass that removed unnecessary dashboard chrome, corrected rounded note geometry, softened controls, and moved editor controls outside its colored writing surface;
-- attempt structured Figma design-context and variable extraction through the Figma MCP integration, document the edit-access limitation, and keep visually estimated tokens explicitly provisional;
+- attempt structured Figma design-context and variable extraction through the Figma MCP integration, document the edit-access limitation, and use browser-accessible layer properties and previews to capture exact authentication geometry, typography, colors, and source artwork;
 - scaffold and configure the Next.js and Django workspaces;
 - define Docker, environment, testing, linting, and documentation contracts;
 - research current official Next.js, Django/DRF, shadcn/ui, Motion, dnd kit, and Playwright guidance before selecting architecture, component, testing, animation, and accessible drag-and-drop approaches;
@@ -194,15 +194,15 @@ OpenAI Codex was used as an implementation and review assistant to:
 - validate the local UI at desktop, tablet, compact-tablet, compact-mobile, and mobile viewports and smoke-test the Dockerized web, API, and database services;
 - detect and fix a server/client timestamp hydration mismatch through live browser diagnostics;
 - exercise the real landing, registration, note creation, autosave, reload persistence, filtering, search, sorting, manual reordering, category change, reversible deletion, logout, route protection, and automated accessibility scans in Playwright;
-- generate two original transparent colored-pencil/watercolor stationery illustrations for authentication and the empty state, plus an original stationery-style favicon; derive the required browser and app-icon sizes and inspect the assets at their intended scales.
+- export the original cat and cactus source layers from the public Figma preview, keep each illustration exclusive to its corresponding authentication view, and generate only the unavailable empty-state illustration and original stationery-style favicon.
 
-AI accelerated source comparison, scaffolding, implementation, documentation, dependency review, original illustration creation, and repetitive verification. It was not used to invent unavailable Figma values, present generated illustrations as Figma exports, or justify unverified completion claims.
+AI accelerated source comparison, scaffolding, implementation, documentation, dependency review, asset extraction, original illustration creation, and repetitive verification. Exact exports and inspected values are identified separately from visual estimates; generated assets are never presented as Figma originals.
 
 | AI-assisted activity | Concrete output | Independent verification |
 | --- | --- | --- |
-| Source and product analysis | Traceable requirements, priorities, provisional token map, and scope gates. | Revisited the complete video and public prototype; marked inaccessible Figma variables as provisional. |
+| Source and product analysis | Traceable requirements, priorities, measured authentication composition, provisional token map, and scope gates. | Revisited the complete video and public design; recorded exact visible layer properties while marking inaccessible variables as provisional. |
 | Architecture and implementation | Docker monorepo, typed API/UI slices, tests, and focused documentation updates. | Reviewed diffs, exercised owner boundaries and failures, and committed only after the relevant gate passed. |
-| Visual and browser QA | Responsive source comparison, original decorative assets, hydration diagnosis, and interaction refinements. | Inspected real browser output, ran five-viewport Playwright/Axe checks, measured responsive grid density, and rejected transient low-contrast opacity motion. |
+| Visual and browser QA | Responsive source comparison, exact authentication artwork, original unavailable decorative assets, hydration diagnosis, and interaction refinements. | Compared rendered views with source frames, inspected exported assets at delivery scale, ran five-viewport Playwright/Axe checks, measured responsive grid density, and rejected transient low-contrast opacity motion. |
 | Delivery support | Seeded demo workflow, timed script, and submission preflight. | Kept secrets interactive, tested seed idempotence, and reserved external publication/recording for the candidate. |
 
 Generated work was checked with ESLint, TypeScript, Vitest and enforced coverage, Playwright, a Next.js production build, Ruff, pytest and enforced coverage, `npm audit`, Docker health checks, HTTP smoke tests, and visual browser inspection. AI output is not treated as authoritative: the repository owner remains responsible for reviewing, understanding, and presenting every decision. Material AI-assisted changes must record the inspected source, the decision influenced, and the independent validation performed.

@@ -1,10 +1,15 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Inria_Serif, Inter } from "next/font/google";
 
 import { MotionProvider } from "@/components/motion-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 import "./globals.css";
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,6 +19,12 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const inriaSerif = Inria_Serif({
+  variable: "--font-inria-serif",
+  subsets: ["latin"],
+  weight: ["400", "700"],
 });
 
 const siteDescription =
@@ -78,7 +89,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: "cover",
   colorScheme: "light",
-  themeColor: "#f7efdf",
+  themeColor: "#faf1e3",
 };
 
 export default function RootLayout({
@@ -87,7 +98,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${inter.variable} ${geistMono.variable} ${inriaSerif.variable}`}
+    >
       <body>
         <a
           href="#main-content"

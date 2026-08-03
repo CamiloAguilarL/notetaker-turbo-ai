@@ -51,7 +51,7 @@ The P1 go/no-go gate passed with the following repository evidence:
 2. DRF integration tests prove owner-scoped lists and deny foreign retrieve/update access without leaking object existence.
 3. `make check` passes production dependency audit, Prettier, ESLint, TypeScript, Ruff, Vitest coverage thresholds, pytest coverage threshold, and the Next.js production build.
 4. The Playwright journey and Axe scans pass at 390px, 820px, and 1440px; editor fields have visible focus treatment and global reduced-motion fallback.
-5. The Figma prototype and walkthrough were compared manually. Exact Figma token extraction remains unavailable because the connected MCP requires edit access, so provisional semantic values remain explicitly labeled rather than blocking functional work.
+5. The Figma design, prototype, and walkthrough were compared manually. Exact authentication layer properties and artwork were captured through the public editor preview; structured token extraction remains unavailable because the connected MCP requires edit access, so the remaining provisional semantic values stay explicitly labeled.
 
 Selected P1 work may proceed in the documented order. Manual ordering was initially blocked until deletion, search, and deterministic sorting became stable; its completed interaction contract now opens the Motion gate.
 
@@ -65,8 +65,8 @@ The Motion gate also passed after target interactions stabilized. Motion is limi
 
 The complete local submission gate passes with the following evidence:
 
-1. `make check` reports zero production npm vulnerabilities and passes Prettier, ESLint, TypeScript, Ruff, 39 frontend tests, 24 backend tests, enforced coverage thresholds, and the Next.js production build.
-2. Frontend coverage reaches 95.02% statements, 88.79% branches, 94% functions, and 96.75% lines; backend coverage reaches 97.32%.
+1. `make check` reports zero production npm vulnerabilities and passes Prettier, ESLint, TypeScript, Ruff, 42 frontend tests, 24 backend tests, enforced coverage thresholds, and the Next.js production build.
+2. Frontend coverage reaches 95.07% statements, 88.98% branches, 94.11% functions, and 96.77% lines; backend coverage reaches 97.32%.
 3. The final Playwright journey passes in all 5 configured projects at 1440, 820, 650, 480, and 390-pixel widths with responsive geometry assertions and Axe scans; the smallest project also asserts reduced-motion behavior.
 4. Anonymous authentication mutations reject missing CSRF tokens, authenticated writes preserve the same protection, and cross-user note access remains owner-scoped without leaking object existence.
 5. A separate clean clone of the final runtime tree built fresh Docker images from committed lockfiles, passed the complete quality and E2E gates, reached healthy status for PostgreSQL, Django, and Next.js, and returned HTTP 200 from the web and API health endpoints.

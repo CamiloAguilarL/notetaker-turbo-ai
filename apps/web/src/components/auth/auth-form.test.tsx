@@ -33,7 +33,7 @@ describe("AuthForm", () => {
     render(<AuthForm mode="login" />);
     await user.type(screen.getByLabelText("Email"), "reader@example.com");
     await user.type(screen.getByLabelText("Password"), "a-secure-password");
-    await user.click(screen.getByRole("button", { name: "Sign in" }));
+    await user.click(screen.getByRole("button", { name: "Login" }));
 
     expect(mockedLogIn).toHaveBeenCalledWith({
       email: "reader@example.com",
@@ -59,7 +59,7 @@ describe("AuthForm", () => {
     render(<AuthForm mode="register" />);
     await user.type(screen.getByLabelText("Email"), "reader@example.com");
     await user.type(screen.getByLabelText("Password"), "a-secure-password");
-    await user.click(screen.getByRole("button", { name: "Create account" }));
+    await user.click(screen.getByRole("button", { name: "Sign Up" }));
 
     expect(
       await screen.findByText("A user with this email already exists."),
@@ -78,10 +78,25 @@ describe("AuthForm", () => {
     render(<AuthForm mode="login" />);
     await user.type(screen.getByLabelText("Email"), "reader@example.com");
     await user.type(screen.getByLabelText("Password"), "a-secure-password");
-    await user.click(screen.getByRole("button", { name: "Sign in" }));
+    await user.click(screen.getByRole("button", { name: "Login" }));
 
     expect(
       await screen.findByText("The service is unavailable. Please try again."),
     ).toBeVisible();
+  });
+
+  it("reveals and hides the password without replacing the shadcn input", async () => {
+    const user = userEvent.setup();
+    render(<AuthForm mode="login" />);
+
+    const password = screen.getByLabelText("Password");
+    expect(password).toHaveAttribute("type", "password");
+    expect(password).toHaveAttribute("data-variant", "auth-password");
+
+    await user.click(screen.getByRole("button", { name: "Show password" }));
+    expect(password).toHaveAttribute("type", "text");
+
+    await user.click(screen.getByRole("button", { name: "Hide password" }));
+    expect(password).toHaveAttribute("type", "password");
   });
 });

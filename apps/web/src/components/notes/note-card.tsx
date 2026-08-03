@@ -28,7 +28,7 @@ export function NoteCard({
   return (
     <article
       className={cn(
-        "group border-note min-h-note-card relative h-full min-w-0 overflow-hidden rounded-2xl transition-transform motion-safe:hover:-translate-y-0.5",
+        "group border-note h-note-card relative min-w-0 overflow-hidden rounded-2xl transition-transform motion-safe:hover:-translate-y-0.5",
         theme.surface,
         theme.border,
       )}
@@ -39,7 +39,7 @@ export function NoteCard({
       <Link
         href={href}
         aria-label={`Open ${note.title || "untitled note"}`}
-        className="focus-visible:ring-ring/60 rounded-note-inner min-h-note-card compact:p-5 flex h-full min-w-0 flex-col p-4 outline-none focus-visible:ring-4 focus-visible:ring-inset xl:p-6"
+        className="focus-visible:ring-ring/60 rounded-note-inner compact:p-5 flex h-full min-w-0 flex-col p-4 outline-none focus-visible:ring-4 focus-visible:ring-inset xl:p-6"
       >
         <p
           className={cn(

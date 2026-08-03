@@ -1,7 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
-
-import { BrandMark } from "@/components/brand/brand-mark";
 
 type AuthShellProps = {
   children: React.ReactNode;
@@ -15,32 +12,35 @@ export function AuthShell({ children, mode }: AuthShellProps) {
     <main
       id="main-content"
       tabIndex={-1}
-      className="relative flex min-h-dvh justify-center overflow-hidden px-6 pt-[11dvh] pb-52 sm:px-10 sm:pt-[14dvh] sm:pb-60"
+      data-auth-mode={mode}
+      className="pt-auth-top font-auth flex min-h-dvh justify-center overflow-x-hidden px-6 pb-16"
     >
-      <section className="relative z-10 w-full max-w-sm">
-        <Link
-          href="/"
-          className="focus-visible:ring-ring/40 text-muted-foreground mx-auto mb-10 inline-flex w-fit items-center gap-2 rounded-full text-sm font-semibold focus-visible:ring-3 focus-visible:outline-none"
-        >
-          <BrandMark size="md" priority />
-          Turbo Notes
-        </Link>
-        <div className="text-center">
-          <h1 className="tracking-page-title font-serif text-4xl leading-none font-semibold text-balance sm:text-5xl">
-            {isLogin ? "Yay, You’re Back!" : "Yay, New Friend!"}
-          </h1>
-          <div className="mt-8 text-left">{children}</div>
+      <section className="max-w-auth w-full text-center">
+        <div className="h-auth-art-stage flex items-start justify-center">
+          <Image
+            data-slot="auth-illustration"
+            src={
+              isLogin
+                ? "/illustrations/auth-cactus.png"
+                : "/illustrations/auth-cat.png"
+            }
+            alt=""
+            width={isLogin ? 243 : 290}
+            height={isLogin ? 290 : 207}
+            priority
+            unoptimized
+            className={
+              isLogin
+                ? "w-auth-login-art mt-px h-auto select-none"
+                : "w-auth-register-art h-auto select-none"
+            }
+          />
         </div>
+        <h1 className="text-auth-ink mt-auth-heading-gap sm:text-auth-title relative left-1/2 w-max -translate-x-1/2 font-serif text-4xl font-bold whitespace-nowrap">
+          {isLogin ? "Yay, You're Back!" : "Yay, New Friend!"}
+        </h1>
+        <div className="mt-auth-form-gap text-left">{children}</div>
       </section>
-
-      <Image
-        src="/illustrations/auth-friends.png"
-        alt=""
-        width={1823}
-        height={863}
-        priority
-        className="lg:w-app pointer-events-none absolute bottom-0 left-1/2 h-auto w-[36rem] max-w-none -translate-x-1/2 select-none sm:w-[68rem]"
-      />
     </main>
   );
 }

@@ -2,11 +2,11 @@
 
 ## Source status
 
-The public Figma prototype and walkthrough video were visually inspected twice: first for product behavior and later frame-by-frame for the authentication, empty dashboard, populated dashboard, and editor compositions. The connected Figma account can open the public prototype but the design-context and variable APIs respond that edit access is required. As a result:
+The public Figma prototype and walkthrough video were visually inspected repeatedly: first for product behavior and later frame-by-frame for the authentication, empty dashboard, populated dashboard, and editor compositions. The connected Figma account can open the public design and expose layer properties and export previews, while the structured design-context and variable APIs still respond that edit access is required. As a result:
 
 - token **names and roles** below are the stable implementation contract;
-- current hex values are **provisional visual estimates**, not claimed Figma exports;
-- exact typography and token measurements remain pending edit access or a design-token export;
+- inspected authentication values and measurements are recorded as exact frame values;
+- values that could only be compared visually remain explicitly provisional;
 - components must use semantic tokens so replacing estimates does not require rewriting JSX.
 
 Figma source: [Notes-Taking App Challenge](https://www.figma.com/design/nIqpRyEWKPYqYsW7RMfi3S/Notes-Taking-App-Challenge)
@@ -25,7 +25,7 @@ Tokens live in `apps/web/src/app/globals.css` and are exposed to Tailwind throug
 
 | Semantic token | Current estimate | Intended role |
 | --- | --- | --- |
-| `--background` | `#f7efdf` | Warm paper canvas. |
+| `--background` | `#faf1e3` | Exact warm paper canvas from the authentication frames. |
 | `--foreground` | `#2a2118` | Primary ink and high-contrast outlines. |
 | `--card` | `#fff9ed` | Neutral elevated surface. |
 | `--primary` | `#6f4e37` | Primary actions and control borders. |
@@ -34,6 +34,9 @@ Tokens live in `apps/web/src/app/globals.css` and are exposed to Tailwind throug
 | `--control-surface` | `#fbf2e3` | Quiet fill for compact source-matched controls. |
 | `--control-border` | `#ad7841` | Warm outline for the editor category selector. |
 | `--control-icon` | `#956326` | Chevron and compact-control icon ink. |
+| `--auth-ink` | `#88642a` | Exact authentication display-heading ink. |
+| `--auth-border` | `#957139` | Exact authentication input and action outline/ink. |
+| `--auth-link` | `#88642a` | Accessible authentication link ink (4.8:1); keeps the source border color separate from 12-pixel text. |
 | `--note-random` | `#f3b88f` | Random Thoughts surface. |
 | `--note-random-border` | `#e88e54` | Random Thoughts emphasis. |
 | `--note-school` | `#f6dda7` | School surface. |
@@ -52,19 +55,20 @@ Do not use raw color values in React components. A category returned by the API 
 
 Current foundation:
 
-- **Body and controls**: Geist Sans through `next/font`.
-- **Note titles and display text**: system serif stack exposed as `font-serif`.
+- **Product body and controls**: Geist Sans through `next/font`, preserving the dashboard and editor geometry validated at all five responsive widths.
+- **Authentication body and controls**: Inter through `next/font`, matching the inspected frame metadata and supporting copy without changing product-screen metrics.
+- **Note titles and display text**: Inria Serif through `next/font`; the authentication headings use the exact inspected 48-pixel, 700-weight, 100%-line-height treatment at the source viewport.
 - **Metadata**: Geist Mono sparingly for timestamps, counts, and technical status.
 - **Card dates**: use `Today` and `Yesterday` first, abbreviated month plus day for the current UTC year, and add the year only for older dates. The Server Component fixes the reference instant so hydration cannot change the label.
 
-The serif family visible in the source cannot be identified reliably without design context. Replace the provisional stack after Figma access, preserving clear body/display roles and local font optimization through `next/font` when applicable.
+Authentication geometry is tokenized from the 1280-by-832 source frames: a 384-pixel form width, 39-pixel inputs, 43-pixel action, 13-pixel field gap, five-pixel input radius, 46-pixel action radius, a 58-pixel display line box, and the original artwork dimensions. Compact screens retain the same relationships while reducing only the top breathing room and heading size needed to avoid overflow.
 
 ## Shape, spacing, and elevation
 
 - Category cards use a three-pixel category border and a large radius rather than a generic shadow-only container. These dimensions were visually matched to the public prototype and remain tokenized estimates.
 - The product UI uses `--radius: 0.75rem` as its provisional base; note cards and the editor intentionally compose larger semantic radii from it.
 - Repeated source-matched geometry and typography use named Tailwind theme tokens: `--layout-app-max-width`, `--note-border-width`, compact-control width/insets/radii, tooltip width, display sizes, and display letter spacing. Arbitrary values remain only for isolated responsive composition or calculated viewport layout.
-- Dashboard density uses named tokens for the 15.5-rem minimum grid column and a fluid card height clamped between 13 and 18 rem. The shared `notes-grid` class owns the fluid grid algorithm for animated, sortable, and loading states.
+- Dashboard density uses named tokens for the 15.5-rem minimum grid column and an explicit fluid card height clamped between 13 and 18 rem. The fixed tokenized height prevents long copy or font metrics from stretching a grid row; line clamping and anywhere wrapping contain the preview. The shared `notes-grid` class owns the fluid grid algorithm for animated, sortable, and loading states.
 - The editor uses tighter responsive padding and a wider writing measure than its initial implementation so note content, rather than empty inset space, remains dominant.
 - The title and writing area compose shadcn `Input` and `Textarea` primitives but remain visually unframed in every state. The visible text caret communicates editing focus without adding a box inside the note surface.
 - The writing area owns a thin, rounded scrollbar whose thumb derives from the active category border token; the track stays transparent so it reads as part of the note rather than browser chrome.
@@ -88,15 +92,21 @@ shadcn/ui is a source-code supplier, not a fixed theme or runtime dependency cat
 - Category and ordering controls share one `NotebookSelect` product composition over the shadcn `Select` built on Base UI. Both use the same 194-by-34-pixel visual box, six-pixel radius, warm outline, cream popup, item geometry, and wide hand-drawn-style chevron; category options add only their semantic color dots. The underlying trigger remains 44 pixels tall for touch input, with its variant-specific height protected from the primitive's compact default-size rule. All reusable cosmetics live in the single `notebook` variant of the source-owned primitive; call sites provide only data, behavior, and context-sensitive popup alignment.
 - Prefer Lucide icons only when the glyph faithfully matches Figma; export and commit the exact Figma asset otherwise.
 
-## Original asset provenance
+## Asset provenance
 
-The Figma integration could not export the decorative source assets because the connected account lacks edit access. Three original, non-source assets were therefore generated for this challenge and are clearly treated as replacements rather than Figma exports:
+The public Figma editor's layer preview allowed the two original authentication source images to be exported without modifying the design:
 
-- `apps/web/public/illustrations/auth-friends.png`: transparent colored-pencil/watercolor cactus and sleeping cat composition for authentication.
+- `apps/web/public/illustrations/auth-cat.png`: source layer `Screenshot_2024-07-22_at_11.29.27_AM-removebg-preview 1`, used only by registration.
+- `apps/web/public/illustrations/auth-cactus.png`: source layer `Group 1 1`, used only by login.
+
+The public preview encoded its transparency grid into the downloaded pixels. A deterministic alpha pass removed only the two exact checkerboard colors; the original subject pixels, canvas dimensions, proportions, and artwork were preserved. Both cutouts were composited over `--background` and inspected in the rendered authentication pages. They bypass Next.js image optimization because the source-scale illustrations are already delivery-sized and should not reuse a stale transformed preview during local visual review.
+
+The following assets remain original, non-source replacements created specifically for the challenge:
+
 - `apps/web/public/illustrations/empty-boba.png`: transparent smiling boba illustration for the empty dashboard.
 - `apps/web/src/app/icon.png`: flat hand-drawn paper-and-pencil favicon source, with derived ICO, Apple Touch Icon, and 192/512-pixel web-app variants.
 
-The illustrations were generated with OpenAI image generation from prompts requesting a warm hand-drawn stationery style, rendered against a chroma background, converted to transparent RGBA assets, and visually checked at desktop and mobile sizes. The favicon was generated as a high-contrast flat icon and downsampled to its delivery sizes to verify its silhouette. None of these assets contains logos, source screenshots, or copied interface text. If Turbo supplies exportable source assets, replace these files without changing the component layout contract.
+The replacement illustration was generated with OpenAI image generation from a prompt requesting the warm hand-drawn stationery style, rendered against a chroma background, converted to transparent RGBA, and visually checked at desktop and mobile sizes. The favicon was generated as a high-contrast flat icon and downsampled to its delivery sizes to verify its silhouette. Neither replacement contains logos, source screenshots, or copied interface text.
 
 ## Responsive behavior
 

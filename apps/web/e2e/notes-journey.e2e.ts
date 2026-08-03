@@ -4,6 +4,10 @@ import { expect, test, type Page } from "@playwright/test";
 const LONG_UNBROKEN_TOKEN = "thought".repeat(30);
 
 async function expectNoAccessibilityViolations(page: Page) {
+  // Next.js streams route metadata independently from visible content. Wait for
+  // the title before Axe inspects the document to avoid auditing that brief
+  // navigation boundary instead of the settled page.
+  await expect(page).not.toHaveTitle("");
   const results = await new AxeBuilder({ page })
     .exclude("nextjs-portal")
     .analyze();
@@ -99,8 +103,8 @@ test("a user can capture, organize, and reopen a private note", async ({
   await expect(page).toHaveTitle("Create account · Turbo Notes");
   await expectNoAccessibilityViolations(page);
   await page.getByLabel("Email").fill(email);
-  await page.getByLabel("Password").fill("playwright-secure-password-2026");
-  await page.getByRole("button", { name: "Create account" }).click();
+  await page.locator("#password").fill("playwright-secure-password-2026");
+  await page.getByRole("button", { name: "Sign Up" }).click();
 
   await expect(page).toHaveURL(/\/notes$/);
   await expect(page).toHaveTitle("Notes · Turbo Notes");
@@ -182,6 +186,7 @@ test("a user can capture, organize, and reopen a private note", async ({
   ).toBeVisible();
 
   await page.getByRole("link", { name: "Open An end-to-end thought" }).click();
+  await expect(page).toHaveTitle("Edit note · Turbo Notes");
   await page.getByRole("button", { name: "Delete" }).click();
   await expect(
     page.getByRole("alertdialog", { name: "Delete this note?" }),

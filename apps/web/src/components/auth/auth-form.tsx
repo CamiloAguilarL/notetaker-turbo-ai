@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
-import { LoaderCircle } from "lucide-react";
+import { Eye, EyeOff, LoaderCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,6 +22,7 @@ type FieldErrors = {
 export function AuthForm({ mode }: AuthFormProps) {
   const router = useRouter();
   const [isPending, setIsPending] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [formError, setFormError] = useState<string>();
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const emailRef = useRef<HTMLInputElement>(null);
@@ -64,9 +65,9 @@ export function AuthForm({ mode }: AuthFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-4">
-      <div className="space-y-1.5">
-        <label htmlFor="email" className="text-sm font-medium">
+    <form onSubmit={handleSubmit} noValidate className="flex flex-col">
+      <div className="gap-auth-field-gap flex flex-col">
+        <label htmlFor="email" className="sr-only">
           Email
         </label>
         <Input
@@ -80,64 +81,84 @@ export function AuthForm({ mode }: AuthFormProps) {
           required
           aria-invalid={Boolean(fieldErrors.email)}
           aria-describedby={fieldErrors.email ? "email-error" : undefined}
-          placeholder="you@example.com"
+          placeholder="Email address"
           variant="auth"
         />
         {fieldErrors.email ? (
-          <p id="email-error" className="text-destructive text-sm">
+          <p id="email-error" className="text-destructive -mt-2 text-xs">
             {fieldErrors.email}
           </p>
         ) : null}
-      </div>
 
-      <div className="space-y-1.5">
-        <label htmlFor="password" className="text-sm font-medium">
+        <label htmlFor="password" className="sr-only">
           Password
         </label>
-        <Input
-          ref={passwordRef}
-          id="password"
-          name="password"
-          type="password"
-          autoComplete={isLogin ? "current-password" : "new-password"}
-          required
-          minLength={8}
-          aria-invalid={Boolean(fieldErrors.password)}
-          aria-describedby={fieldErrors.password ? "password-error" : undefined}
-          placeholder="At least 8 characters…"
-          variant="auth"
-        />
+        <div className="relative">
+          <Input
+            ref={passwordRef}
+            id="password"
+            name="password"
+            type={showPassword ? "text" : "password"}
+            autoComplete={isLogin ? "current-password" : "new-password"}
+            required
+            minLength={8}
+            aria-invalid={Boolean(fieldErrors.password)}
+            aria-describedby={
+              fieldErrors.password ? "password-error" : undefined
+            }
+            placeholder="Password"
+            variant="auth-password"
+          />
+          <Button
+            type="button"
+            variant="auth-icon"
+            size="icon-auth"
+            className="absolute top-1/2 right-0.5 -translate-y-1/2"
+            aria-label={showPassword ? "Hide password" : "Show password"}
+            aria-pressed={showPassword}
+            onClick={() => setShowPassword((isVisible) => !isVisible)}
+          >
+            {showPassword ? (
+              <EyeOff aria-hidden="true" />
+            ) : (
+              <Eye aria-hidden="true" />
+            )}
+          </Button>
+        </div>
         {fieldErrors.password ? (
-          <p id="password-error" className="text-destructive text-sm">
+          <p id="password-error" className="text-destructive -mt-2 text-xs">
             {fieldErrors.password}
           </p>
         ) : null}
       </div>
 
-      <div aria-live="polite" aria-atomic="true" className="min-h-5">
+      <div aria-live="polite" aria-atomic="true">
         {formError ? (
-          <p className="text-destructive text-sm">{formError}</p>
+          <p className="text-destructive mt-2 text-xs">{formError}</p>
         ) : null}
       </div>
 
-      <Button type="submit" className="mt-1 w-full" disabled={isPending}>
+      <Button
+        type="submit"
+        variant="auth"
+        size="auth"
+        className="mt-auth-action-gap w-full"
+        disabled={isPending}
+      >
         {isPending ? (
           <LoaderCircle aria-hidden="true" className="animate-spin" />
         ) : null}
-        {isPending
-          ? "Opening your notebook…"
-          : isLogin
-            ? "Sign in"
-            : "Create account"}
+        {isPending ? "Opening your notebook…" : isLogin ? "Login" : "Sign Up"}
       </Button>
 
-      <p className="text-muted-foreground pt-1 text-center text-sm">
-        {isLogin ? "New around here?" : "Already have a notebook?"}{" "}
+      <p className="mt-auth-link-gap text-auth-copy text-auth-link text-center leading-none">
         <Link
           href={isLogin ? "/register" : "/login"}
-          className="text-foreground font-semibold underline decoration-2 underline-offset-4"
+          className="focus-visible:ring-auth-border/30 rounded-sm underline focus-visible:ring-2 focus-visible:outline-none"
         >
-          {isLogin ? "Create an account" : "Sign in"}
+          {isLogin
+            ? "Oops! I’ve never been here before"
+            : "We’re already friends!"}
         </Link>
       </p>
     </form>
