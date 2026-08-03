@@ -65,7 +65,7 @@ The Motion gate also passed after target interactions stabilized. Motion is limi
 
 The complete local submission gate passes with the following evidence:
 
-1. `make check` reports zero production npm vulnerabilities and passes Prettier, ESLint, TypeScript, Ruff, 32 frontend tests, 24 backend tests, enforced coverage thresholds, and the Next.js production build.
+1. `make check` reports zero production npm vulnerabilities and passes Prettier, ESLint, TypeScript, Ruff, 33 frontend tests, 24 backend tests, enforced coverage thresholds, and the Next.js production build.
 2. Frontend coverage reaches 94.72% statements, 86.99% branches, 93.47% functions, and 96.55% lines; backend coverage reaches 97.32%.
 3. The final Playwright journey passes in all 3 configured projects with Axe scans at desktop, tablet, and mobile widths; the mobile project also asserts the reduced-motion behavior.
 4. Anonymous authentication mutations reject missing CSRF tokens, authenticated writes preserve the same protection, and cross-user note access remains owner-scoped without leaking object existence.

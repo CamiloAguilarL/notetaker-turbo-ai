@@ -78,7 +78,7 @@ Open a note, choose Delete, show the confirmation, confirm, then use Undo.
 
 Switch to the terminal and show only the final summaries from `make check` and `make e2e`.
 
-> “The local quality gate runs dependency auditing, Prettier, ESLint, TypeScript, Ruff, 32 frontend tests with enforced coverage, 24 backend tests with enforced coverage, and the Next.js production build. Playwright exercises the real journey at desktop, tablet, and mobile widths with Axe scans, ownership regressions are covered in the API suite, and the same Dockerized gate runs in GitHub Actions.”
+> “The local quality gate runs dependency auditing, Prettier, ESLint, TypeScript, Ruff, 33 frontend tests with enforced coverage, 24 backend tests with enforced coverage, and the Next.js production build. Playwright exercises the real journey at desktop, tablet, and mobile widths with Axe scans, ownership regressions are covered in the API suite, and the same Dockerized gate runs in GitHub Actions.”
 
 Show two or three focused commits, not the entire log.
 

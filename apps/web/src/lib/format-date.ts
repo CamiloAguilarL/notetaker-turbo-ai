@@ -2,6 +2,7 @@ const noteDate = new Intl.DateTimeFormat("en-US", {
   month: "short",
   day: "numeric",
   year: "numeric",
+  timeZone: "UTC",
 });
 
 const noteTimestamp = new Intl.DateTimeFormat("en-US", {
