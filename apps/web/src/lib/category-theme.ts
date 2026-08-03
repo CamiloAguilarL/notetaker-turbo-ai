@@ -8,22 +8,22 @@ type CategoryTheme = {
 
 export const categoryThemes: Record<Category["color_key"], CategoryTheme> = {
   random: {
-    surface: "bg-note-random",
+    surface: "bg-note-random-surface",
     border: "border-note-random-border",
     dot: "bg-note-random-border",
   },
   school: {
-    surface: "bg-note-school",
+    surface: "bg-note-school-surface",
     border: "border-note-school-border",
     dot: "bg-note-school-border",
   },
   personal: {
-    surface: "bg-note-personal",
+    surface: "bg-note-personal-surface",
     border: "border-note-personal-border",
     dot: "bg-note-personal-border",
   },
   drama: {
-    surface: "bg-note-drama",
+    surface: "bg-note-drama-surface",
     border: "border-note-drama-border",
     dot: "bg-note-drama-border",
   },

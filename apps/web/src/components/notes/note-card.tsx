@@ -27,8 +27,9 @@ export function NoteCard({
 
   return (
     <article
+      data-note-color={category.color_key}
       className={cn(
-        "group border-note h-note-card relative min-w-0 overflow-hidden rounded-2xl transition-transform motion-safe:hover:-translate-y-0.5",
+        "group note-border h-note-card relative min-w-0 overflow-hidden rounded-2xl transition-transform motion-safe:hover:-translate-y-0.5",
         theme.surface,
         theme.border,
       )}

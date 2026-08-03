@@ -21,7 +21,7 @@ const previewNotes = [
     title: "Tiny ideas worth keeping",
     body: "The best thoughts rarely arrive with a warning.",
     className:
-      "bg-note-random border-note-random-border top-2 right-1 w-[76%] rotate-2 sm:right-5 sm:w-[68%]",
+      "bg-note-random-surface border-note-random-border top-2 right-1 w-[76%] rotate-2 sm:right-5 sm:w-[68%]",
   },
   {
     category: "School",
@@ -29,7 +29,7 @@ const previewNotes = [
     title: "Things I want to learn",
     body: "A reading list, a question, and one brave first step.",
     className:
-      "bg-note-school border-note-school-border top-32 left-0 w-[78%] -rotate-2 sm:left-5 sm:w-[70%]",
+      "bg-note-school-surface border-note-school-border top-32 left-0 w-[78%] -rotate-2 sm:left-5 sm:w-[70%]",
   },
   {
     category: "Personal",
@@ -37,7 +37,7 @@ const previewNotes = [
     title: "A gentle reminder",
     body: "Make room for the moments you want to return to.",
     className:
-      "bg-note-personal border-note-personal-border right-3 bottom-1 w-[78%] rotate-1 sm:right-9 sm:w-[70%]",
+      "bg-note-personal-surface border-note-personal-border right-3 bottom-1 w-[78%] rotate-1 sm:right-9 sm:w-[70%]",
   },
 ] as const;
 
@@ -124,7 +124,7 @@ export default async function Home() {
             <article
               key={note.category}
               className={cn(
-                "border-note absolute min-h-52 rounded-2xl p-5 shadow-sm sm:min-h-56 sm:p-6",
+                "note-border absolute min-h-52 rounded-2xl p-5 shadow-sm sm:min-h-56 sm:p-6",
                 note.className,
               )}
             >

@@ -48,6 +48,34 @@ async function expectResponsiveDashboard(page: Page) {
     Math.max(208, 160 + viewport.width * 0.1),
   );
   expect(Math.round(cardBox?.height ?? 0)).toBe(expectedCardHeight);
+
+  const expectedCategoryBorders = {
+    random: "rgb(239, 156, 102)",
+    school: "rgb(252, 220, 148)",
+    personal: "rgb(120, 171, 168)",
+    drama: "rgb(200, 207, 160)",
+  } as const;
+  const cardBorders = await grid
+    .locator("article[data-note-color]")
+    .evaluateAll((elements) =>
+      elements.map((element) => {
+        const style = getComputedStyle(element);
+        return {
+          color: element.getAttribute("data-note-color"),
+          borderColor: style.borderTopColor,
+          borderWidth: style.borderTopWidth,
+        };
+      }),
+    );
+  expect(cardBorders.length).toBeGreaterThan(0);
+  for (const card of cardBorders) {
+    expect(card.borderWidth).toBe("3px");
+    expect(card.borderColor).toBe(
+      expectedCategoryBorders[
+        card.color as keyof typeof expectedCategoryBorders
+      ],
+    );
+  }
 }
 
 async function expectCardCopyContained(page: Page, accessibleName: string) {

@@ -9,7 +9,7 @@ export function NoteCardSkeleton({ index }: { index: number }) {
     <article
       aria-hidden="true"
       data-slot="note-card-skeleton"
-      className="border-skeleton-border bg-skeleton-surface border-note h-note-card compact:p-5 rounded-2xl p-4 xl:p-6"
+      className="border-skeleton-border bg-skeleton-surface note-border h-note-card compact:p-5 rounded-2xl p-4 xl:p-6"
     >
       <div className="flex items-center gap-2">
         <Skeleton shape="line" tone="ink" className="h-3 w-14" />

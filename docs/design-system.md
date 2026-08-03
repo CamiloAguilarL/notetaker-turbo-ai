@@ -40,14 +40,14 @@ Tokens live in `apps/web/src/app/globals.css` and are exposed to Tailwind throug
 | `--auth-ink` | `#88642a` | Exact authentication display-heading ink. |
 | `--auth-border` | `#957139` | Exact authentication input and action outline/ink. |
 | `--auth-link` | `#88642a` | Accessible authentication link ink (4.8:1); keeps the source border color separate from 12-pixel text. |
-| `--note-random` | `#f3b88f` | Random Thoughts surface. |
-| `--note-random-border` | `#e88e54` | Random Thoughts emphasis. |
-| `--note-school` | `#f6dda7` | School surface. |
-| `--note-school-border` | `#e8bd58` | School emphasis. |
-| `--note-personal` | `#a9c6bf` | Personal surface. |
-| `--note-personal-border` | `#6caaa2` | Personal emphasis. |
-| `--note-drama` | `#c9b8d9` | Drama surface. |
-| `--note-drama-border` | `#9779b3` | Drama emphasis. |
+| `--note-random` | `#ef9c66` | Exact Random Thoughts accent and border. |
+| `--note-random-surface` | `--note-random` at 50% opacity | Random Thoughts card/editor fill. |
+| `--note-school` | `#fcdc94` | Exact School accent and border. |
+| `--note-school-surface` | `--note-school` at 50% opacity | School card/editor fill. |
+| `--note-personal` | `#78aba8` | Exact Personal accent and border. |
+| `--note-personal-surface` | `--note-personal` at 50% opacity | Personal card/editor fill. |
+| `--note-drama` | `#c8cfa0` | Exact Drama accent and border. |
+| `--note-drama-surface` | `--note-drama` at 50% opacity | Drama card/editor fill. |
 | `--destructive` | `#7f2926` | Destructive actions and errors. |
 | `--destructive-hover` | derived from `--destructive` and `--foreground` | Higher-contrast destructive hover state. |
 | `--ring` | `#8e5d36` | Visible keyboard focus. |
@@ -68,7 +68,7 @@ Authentication geometry is tokenized from the 1280-by-832 source frames: a 384-p
 
 ## Shape, spacing, and elevation
 
-- Category cards use a three-pixel category border and a large radius rather than a generic shadow-only container. These dimensions were visually matched to the public prototype and remain tokenized estimates.
+- Category cards use a three-pixel border in the exact category accent and a large radius rather than a generic shadow-only container. Their interior uses the same accent at 50% opacity; the editor and landing preview reuse the same category surface tokens.
 - The product UI uses `--radius: 0.75rem` as its provisional base; note cards and the editor intentionally compose larger semantic radii from it.
 - Repeated source-matched geometry and typography use named Tailwind theme tokens: `--layout-app-max-width`, `--note-border-width`, compact-control width/insets/radii, tooltip width, display sizes, and display letter spacing. Arbitrary values remain only for isolated responsive composition or calculated viewport layout.
 - Dashboard density uses named tokens for the 15.5-rem minimum grid column and an explicit fluid card height clamped between 13 and 18 rem. The fixed tokenized height prevents long copy or font metrics from stretching a grid row; line clamping and anywhere wrapping contain the preview. The shared `notes-grid` class owns the fluid grid algorithm for animated, sortable, and loading states.

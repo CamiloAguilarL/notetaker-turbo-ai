@@ -18,7 +18,7 @@ export function NoteEditorSkeleton() {
         </div>
       </div>
 
-      <div className="border-skeleton-border bg-skeleton-surface border-note min-h-[calc(100dvh-9rem)] rounded-2xl p-5 sm:p-6 lg:p-8">
+      <div className="border-skeleton-border bg-skeleton-surface note-border min-h-[calc(100dvh-9rem)] rounded-2xl p-5 sm:p-6 lg:p-8">
         <div className="mx-auto max-w-6xl">
           <div className="flex min-h-10 flex-wrap items-center justify-end gap-x-4 gap-y-1">
             <Skeleton shape="line" tone="ink" className="h-3 w-48" />

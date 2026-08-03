@@ -249,7 +249,7 @@ export function NoteEditor({
         transition={{ duration: 0.28 }}
         data-note-color={selectedColorKey}
         className={cn(
-          "border-note min-h-[calc(100dvh-9rem)] rounded-2xl p-5 transition-colors sm:p-6 lg:p-8",
+          "note-border min-h-[calc(100dvh-9rem)] rounded-2xl p-5 transition-colors sm:p-6 lg:p-8",
           theme.surface,
           theme.border,
         )}

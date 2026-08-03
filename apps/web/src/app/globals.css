@@ -33,12 +33,16 @@
   --color-auth-border: var(--auth-border);
   --color-auth-link: var(--auth-link);
   --color-note-random: var(--note-random);
+  --color-note-random-surface: var(--note-random-surface);
   --color-note-random-border: var(--note-random-border);
   --color-note-school: var(--note-school);
+  --color-note-school-surface: var(--note-school-surface);
   --color-note-school-border: var(--note-school-border);
   --color-note-personal: var(--note-personal);
+  --color-note-personal-surface: var(--note-personal-surface);
   --color-note-personal-border: var(--note-personal-border);
   --color-note-drama: var(--note-drama);
+  --color-note-drama-surface: var(--note-drama-surface);
   --color-note-drama-border: var(--note-drama-border);
   --color-skeleton: var(--skeleton);
   --color-skeleton-ink: var(--skeleton-ink);
@@ -150,14 +154,30 @@
   --auth-ink: #88642a;
   --auth-border: #957139;
   --auth-link: #88642a;
-  --note-random: #f3b88f;
-  --note-random-border: #e88e54;
-  --note-school: #f6dda7;
-  --note-school-border: #e8bd58;
-  --note-personal: #a9c6bf;
-  --note-personal-border: #6caaa2;
-  --note-drama: #c9b8d9;
-  --note-drama-border: #9779b3;
+  --note-random: #ef9c66;
+  --note-random-surface: color-mix(
+    in srgb,
+    var(--note-random) 50%,
+    transparent
+  );
+  --note-random-border: var(--note-random);
+  --note-school: #fcdc94;
+  --note-school-surface: color-mix(
+    in srgb,
+    var(--note-school) 50%,
+    transparent
+  );
+  --note-school-border: var(--note-school);
+  --note-personal: #78aba8;
+  --note-personal-surface: color-mix(
+    in srgb,
+    var(--note-personal) 50%,
+    transparent
+  );
+  --note-personal-border: var(--note-personal);
+  --note-drama: #c8cfa0;
+  --note-drama-surface: color-mix(in srgb, var(--note-drama) 50%, transparent);
+  --note-drama-border: var(--note-drama);
   --skeleton: color-mix(in srgb, var(--muted) 88%, var(--foreground));
   --skeleton-ink: color-mix(in srgb, var(--foreground) 14%, transparent);
   --skeleton-surface: color-mix(in srgb, var(--card) 48%, var(--background));
@@ -326,6 +346,10 @@
       auto-fill,
       minmax(min(100%, var(--note-grid-min-column)), 1fr)
     );
+  }
+
+  .note-border {
+    border-width: var(--note-border-width);
   }
 
   .note-preview-fade {
