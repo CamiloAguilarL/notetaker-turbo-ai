@@ -51,8 +51,8 @@ async function expectResponsiveDashboard(page: Page) {
 }
 
 async function expectCardCopyContained(page: Page, accessibleName: string) {
-  const horizontalOverflow = await page
-    .getByRole("link", { name: accessibleName })
+  const cardLink = page.getByRole("link", { name: accessibleName });
+  const horizontalOverflow = await cardLink
     .locator("h2, p")
     .evaluateAll((elements) =>
       elements.map((element) => element.scrollWidth - element.clientWidth),
@@ -62,6 +62,19 @@ async function expectCardCopyContained(page: Page, accessibleName: string) {
   // in scrollWidth. A long unbroken word without wrapping exceeds this margin
   // by hundreds of pixels.
   expect(Math.max(...horizontalOverflow)).toBeLessThanOrEqual(8);
+
+  const previewContract = await cardLink
+    .locator('[data-slot="note-card-preview"]')
+    .evaluate((element) => {
+      const style = getComputedStyle(element);
+      return {
+        maskImage: style.maskImage,
+        overflowY: style.overflowY,
+      };
+    });
+
+  expect(previewContract.overflowY).toBe("hidden");
+  expect(previewContract.maskImage).toContain("linear-gradient");
 }
 
 async function expectUnifiedScrollbars(page: Page) {

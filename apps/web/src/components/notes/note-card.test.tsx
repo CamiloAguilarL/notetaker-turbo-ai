@@ -67,4 +67,25 @@ describe("NoteCard", () => {
       screen.getByRole("link", { name: "Open untitled note" }),
     ).toHaveAttribute("href", `/notes/${note.id}`);
   });
+
+  it("truncates titles normally and softly fades overflowing previews", () => {
+    const { container } = render(
+      <NoteCard
+        note={{
+          ...note,
+          title: "A title that can occupy more than one line",
+          content: "A long preview ".repeat(80),
+        }}
+        category={category}
+        displayDate="Today"
+      />,
+    );
+
+    expect(screen.getByRole("heading", { level: 2 })).toHaveClass(
+      "line-clamp-2",
+    );
+    expect(
+      container.querySelector('[data-slot="note-card-preview"]'),
+    ).toHaveClass("note-preview-fade", "h-full", "overflow-hidden");
+  });
 });

@@ -57,9 +57,15 @@ export function NoteCard({
         <h2 className="tracking-note-heading xl:text-note-title mt-4 line-clamp-2 min-w-0 font-serif text-2xl leading-tight font-semibold wrap-anywhere">
           {note.title || "Untitled note"}
         </h2>
-        <p className="text-foreground/85 compact:line-clamp-4 compact:leading-6 mt-3 line-clamp-3 min-w-0 text-sm leading-5 wrap-anywhere whitespace-pre-line xl:line-clamp-6">
-          {note.content || "No content yet. Open this note and start writing."}
-        </p>
+        <div className="mt-3 min-h-0 flex-1 overflow-hidden">
+          <p
+            data-slot="note-card-preview"
+            className="note-preview-fade text-foreground/85 compact:leading-6 h-full min-w-0 overflow-hidden text-sm leading-5 wrap-anywhere whitespace-pre-line"
+          >
+            {note.content ||
+              "No content yet. Open this note and start writing."}
+          </p>
+        </div>
       </Link>
     </article>
   );

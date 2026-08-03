@@ -169,6 +169,7 @@
   --dashboard-control-height: 2.75rem;
   --note-grid-min-column: 15.5rem;
   --note-card-min-height: clamp(13rem, calc(10rem + 10vw), 18rem);
+  --note-preview-fade-height: 2rem;
   --auth-top-space: clamp(4rem, 23.2dvh, 12.0625rem);
   --auth-art-stage-height: 8.375rem;
   --auth-register-art-width: 11.75875rem;
@@ -320,6 +321,21 @@
     grid-template-columns: repeat(
       auto-fill,
       minmax(min(100%, var(--note-grid-min-column)), 1fr)
+    );
+  }
+
+  .note-preview-fade {
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      #000 0,
+      #000 calc(100% - var(--note-preview-fade-height)),
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      #000 0,
+      #000 calc(100% - var(--note-preview-fade-height)),
+      transparent 100%
     );
   }
 }
