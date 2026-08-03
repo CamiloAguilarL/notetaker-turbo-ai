@@ -23,6 +23,9 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-control-surface: var(--control-surface);
+  --color-control-border: var(--control-border);
+  --color-control-icon: var(--control-icon);
   --color-note-random: var(--note-random);
   --color-note-random-border: var(--note-random-border);
   --color-note-school: var(--note-school);
@@ -61,6 +64,9 @@
   --border: #9a7959;
   --input: #b69a7c;
   --ring: #8e5d36;
+  --control-surface: #fbf2e3;
+  --control-border: #ad7841;
+  --control-icon: #956326;
   --note-random: #f3b88f;
   --note-random-border: #e88e54;
   --note-school: #f6dda7;

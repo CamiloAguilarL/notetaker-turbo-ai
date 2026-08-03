@@ -14,7 +14,7 @@ The complete P0 product journey and its documented quality gate are complete:
 - Restrained Motion-based landing, grid-layout, editor, and autosave-state transitions with a global user-preference policy and an automated reduced-motion check.
 - Plain-text editor with category changes, serialized debounced autosave, saving/error/retry states, last-edited metadata, and close-time flush.
 - Accessible delete confirmation and an eight-second Undo action that restores the complete note without losing its category or latest draft.
-- Next.js 16.2.12, React 19, Tailwind CSS 4, Motion 12.43.0, dnd kit, and customized source-owned shadcn/ui `Button`, `Input`, and `AlertDialog` components.
+- Next.js 16.2.12, React 19, Tailwind CSS 4, Motion 12.43.0, dnd kit, and customized source-owned shadcn/ui `Button`, `Input`, `Textarea`, `Select`, and `AlertDialog` components.
 - Django 6.0.7 and Django REST Framework 3.17.1 with a database-aware health endpoint and a consistent JSON error contract.
 - PostgreSQL 17, Django, and Next.js orchestrated through Docker Compose.
 - Ruff, pytest with enforced backend coverage, ESLint, TypeScript, Vitest with enforced frontend coverage, Playwright E2E plus Axe accessibility scans at three breakpoints, production builds, and npm security auditing.
@@ -101,7 +101,7 @@ The finalized runtime tree was rebuilt and exercised from a separate clean local
 | Gate | Result |
 | --- | --- |
 | `make check` | Passed: zero production npm vulnerabilities; Prettier, ESLint, TypeScript, Ruff, and the Next.js production build are clean. |
-| Frontend tests | 31 passed; 94.48% statements, 88.73% branches, 93.10% functions, and 96.42% lines. |
+| Frontend tests | 31 passed; 94.70% statements, 86.99% branches, 93.47% functions, and 96.53% lines. |
 | Backend tests | 24 passed; 97.32% coverage, including ownership, CSRF, reorder rollback, and demo-seed behavior. |
 | `make e2e` | 3/3 Playwright projects passed at desktop, tablet, and mobile widths with Axe scans; mobile also verifies reduced motion. |
 | Clean-clone smoke test | Fresh Docker images built from the lockfiles; `db`, `api`, and `web` became healthy; web and API health returned HTTP 200. |
@@ -185,7 +185,7 @@ OpenAI Codex was used as an implementation and review assistant to:
 - attempt structured Figma design-context and variable extraction through the Figma MCP integration, document the edit-access limitation, and keep visually estimated tokens explicitly provisional;
 - scaffold and configure the Next.js and Django workspaces;
 - define Docker, environment, testing, linting, and documentation contracts;
-- research current official Next.js, Django/DRF, Motion, dnd kit, and Playwright guidance before selecting architecture, testing, animation, and accessible drag-and-drop approaches;
+- research current official Next.js, Django/DRF, shadcn/ui, Motion, dnd kit, and Playwright guidance before selecting architecture, component, testing, animation, and accessible drag-and-drop approaches;
 - apply a restrained transform-only Motion language after browser/Axe feedback showed that opacity fades can create transient low-contrast frames, and verify the result with emulated reduced-motion preferences;
 - identify and replace vulnerable transitive PostCSS and Sharp versions with audited overrides;
 - validate the local UI at desktop, tablet, and mobile viewports and smoke-test the Dockerized web, API, and database services;

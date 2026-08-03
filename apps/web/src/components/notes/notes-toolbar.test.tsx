@@ -1,4 +1,10 @@
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -69,8 +75,9 @@ describe("NotesToolbar", () => {
       />,
     );
 
+    await user.click(screen.getByRole("combobox", { name: "Sort notes" }));
     expect(screen.queryByRole("option", { name: "Category" })).toBeNull();
-    await user.selectOptions(screen.getByLabelText("Sort notes"), "updated_at");
+    await user.click(screen.getByRole("option", { name: "Oldest edited" }));
 
     expect(replace).toHaveBeenCalledWith(
       "/notes?category=school&ordering=updated_at",
@@ -78,19 +85,18 @@ describe("NotesToolbar", () => {
   });
 
   it("leaves manual order when a search starts", async () => {
-    vi.useFakeTimers();
+    const user = userEvent.setup();
     currentParams = new URLSearchParams("ordering=manual");
     render(<NotesToolbar initialSearch="" ordering="manual" resultCount={2} />);
 
     fireEvent.change(screen.getByLabelText("Search notes"), {
       target: { value: "browser" },
     });
+    await user.click(screen.getByRole("combobox", { name: "Sort notes" }));
     expect(screen.queryByRole("option", { name: "Manual order" })).toBeNull();
 
-    await act(async () => {
-      await vi.advanceTimersByTimeAsync(350);
-    });
-
-    expect(replace).toHaveBeenCalledWith("/notes?q=browser");
+    await waitFor(() =>
+      expect(replace).toHaveBeenCalledWith("/notes?q=browser"),
+    );
   });
 });

@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState, useTransition } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { NoteOrderingSelect } from "@/components/notes/note-ordering-select";
 import {
   buildNotesHref,
   DEFAULT_NOTE_ORDERING,
@@ -133,22 +134,11 @@ export function NotesToolbar({
             ? "Updating notes…"
             : `${resultCount} ${resultCount === 1 ? "note" : "notes"}`}
         </p>
-        <label className="flex items-center gap-2 text-sm font-medium">
-          <span className="sr-only sm:not-sr-only">Sort by</span>
-          <select
-            name="note-ordering"
-            aria-label="Sort notes"
-            value={ordering}
-            onChange={(event) => changeOrdering(event.currentTarget.value)}
-            className="border-primary/35 text-foreground focus-visible:ring-ring/40 [&>option]:bg-background [&>option]:text-foreground min-h-10 rounded-full border bg-transparent px-4 outline-none focus-visible:ring-3"
-          >
-            {availableOrderings.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </label>
+        <NoteOrderingSelect
+          options={availableOrderings}
+          value={ordering}
+          onValueChange={changeOrdering}
+        />
       </div>
     </section>
   );

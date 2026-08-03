@@ -11,6 +11,11 @@ async function expectNoAccessibilityViolations(page: Page) {
   ).toEqual([]);
 }
 
+async function chooseSelectOption(page: Page, label: string, option: string) {
+  await page.getByRole("combobox", { name: label }).click();
+  await page.getByRole("option", { name: option, exact: true }).click();
+}
+
 test("a user can capture, organize, and reopen a private note", async ({
   page,
 }, testInfo) => {
@@ -48,7 +53,7 @@ test("a user can capture, organize, and reopen a private note", async ({
   await page
     .getByLabel("Note content")
     .fill("The core notebook journey is covered by a real browser.");
-  await page.getByLabel("Category").selectOption("personal");
+  await chooseSelectOption(page, "Category", "Personal");
 
   await expect(
     page.getByText("Unsaved changes", { exact: true }),
@@ -77,7 +82,7 @@ test("a user can capture, organize, and reopen a private note", async ({
     /\/notes\/[0-9a-f-]+\?return=category%3Dpersonal$/,
   );
 
-  await page.getByLabel("Category").selectOption("school");
+  await chooseSelectOption(page, "Category", "School");
   await expect(
     page.getByText("Unsaved changes", { exact: true }),
   ).toBeVisible();
@@ -120,11 +125,11 @@ test("a user can capture, organize, and reopen a private note", async ({
   await expect(
     page.getByRole("link", { name: "Open An end-to-end thought" }),
   ).toBeVisible();
+  await page.getByRole("combobox", { name: "Sort notes" }).click();
   await expect(page.getByRole("option", { name: "Category" })).toHaveCount(0);
-
   await page
-    .getByRole("combobox", { name: "Sort notes" })
-    .selectOption("updated_at");
+    .getByRole("option", { name: "Oldest edited", exact: true })
+    .click();
   await expect(page).toHaveURL(
     /\/notes\?category=school&q=browser&ordering=updated_at$/,
   );
@@ -133,7 +138,9 @@ test("a user can capture, organize, and reopen a private note", async ({
 
   await page.getByRole("link", { name: /All Categories\s*1/ }).click();
   await expect(page).toHaveURL(/\/notes\?ordering=updated_at$/);
+  await page.getByRole("combobox", { name: "Sort notes" }).click();
   await expect(page.getByRole("option", { name: "Category" })).toBeAttached();
+  await page.keyboard.press("Escape");
 
   await page.getByLabel("Search notes").fill("missing phrase");
   await expect(page).toHaveURL(
@@ -145,9 +152,8 @@ test("a user can capture, organize, and reopen a private note", async ({
   await expectNoAccessibilityViolations(page);
 
   await page.getByRole("button", { name: "Clear search" }).click();
-  await page
-    .getByRole("combobox", { name: "Sort notes" })
-    .selectOption("category");
+  await expect(page).toHaveURL(/\/notes\?ordering=updated_at$/);
+  await chooseSelectOption(page, "Sort notes", "Category");
   await expect(page).toHaveURL(/\/notes\?ordering=category$/);
   await expect(
     page.getByRole("link", { name: "Open An end-to-end thought" }),
@@ -162,9 +168,7 @@ test("a user can capture, organize, and reopen a private note", async ({
   await page.getByRole("button", { name: "Close" }).click();
   await expect(page).toHaveURL(/\/notes\?ordering=category$/);
 
-  await page
-    .getByRole("combobox", { name: "Sort notes" })
-    .selectOption("manual");
+  await chooseSelectOption(page, "Sort notes", "Manual order");
   await expect(page).toHaveURL(/\/notes\?ordering=manual$/);
   await expect(
     page.getByRole("listitem", {

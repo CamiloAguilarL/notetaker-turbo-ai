@@ -17,6 +17,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { CategorySelect } from "@/components/notes/category-select";
 import type { Category, Note } from "@/lib/api/types";
 import { deleteNote, updateNote, type NoteUpdate } from "@/lib/api/notes";
 import { categoryThemes } from "@/lib/category-theme";
@@ -178,27 +181,11 @@ export function NoteEditor({
     >
       <h1 className="sr-only">Edit note</h1>
       <div className="flex min-h-14 items-center justify-between gap-4 pb-3">
-        <label className="flex items-center gap-2 text-sm font-medium">
-          <span
-            aria-hidden="true"
-            className={cn("size-2.5 rounded-full", theme.dot)}
-          />
-          <span className="sr-only">Category</span>
-          <select
-            name="category"
-            value={draft.category}
-            onChange={(event) =>
-              changeDraft({ category: event.currentTarget.value })
-            }
-            className="border-primary/35 text-foreground focus-visible:ring-ring/40 [&>option]:bg-background [&>option]:text-foreground min-h-10 rounded-full border bg-transparent px-4 outline-none focus-visible:ring-3"
-          >
-            {categories.map((category) => (
-              <option key={category.id} value={category.slug}>
-                {category.name}
-              </option>
-            ))}
-          </select>
-        </label>
+        <CategorySelect
+          categories={categories}
+          value={selectedCategory?.slug ?? ""}
+          onValueChange={(category) => changeDraft({ category })}
+        />
 
         <div className="flex items-center gap-1">
           <AlertDialog>
@@ -318,7 +305,7 @@ export function NoteEditor({
           <label htmlFor="note-title" className="sr-only">
             Note title
           </label>
-          <input
+          <Input
             id="note-title"
             name="note-title"
             autoComplete="off"
@@ -328,13 +315,13 @@ export function NoteEditor({
             }
             maxLength={120}
             placeholder="Note title"
-            className="placeholder:text-foreground/35 focus-visible:ring-ring/50 mt-4 w-full rounded-sm border-0 bg-transparent font-serif text-3xl leading-tight font-semibold tracking-[-0.025em] outline-none focus-visible:ring-2 sm:mt-6 sm:text-4xl"
+            className="placeholder:text-foreground/35 focus-visible:ring-ring/50 mt-4 h-auto w-full rounded-sm border-0 bg-transparent px-0 py-0 font-serif text-3xl leading-tight font-semibold tracking-[-0.025em] shadow-none focus-visible:ring-2 sm:mt-6 sm:text-4xl md:text-4xl"
           />
 
           <label htmlFor="note-content" className="sr-only">
             Note content
           </label>
-          <textarea
+          <Textarea
             id="note-content"
             name="note-content"
             autoComplete="off"
@@ -344,7 +331,7 @@ export function NoteEditor({
             }
             maxLength={10_000}
             placeholder="Start writing…"
-            className="placeholder:text-foreground/35 focus-visible:ring-ring/50 mt-5 min-h-[calc(100dvh-24rem)] w-full resize-none rounded-sm border-0 bg-transparent text-base leading-7 outline-none focus-visible:ring-2 sm:mt-7 sm:min-h-[calc(100dvh-25rem)]"
+            className="placeholder:text-foreground/35 focus-visible:ring-ring/50 mt-5 min-h-[calc(100dvh-24rem)] w-full resize-none rounded-sm border-0 bg-transparent px-0 py-0 text-base leading-7 shadow-none focus-visible:ring-2 sm:mt-7 sm:min-h-[calc(100dvh-25rem)] md:text-base"
           />
         </div>
       </motion.div>

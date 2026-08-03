@@ -155,11 +155,14 @@ describe("NoteEditor", () => {
       .mockResolvedValueOnce(savedNote({ category: "school" }));
     render(<NoteEditor note={note} categories={categories} />);
 
-    await user.selectOptions(screen.getByLabelText("Category"), "school");
+    await user.click(screen.getByRole("combobox", { name: "Category" }));
+    await user.click(screen.getByRole("option", { name: "School" }));
     await user.click(screen.getByRole("button", { name: "Close" }));
 
     expect(await screen.findByText("Couldn’t save")).toBeVisible();
-    expect(screen.getByLabelText("Category")).toHaveValue("school");
+    expect(
+      screen.getByRole("combobox", { name: "Category" }),
+    ).toHaveTextContent("School");
     await user.click(screen.getByRole("button", { name: "Retry" }));
 
     expect(await screen.findByText("Saved")).toBeVisible();

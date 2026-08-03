@@ -57,6 +57,7 @@ These rules apply to every human and AI contributor in this repository. A nested
 - Build mobile-first and verify small, medium, and large layouts. Do not make desktop-only assumptions from the reference frame.
 - Tailwind CSS v4 is CSS-first. Define design tokens in `apps/web/src/app/globals.css` and consume semantic tokens in components; do not place raw color values in JSX.
 - Use shadcn/ui as source-owned building blocks, not an unmodified theme. Add only components required by the current slice and adapt them to the Figma design.
+- Start every reusable interactive control from the relevant shadcn/ui component when one exists; do not render raw native controls directly in product components. Keep each source-owned primitive in its own `components/ui` file, then compose product-specific behavior in a separate component file when it has domain styling or logic.
 - Prefer composition over large components. Keep client-side state local unless multiple distant consumers truly share it.
 - Test user-observable behavior. Avoid tests coupled to internal component implementation.
 - Add Motion or dnd kit only when its prioritized slice begins. Preserve keyboard/touch parity, live announcements, reduced motion, and a non-animated fallback.

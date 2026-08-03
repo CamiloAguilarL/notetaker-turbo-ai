@@ -31,6 +31,9 @@ Tokens live in `apps/web/src/app/globals.css` and are exposed to Tailwind throug
 | `--primary` | `#6f4e37` | Primary actions and control borders. |
 | `--muted` | `#eee4d2` | Subtle surfaces and inactive states. |
 | `--muted-foreground` | `#6f645a` | Supporting copy. |
+| `--control-surface` | `#fbf2e3` | Quiet fill for compact source-matched controls. |
+| `--control-border` | `#ad7841` | Warm outline for the editor category selector. |
+| `--control-icon` | `#956326` | Chevron and compact-control icon ink. |
 | `--note-random` | `#f3b88f` | Random Thoughts surface. |
 | `--note-random-border` | `#e88e54` | Random Thoughts emphasis. |
 | `--note-school` | `#f6dda7` | School surface. |
@@ -69,9 +72,9 @@ shadcn/ui is a source-code supplier, not a fixed theme or runtime dependency cat
 - Add a component only when a current product slice uses it.
 - Review generated code and adapt its tokens, radius, focus, size, and interaction states to Figma.
 - Keep ownership in `src/components/ui` and product composition outside that folder.
-- The installed source-owned UI components are `Button`, `Input`, and `AlertDialog`; each was added with the slice that first needed it and adapted to the notebook theme.
+- The installed source-owned UI components are `Button`, `Input`, `Textarea`, `Select`, and `AlertDialog`; each was added with the slice that first needed it and adapted to the notebook theme.
 - `AlertDialog` was added for destructive note confirmation. Its content scales without an opacity fade so text meets contrast requirements from the first animation frame, and its destructive action uses the semantic high-contrast token on every category surface.
-- The note editor uses a styled native `select` because it provides the required single-value category interaction without adding a larger primitive. A sheet or other primitive must be added only with a feature that needs it.
+- Category and ordering controls compose the shadcn `Select` built on Base UI. The category trigger's 194-by-34-pixel visual box, six-pixel radius, inset category dot, warm outline, and wide hand-drawn-style chevron follow the inspected reference; the underlying trigger remains 44 pixels tall for touch input. Product styling remains outside the source-owned primitive.
 - Prefer Lucide icons only when the glyph faithfully matches Figma; export and commit the exact Figma asset otherwise.
 
 ## Original illustration provenance
