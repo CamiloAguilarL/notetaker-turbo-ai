@@ -8,14 +8,14 @@ The complete P0 product journey and its documented quality gate are complete:
 
 - Email/password registration, login, session persistence, route protection, and logout with Django sessions; CSRF is enforced on every unsafe request, including anonymous login and registration.
 - Private user-scoped note creation, retrieval, updates, deterministic ordering, reversible soft deletion, and four seeded categories with scoped counts.
-- Responsive empty/populated dashboards, URL-backed category filters, semantic category colors, loading/error states, and accessible note cards.
+- Responsive empty/populated dashboards, URL-backed category filters, semantic category colors, geometry-matched dashboard/editor loading skeletons, error states, and accessible note cards.
 - Debounced full-text note search plus recently edited, oldest edited, and category ordering; every view composes through durable URL state and deterministic API ordering.
 - Atomic manual ordering in the unfiltered notebook with optimistic updates, rollback feedback, pointer/touch drag handles, keyboard move controls, position announcements, and reload persistence.
 - Restrained Motion-based landing, grid-layout, editor, and autosave-state transitions with a global user-preference policy and an automated reduced-motion check.
 - Human-readable note-card dates with `Today`/`Yesterday`, concise current-year labels, historical years when needed, and hydration-safe server formatting.
 - Plain-text editor with category changes, serialized debounced autosave, saving/error/retry states, last-edited metadata, and close-time flush.
 - Accessible delete confirmation and an eight-second Undo action that restores the complete note without losing its category or latest draft.
-- Next.js 16.2.12, React 19, Tailwind CSS 4, Motion 12.43.0, dnd kit, and customized source-owned shadcn/ui `Button`, `Input`, `Textarea`, `Select`, `Tooltip`, and `AlertDialog` components.
+- Next.js 16.2.12, React 19, Tailwind CSS 4, Motion 12.43.0, dnd kit, and customized source-owned shadcn/ui `Button`, `Input`, `Textarea`, `Select`, `Tooltip`, `AlertDialog`, and `Skeleton` components.
 - Django 6.0.7 and Django REST Framework 3.17.1 with a database-aware health endpoint and a consistent JSON error contract.
 - PostgreSQL 17, Django, and Next.js orchestrated through Docker Compose.
 - Ruff, pytest with enforced backend coverage, ESLint, TypeScript, Vitest with enforced frontend coverage, Playwright E2E plus Axe accessibility scans at five representative viewports, production builds, and npm security auditing.
@@ -102,7 +102,7 @@ The finalized runtime tree was rebuilt and exercised from a separate clean local
 | Gate | Result |
 | --- | --- |
 | `make check` | Passed: zero production npm vulnerabilities; Prettier, ESLint, TypeScript, Ruff, and the Next.js production build are clean. |
-| Frontend tests | 34 passed; 94.89% statements, 87.33% branches, 93.54% functions, and 96.65% lines. |
+| Frontend tests | 37 passed; 95.04% statements, 87.44% branches, 94% functions, and 96.76% lines. |
 | Backend tests | 24 passed; 97.32% coverage, including ownership, CSRF, reorder rollback, and demo-seed behavior. |
 | `make e2e` | 5/5 Playwright projects passed at 1440, 820, 650, 480, and 390-pixel widths with Axe scans; the smallest viewport also verifies reduced motion. |
 | Clean-clone smoke test | Fresh Docker images built from the lockfiles; `db`, `api`, and `web` became healthy; web and API health returned HTTP 200. |
